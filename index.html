@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b0f17">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Jarvis WhistleSynth — Whistle & Hum to Musical Instruments</title>
+<style>
+  :root {
+    --bg-dark: #0b0f17;
+    --bg-panel: #151c28;
+    --bg-card: #1e293b;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.25);
+    --gold: #f59e0b;
+    --emerald: #10b981;
+    --rose: #f43f5e;
+    --purple: #a855f7;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #334155;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+  }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 28px;
+    gap: 18px;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-panel);
+    padding: 16px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0284c7, #6366f1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  }
+
+  .brand h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .brand p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .badge {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #64748b;
+  }
+
+  .dot.live {
+    background: var(--emerald);
+    box-shadow: 0 0 10px var(--emerald);
+    animation: pulse 1.4s infinite;
+  }
+
+  .dot.rec {
+    background: var(--rose);
+    box-shadow: 0 0 10px var(--rose);
+    animation: pulse 0.8s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.25); opacity: 0.7; }
+  }
+
+  /* Main Grid */
+  .studio-grid {
+    display: grid;
+    grid-template-columns: 360px 1fr 370px;
+    gap: 18px;
+    flex: 1;
+  }
+
+  @media (max-width: 1300px) {
+    .studio-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    body {
+      padding: 10px 12px;
+      gap: 12px;
+    }
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+    }
+    .status-bar {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .metric-big {
+      font-size: 24px;
+    }
+    .canvas-wrap {
+      min-height: 200px;
+    }
+    .inst-grid {
+      max-height: 360px;
+    }
+  }
+
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .panel-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding-bottom: 10px;
+  }
+
+  /* Transport & Primary Actions */
+  .transport-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-big {
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.18s ease;
+    color: white;
+  }
+
+  .btn-live {
+    background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+  }
+  .btn-live:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-live.active {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+  }
+
+  .btn-record {
+    background: linear-gradient(135deg, #e11d48, #f43f5e);
+    box-shadow: 0 4px 16px rgba(244, 63, 94, 0.3);
+  }
+  .btn-record:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-record.recording {
+    background: #9f1239;
+    box-shadow: 0 0 24px rgba(244, 63, 94, 0.8);
+  }
+
+  .btn-secondary {
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+  }
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(56, 189, 248, 0.12);
+  }
+  .btn-secondary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Controls */
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .control-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+
+  .control-label span.val {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  select, input[type="range"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+  }
+
+  input[type="range"] {
+    padding: 0;
+    height: 8px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .pill-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .pill-btn {
+    padding: 9px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+
+  .pill-btn.active {
+    background: var(--accent);
+    color: #0b0f17;
+    border-color: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  /* Center Visualizer & Pitch Tuner */
+  .tuner-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+
+  .metric-big {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metric-sub {
+    font-size: 13px;
+    color: var(--gold);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .canvas-wrap {
+    flex: 1;
+    position: relative;
+    background: #070a10;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  canvas#rollCanvas {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    display: block;
+  }
+
+  .canvas-overlay {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    display: flex;
+    gap: 16px;
+    pointer-events: none;
+    font-size: 12px;
+    color: var(--text-muted);
+    background: rgba(15, 23, 42, 0.8);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+
+  /* Instrument Grid */
+  .inst-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 520px;
+    padding-right: 4px;
+  }
+
+  .inst-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.16s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .inst-card:hover {
+    border-color: #64748b;
+    transform: translateY(-1px);
+  }
+
+  .inst-card.active {
+    border-color: var(--accent);
+    background: linear-gradient(145deg, rgba(56, 189, 248, 0.18), rgba(30, 41, 59, 0.95));
+    box-shadow: 0 0 18px var(--accent-glow);
+  }
+
+  .inst-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .inst-emoji {
+    font-size: 24px;
+  }
+
+  .inst-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .inst-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+
+  .inst-tag {
+    align-self: flex-start;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.07);
+    color: var(--gold);
+    margin-top: 2px;
+  }
+
+  /* Recorded Clip Box */
+  .recorded-box {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .tip-banner {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fcd34d;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">🎶</div>
+    <div>
+      <h1>Jarvis WhistleSynth Studio</h1>
+      <p>Real-Time Whistle & Hum to Musical Orchestra — Zero Cloud Delay</p>
+    </div>
+  </div>
+  <div class="status-bar">
+    <div class="badge" id="latencyBadge">⚡ Audio Latency: <span id="latencyVal">-- ms</span></div>
+    <div class="badge">
+      <div class="dot" id="statusDot"></div>
+      <span id="statusText">Mic Standby</span>
+    </div>
+  </div>
+</header>
+
+<div class="studio-grid">
+
+  <!-- LEFT PANEL: Mic, Transport & Recording -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>1. Microphone & Studio Mode</span>
+      <span>🎙️</span>
+    </div>
+
+    <div class="transport-box">
+      <button class="btn-big btn-live" id="btnLive" onclick="toggleLive()">
+        <span id="liveIcon">▶️</span>
+        <span id="liveLabel">Start Live Whistle Play</span>
+      </button>
+
+      <button class="btn-big btn-record" id="btnRecord" onclick="toggleRecord()">
+        <span id="recIcon">🔴</span>
+        <span id="recLabel">Record Melody (No Delay)</span>
+      </button>
+    </div>
+
+    <div class="recorded-box">
+      <div class="control-label">
+        <span>Recorded Melody Memory</span>
+        <span class="val" id="recDuration">0.0s (Empty)</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btnPlayRec" onclick="playRecordedMelody()" disabled>
+          🔊 Play with Instrument
+        </button>
+        <button class="btn-secondary" id="btnStopRec" onclick="stopRecordedPlayback()" disabled>
+          ⏹️ Stop
+        </button>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btnExportWav" onclick="exportRecordingWAV()" disabled>
+          💾 Save Audio (.WAV)
+        </button>
+        <button class="btn-secondary" id="btnExportMidi" onclick="exportRecordingMIDI()" disabled>
+          🎼 Save Notes (.MID)
+        </button>
+      </div>
+      <button class="btn-secondary" onclick="loadDemoMelody()">
+        ✨ Load Demo Whistle Tune (Test Orchestra)
+      </button>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>Microphone Device</span>
+      </div>
+      <select id="micSelect" onchange="changeMicrophone()">
+        <option value="default">Default System Microphone</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>Voice / Whistle Mode</span>
+      </div>
+      <select id="vocalMode" onchange="updateVocalRange()">
+        <option value="whistle" selected>😗 Whistling (Pure Sine 300 Hz – 3500 Hz)</option>
+        <option value="hum">🎙️ Humming / Singing (85 Hz – 1100 Hz)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>Speaker Protection</span>
+      </div>
+      <select id="acousticMode">
+        <option value="headphones" selected>🎧 Headphones (Purest Whistle Tracking)</option>
+        <option value="speakers">🔊 Desk Speakers (Echo Filter On)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>Mic Sensitivity Gate</span>
+        <span class="val" id="gateValLabel">15%</span>
+      </div>
+      <input type="range" id="gateSlider" min="2" max="50" value="15" oninput="updateGate(this.value)">
+    </div>
+
+    <div class="tip-banner">
+      💡 <strong>Tip for Eric:</strong> In <em>Record Melody</em> mode, you can whistle freely without any speaker echo, then click any instrument on the right to hear your melody transformed!
+    </div>
+  </div>
+
+  <!-- CENTER PANEL: Live Tuner & Piano Roll -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>2. Live Pitch Telescope & Musical Roll</span>
+      <span id="scaleStatusLabel">Scale: Chromatic (All Notes)</span>
+    </div>
+
+    <div class="tuner-header">
+      <div class="metric-card">
+        <div class="metric-label">Your Whistle Note</div>
+        <div class="metric-big" id="detectedNoteDisplay">--</div>
+        <div class="metric-sub" id="detectedHzDisplay">0.0 Hz</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Instrument Playing</div>
+        <div class="metric-big" id="playedNoteDisplay" style="color: var(--emerald);">--</div>
+        <div class="metric-sub" id="octaveShiftInfo">Octave Shift: 0</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Breath / Dynamics</div>
+        <div class="metric-big" id="volumeDisplay" style="color: var(--gold);">0%</div>
+        <div class="metric-sub" id="pitchSnapInfo">Magnetic Pitch Snap</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="canvas-overlay">
+        <span><i class="legend-dot" style="background:#38bdf8;"></i>Your Raw Whistle Pitch</span>
+        <span><i class="legend-dot" style="background:#10b981;"></i>Instrument Note Played</span>
+      </div>
+      <canvas id="rollCanvas"></canvas>
+    </div>
+
+    <!-- Musical Pitch Assist & Octave Bar -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+      <div class="control-group">
+        <div class="control-label">
+          <span>Octave Transpose (Lower / Higher)</span>
+        </div>
+        <div class="pill-row">
+          <div class="pill-btn" data-oct="-2" onclick="setOctave(-2)">-2 Oct</div>
+          <div class="pill-btn" data-oct="-1" onclick="setOctave(-1)">-1 Oct</div>
+          <div class="pill-btn active" data-oct="0" onclick="setOctave(0)">0 (Natural)</div>
+          <div class="pill-btn" data-oct="1" onclick="setOctave(1)">+1 Oct</div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Pitch Tuning Assist</span>
+        </div>
+        <select id="snapMode" onchange="updateSnapInfo()">
+          <option value="magnetic" selected>🧲 Magnetic Snap (Smooth + In Tune)</option>
+          <option value="strict">🎹 Strict Note Lock (100% Pitch Perfect)</option>
+          <option value="natural">🌊 Natural Slide & Vibrato (Unfiltered)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Musical Scale Key</span>
+        </div>
+        <select id="scaleSelect" onchange="updateSnapInfo()">
+          <option value="chromatic" selected>🎼 All 12 Notes (Chromatic)</option>
+          <option value="major_c">☀️ C Major (Happy / Bright)</option>
+          <option value="minor_a">🌙 A Minor (Emotional / Cinema)</option>
+          <option value="pentatonic">🏯 Japanese Pentatonic (L'Eau Noire)</option>
+          <option value="celtic">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scottish Highland Modal (Dorian)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: Instrument Orchestra -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>3. Select Musical Instrument</span>
+      <span>🎻</span>
+    </div>
+
+    <div class="inst-grid" id="instrumentGrid">
+      <!-- Populated dynamically by JS -->
+    </div>
+
+    <div class="control-group" style="margin-top: auto;">
+      <div class="control-label">
+        <span>Concert Hall Reverb (Echo Space)</span>
+        <span class="val" id="reverbValLabel">35%</span>
+      </div>
+      <input type="range" id="reverbSlider" min="0" max="90" value="35" oninput="updateReverb(this.value)">
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>Master Instrument Volume</span>
+        <span class="val" id="masterVolLabel">85%</span>
+      </div>
+      <input type="range" id="masterVolSlider" min="10" max="100" value="85" oninput="updateMasterVolume(this.value)">
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================================
+// JARVIS WHISTLESYNTH — REAL-TIME PITCH & EXPRESSIVE INSTRUMENT ENGINE
+// ============================================================================
+
+const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+const SCALES = {
+  chromatic: [0,1,2,3,4,5,6,7,8,9,10,11],
+  major_c:   [0,2,4,5,7,9,11],
+  minor_a:   [0,2,3,5,7,8,10],
+  pentatonic:[0,2,4,7,9],        // C D E G A (Classic East Asian / Scottish Pentatonic)
+  celtic:    [0,2,3,5,7,9,10]    // Dorian Highland scale
+};
+
+const INSTRUMENTS = [
+  {
+    id: "cello",
+    name: "Solo Cello",
+    emoji: "🎻",
+    desc: "Deep, warm bowed strings. Auto-shifts whistle down 2 octaves.",
+    tag: "Expressive Continuous",
+    defaultOctave: -2,
+    type: "continuous"
+  },
+  {
+    id: "violin",
+    name: "Stradivarius Violin",
+    emoji: "🎻",
+    desc: "Soaring lyrical strings with natural vibrato and bow dynamics.",
+    tag: "Expressive Continuous",
+    defaultOctave: -1,
+    type: "continuous"
+  },
+  {
+    id: "flute",
+    name: "Concert Silver Flute",
+    emoji: "🪈",
+    desc: "Silky, airy woodwind that mirrors your breath naturally.",
+    tag: "Expressive Continuous",
+    defaultOctave: -1,
+    type: "continuous"
+  },
+  {
+    id: "shakuhachi",
+    name: "Japanese Shakuhachi",
+    emoji: "🎋",
+    desc: "1600s bamboo zen flute with breathy attack & pitch bends.",
+    tag: "L'Eau Noire Special",
+    defaultOctave: -1,
+    type: "continuous"
+  },
+  {
+    id: "saxophone",
+    name: "Tenor Saxophone",
+    emoji: "🎷",
+    desc: "Warm brassy reed tone for jazz & expressive melodies.",
+    tag: "Expressive Continuous",
+    defaultOctave: -2,
+    type: "continuous"
+  },
+  {
+    id: "piano",
+    name: "Concert Grand Piano",
+    emoji: "🎹",
+    desc: "Crisp acoustic hammer strikes triggered on each distinct note.",
+    tag: "Note Triggered",
+    defaultOctave: -1,
+    type: "percussive"
+  },
+  {
+    id: "guitar",
+    name: "Spanish Nylon Guitar",
+    emoji: "🎸",
+    desc: "Warm acoustic plucked strings with wooden body resonance.",
+    tag: "Note Triggered",
+    defaultOctave: -2,
+    type: "percussive"
+  },
+  {
+    id: "harp",
+    name: "Scottish Celtic Harp",
+    emoji: "🪉",
+    desc: "Luminous, ringing plucked strings that shimmer in the hall.",
+    tag: "Note Triggered",
+    defaultOctave: -1,
+    type: "percussive"
+  },
+  {
+    id: "organ",
+    name: "Cathedral Pipe Organ",
+    emoji: "⛪",
+    desc: "Majestic multi-pipe harmonic sustain with deep bass pipes.",
+    tag: "Expressive Continuous",
+    defaultOctave: -2,
+    type: "continuous"
+  },
+  {
+    id: "vangelis",
+    name: "Cinema CS-80 Synth",
+    emoji: "🌌",
+    desc: "Lush Vangelis / Blade Runner emotional analog synthesizer.",
+    tag: "Expressive Continuous",
+    defaultOctave: -2,
+    type: "continuous"
+  }
+];
+
+// State
+let currentInstrument = INSTRUMENTS[0];
+let octaveShift = -2;
+let gateThreshold = 0.018;
+let masterVol = 0.85;
+let reverbWet = 0.35;
+
+let audioCtx = null;
+let micStream = null;
+let analyser = null;
+let micSource = null;
+let isLive = false;
+let isRecording = false;
+let isPlayingRecorded = false;
+
+// Live Synth Nodes
+let synthMasterGain = null;
+let reverbNode = null;
+let reverbGain = null;
+let dryGain = null;
+let activeContinuousVoice = null;
+let lastTriggeredMidi = -1;
+let lastNoteTriggerTime = 0;
+let smoothedFreq = 0;
+
+// History for Piano Roll Canvas (last 280 frames)
+const pitchHistory = [];
+const MAX_HISTORY = 280;
+
+// Recorded Melody frames: { timeOffsetMs, rawHz, snappedMidi, rms }
+let recordedFrames = [];
+let recordStartTime = 0;
+let playbackTimerIds = [];
+
+// Initialize UI
+window.addEventListener("DOMContentLoaded", () => {
+  renderInstrumentGrid();
+  setOctave(currentInstrument.defaultOctave);
+  enumerateMics();
+  initCanvasLoop();
+});
+
+function renderInstrumentGrid() {
+  const grid = document.getElementById("instrumentGrid");
+  grid.innerHTML = "";
+  INSTRUMENTS.forEach(inst => {
+    const card = document.createElement("div");
+    card.className = "inst-card" + (inst.id === currentInstrument.id ? " active" : "");
+    card.onclick = () => selectInstrument(inst);
+    card.innerHTML = `
+      <div class="inst-top">
+        <span class="inst-emoji">${inst.emoji}</span>
+        <span class="inst-name">${inst.name}</span>
+      </div>
+      <div class="inst-desc">${inst.desc}</div>
+      <div class="inst-tag">${inst.tag}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function selectInstrument(inst) {
+  currentInstrument = inst;
+  setOctave(inst.defaultOctave);
+  renderInstrumentGrid();
+
+  // Rebuild continuous voice if running
+  if (activeContinuousVoice) {
+    stopContinuousVoice();
+  }
+  // If playing back a recorded melody, restart with the new instrument immediately!
+  if (isPlayingRecorded) {
+    playRecordedMelody();
+  }
+}
+
+function setOctave(oct) {
+  octaveShift = oct;
+  document.querySelectorAll(".pill-btn").forEach(btn => {
+    btn.classList.toggle("active", parseInt(btn.dataset.oct) === oct);
+  });
+  document.getElementById("octaveShiftInfo").textContent =
+    `Octave Shift: ${oct > 0 ? "+" + oct : oct} (${oct === 0 ? "Same pitch" : (oct < 0 ? Math.abs(oct) + " oct lower" : oct + " oct higher")})`;
+}
+
+function updateGate(val) {
+  document.getElementById("gateValLabel").textContent = val + "%";
+  // Map 2..50 to RMS 0.004 .. 0.08
+  gateThreshold = 0.003 + (val / 100) * 0.10;
+}
+
+function updateReverb(val) {
+  document.getElementById("reverbValLabel").textContent = val + "%";
+  reverbWet = val / 100;
+  if (reverbGain && dryGain && audioCtx) {
+    reverbGain.gain.setTargetAtTime(reverbWet, audioCtx.currentTime, 0.03);
+    dryGain.gain.setTargetAtTime(1.0 - reverbWet * 0.4, audioCtx.currentTime, 0.03);
+  }
+}
+
+function updateMasterVolume(val) {
+  document.getElementById("masterVolLabel").textContent = val + "%";
+  masterVol = val / 100;
+  if (synthMasterGain && audioCtx) {
+    synthMasterGain.gain.setTargetAtTime(masterVol, audioCtx.currentTime, 0.03);
+  }
+}
+
+function updateSnapInfo() {
+  const snap = document.getElementById("snapMode").value;
+  const scale = document.getElementById("scaleSelect").selectedOptions[0].text;
+  document.getElementById("pitchSnapInfo").textContent =
+    snap === "magnetic" ? "Magnetic Snap" : (snap === "strict" ? "Strict Note Lock" : "Natural Slide");
+  document.getElementById("scaleStatusLabel").textContent = "Scale: " + scale;
+}
+
+function updateVocalRange() {
+  smoothedFreq = 0;
+}
+
+// ============================================================================
+// AUDIO CONTEXT & SYNTHESIS ENGINE
+// ============================================================================
+
+async function ensureAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({
+      latencyHint: "interactive",
+      sampleRate: 48000
+    });
+
+    synthMasterGain = audioCtx.createGain();
+    synthMasterGain.gain.value = masterVol;
+
+    dryGain = audioCtx.createGain();
+    dryGain.gain.value = 1.0 - reverbWet * 0.4;
+
+    reverbGain = audioCtx.createGain();
+    reverbGain.gain.value = reverbWet;
+
+    reverbNode = createConcertHallReverb(audioCtx, 2.4, 2.2);
+
+    synthMasterGain.connect(dryGain);
+    synthMasterGain.connect(reverbNode);
+    reverbNode.connect(reverbGain);
+
+    dryGain.connect(audioCtx.destination);
+    reverbGain.connect(audioCtx.destination);
+  }
+  if (audioCtx.state === "suspended") {
+    await audioCtx.resume();
+  }
+  const latMs = Math.round(((audioCtx.baseLatency || 0.01) + (audioCtx.outputLatency || 0.015)) * 1000);
+  document.getElementById("latencyVal").textContent = `~${Math.max(12, latMs)} ms`;
+}
+
+function createConcertHallReverb(ctx, duration, decay) {
+  const rate = ctx.sampleRate;
+  const length = rate * duration;
+  const impulse = ctx.createBuffer(2, length, rate);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = impulse.getChannelData(ch);
+    for (let i = 0; i < length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+    }
+  }
+  const convolver = ctx.createConvolver();
+  convolver.buffer = impulse;
+  return convolver;
+}
+
+// Create Expressive Continuous Voice (Cello, Violin, Flute, Shakuhachi, Sax, Organ, Vangelis)
+function createContinuousVoice(instId, initialFreq) {
+  const now = audioCtx.currentTime;
+  const voiceGain = audioCtx.createGain();
+  voiceGain.gain.setValueAtTime(0.0001, now);
+  voiceGain.connect(synthMasterGain);
+
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const subOsc = audioCtx.createOscillator();
+  const filter = audioCtx.createBiquadFilter();
+
+  // Natural gentle vibrato LFO
+  const lfo = audioCtx.createOscillator();
+  const lfoGain = audioCtx.createGain();
+  lfo.frequency.value = 5.5;
+  lfoGain.gain.value = instId === "violin" || instId === "cello" ? 3.2 : (instId === "shakuhachi" ? 4.5 : 1.5);
+  lfo.connect(lfoGain);
+  lfoGain.connect(osc1.frequency);
+  lfoGain.connect(osc2.frequency);
+
+  // Breath noise generator (for Flute & Shakuhachi)
+  let noiseSource = null;
+  let noiseGain = null;
+  if (instId === "flute" || instId === "shakuhachi") {
+    const bufSize = audioCtx.sampleRate * 2;
+    const noiseBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const out = noiseBuf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) out[i] = Math.random() * 2 - 1;
+    noiseSource = audioCtx.createBufferSource();
+    noiseSource.buffer = noiseBuf;
+    noiseSource.loop = true;
+
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = "bandpass";
+    noiseFilter.frequency.value = instId === "shakuhachi" ? 1400 : 2200;
+    noiseFilter.Q.value = 2.5;
+
+    noiseGain = audioCtx.createGain();
+    noiseGain.gain.value = instId === "shakuhachi" ? 0.14 : 0.06;
+
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(voiceGain);
+    noiseSource.start(now);
+  }
+
+  // Configure Timbre per Instrument
+  if (instId === "cello") {
+    osc1.type = "sawtooth";
+    osc2.type = "triangle";
+    subOsc.type = "sine";
+    filter.type = "lowpass";
+    filter.frequency.value = 1100;
+    filter.Q.value = 2.2;
+  } else if (instId === "violin") {
+    osc1.type = "sawtooth";
+    osc2.type = "sawtooth";
+    subOsc.type = "triangle";
+    filter.type = "bandpass";
+    filter.frequency.value = 1850;
+    filter.Q.value = 0.9;
+  } else if (instId === "flute") {
+    osc1.type = "sine";
+    osc2.type = "triangle";
+    subOsc.type = "sine";
+    filter.type = "lowpass";
+    filter.frequency.value = 2600;
+    filter.Q.value = 0.7;
+  } else if (instId === "shakuhachi") {
+    osc1.type = "triangle";
+    osc2.type = "sine";
+    subOsc.type = "sine";
+    filter.type = "lowpass";
+    filter.frequency.value = 1900;
+    filter.Q.value = 1.8;
+  } else if (instId === "saxophone") {
+    osc1.type = "sawtooth";
+    osc2.type = "square";
+    subOsc.type = "sine";
+    filter.type = "lowpass";
+    filter.frequency.value = 1500;
+    filter.Q.value = 2.8;
+  } else if (instId === "organ") {
+    osc1.type = "sine";
+    osc2.type = "triangle";
+    subOsc.type = "sine";
+    filter.type = "lowpass";
+    filter.frequency.value = 3500;
+  } else if (instId === "vangelis") {
+    osc1.type = "sawtooth";
+    osc2.type = "sawtooth";
+    subOsc.type = "square";
+    filter.type = "lowpass";
+    filter.frequency.value = 2100;
+    filter.Q.value = 1.6;
+  }
+
+  const osc2Gain = audioCtx.createGain();
+  osc2Gain.gain.value = instId === "vangelis" || instId === "violin" ? 0.55 : 0.35;
+
+  const subGain = audioCtx.createGain();
+  subGain.gain.value = instId === "organ" || instId === "cello" ? 0.5 : 0.2;
+
+  osc1.frequency.setValueAtTime(initialFreq, now);
+  osc2.frequency.setValueAtTime(initialFreq * (instId === "organ" ? 2.0 : 1.004), now);
+  subOsc.frequency.setValueAtTime(initialFreq * 0.5, now);
+
+  osc1.connect(filter);
+  osc2.connect(osc2Gain);
+  osc2Gain.connect(filter);
+  subOsc.connect(subGain);
+  subGain.connect(filter);
+  filter.connect(voiceGain);
+
+  osc1.start(now);
+  osc2.start(now);
+  subOsc.start(now);
+  lfo.start(now);
+
+  return {
+    instId,
+    osc1,
+    osc2,
+    subOsc,
+    lfo,
+    noiseSource,
+    filter,
+    voiceGain,
+    setPitchAndDynamics(freq, dynamics) {
+      const t = audioCtx.currentTime;
+      osc1.frequency.setTargetAtTime(freq, t, 0.018);
+      osc2.frequency.setTargetAtTime(freq * (instId === "organ" ? 2.0 : 1.004), t, 0.018);
+      subOsc.frequency.setTargetAtTime(freq * 0.5, t, 0.018);
+
+      // Expressive filter opening with louder breath
+      const baseCut = instId === "cello" ? 800 : (instId === "saxophone" ? 1100 : 1600);
+      filter.frequency.setTargetAtTime(baseCut + dynamics * 1800, t, 0.03);
+
+      const targetGain = Math.min(0.85, Math.max(0.05, dynamics * 1.1));
+      voiceGain.gain.setTargetAtTime(targetGain, t, 0.025);
+    },
+    stop() {
+      const t = audioCtx.currentTime;
+      voiceGain.gain.setTargetAtTime(0.0001, t, 0.04);
+      setTimeout(() => {
+        try {
+          osc1.stop();
+          osc2.stop();
+          subOsc.stop();
+          lfo.stop();
+          if (noiseSource) noiseSource.stop();
+          voiceGain.disconnect();
+        } catch(e) {}
+      }, 180);
+    }
+  };
+}
+
+function stopContinuousVoice() {
+  if (activeContinuousVoice) {
+    activeContinuousVoice.stop();
+    activeContinuousVoice = null;
+  }
+}
+
+// Trigger Percussive / Plucked Note (Grand Piano, Acoustic Guitar, Celtic Harp)
+function triggerPercussiveNote(instId, freq, velocity) {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const noteGain = audioCtx.createGain();
+  noteGain.connect(synthMasterGain);
+
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "lowpass";
+
+  let decayTime = 1.6;
+  if (instId === "piano") {
+    osc1.type = "triangle";
+    osc2.type = "sawtooth";
+    filter.frequency.setValueAtTime(3200, now);
+    filter.frequency.exponentialRampToValueAtTime(450, now + 1.4);
+    decayTime = 1.8;
+  } else if (instId === "guitar") {
+    osc1.type = "sawtooth";
+    osc2.type = "triangle";
+    filter.frequency.setValueAtTime(2400, now);
+    filter.frequency.exponentialRampToValueAtTime(380, now + 1.0);
+    decayTime = 1.3;
+  } else if (instId === "harp") {
+    osc1.type = "sine";
+    osc2.type = "triangle";
+    filter.frequency.setValueAtTime(4200, now);
+    filter.frequency.exponentialRampToValueAtTime(800, now + 2.2);
+    decayTime = 2.5;
+  }
+
+  osc1.frequency.setValueAtTime(freq, now);
+  osc2.frequency.setValueAtTime(freq * 2.0, now); // Harmonic overtone
+
+  const overtoneGain = audioCtx.createGain();
+  overtoneGain.gain.setValueAtTime(instId === "piano" ? 0.22 : 0.15, now);
+  overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + decayTime * 0.4);
+
+  const peakGain = Math.min(0.85, Math.max(0.18, velocity));
+  noteGain.gain.setValueAtTime(0.001, now);
+  noteGain.gain.linearRampToValueAtTime(peakGain, now + 0.012);
+  noteGain.gain.exponentialRampToValueAtTime(0.0008, now + decayTime);
+
+  osc1.connect(filter);
+  osc2.connect(overtoneGain);
+  overtoneGain.connect(filter);
+  filter.connect(noteGain);
+
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + decayTime + 0.05);
+  osc2.stop(now + decayTime + 0.05);
+}
+
+// ============================================================================
+// MICROPHONE & YIN PITCH DETECTION
+// ============================================================================
+
+async function enumerateMics() {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const audioInputs = devices.filter(d => d.kind === "audioinput");
+    const sel = document.getElementById("micSelect");
+    if (audioInputs.length > 0) {
+      sel.innerHTML = "";
+      audioInputs.forEach((d, idx) => {
+        const opt = document.createElement("option");
+        opt.value = d.deviceId;
+        opt.textContent = d.label || `Microphone ${idx + 1}`;
+        sel.appendChild(opt);
+      });
+    }
+  } catch (e) {}
+}
+
+async function startMicStream() {
+  await ensureAudioContext();
+  if (micStream) {
+    micStream.getTracks().forEach(t => t.stop());
+  }
+
+  const deviceId = document.getElementById("micSelect").value;
+  const isSpeakers = document.getElementById("acousticMode").value === "speakers";
+
+  // Critical: disable aggressive noiseSuppression in Headphones mode so Chrome doesn't mute steady whistling!
+  const constraints = {
+    audio: {
+      deviceId: deviceId && deviceId !== "default" ? { exact: deviceId } : undefined,
+      echoCancellation: isSpeakers,
+      noiseSuppression: isSpeakers,
+      autoGainControl: false
+    }
+  };
+
+  micStream = await navigator.mediaDevices.getUserMedia(constraints);
+  enumerateMics(); // Refresh labels after permission granted
+
+  micSource = audioCtx.createMediaStreamSource(micStream);
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 2048;
+  micSource.connect(analyser);
+}
+
+async function changeMicrophone() {
+  if (isLive || isRecording) {
+    await startMicStream();
+  }
+}
+
+async function toggleLive() {
+  const btn = document.getElementById("btnLive");
+  if (isLive) {
+    isLive = false;
+    stopContinuousVoice();
+    if (micStream && !isRecording) {
+      micStream.getTracks().forEach(t => t.stop());
+    }
+    btn.classList.remove("active");
+    document.getElementById("liveIcon").textContent = "▶️";
+    document.getElementById("liveLabel").textContent = "Start Live Whistle Play";
+    updateStatusBadge("Mic Standby", "");
+    return;
+  }
+
+  try {
+    if (isPlayingRecorded) stopRecordedPlayback();
+    await startMicStream();
+    isLive = true;
+    btn.classList.add("active");
+    document.getElementById("liveIcon").textContent = "⏹️";
+    document.getElementById("liveLabel").textContent = "Stop Live Whistle Play";
+    updateStatusBadge("LIVE: Whistle Now!", "live");
+  } catch (err) {
+    alert("Could not access microphone: " + err.message);
+  }
+}
+
+async function toggleRecord() {
+  const btn = document.getElementById("btnRecord");
+  if (isRecording) {
+    // Finish recording
+    isRecording = false;
+    btn.classList.remove("recording");
+    document.getElementById("recIcon").textContent = "🔴";
+    document.getElementById("recLabel").textContent = "Record Melody (No Delay)";
+    if (!isLive && micStream) {
+      micStream.getTracks().forEach(t => t.stop());
+      updateStatusBadge("Recording Saved", "");
+    }
+    finalizeRecording();
+    return;
+  }
+
+  try {
+    if (isPlayingRecorded) stopRecordedPlayback();
+    await startMicStream();
+    recordedFrames = [];
+    recordStartTime = performance.now();
+    isRecording = true;
+    btn.classList.add("recording");
+    document.getElementById("recIcon").textContent = "⏹️";
+    document.getElementById("recLabel").textContent = "Stop Recording";
+    updateStatusBadge("RECORDING WHISTLE...", "rec");
+  } catch (err) {
+    alert("Could not access microphone: " + err.message);
+  }
+}
+
+function updateStatusBadge(text, dotClass) {
+  document.getElementById("statusText").textContent = text;
+  const dot = document.getElementById("statusDot");
+  dot.className = "dot" + (dotClass ? " " + dotClass : "");
+}
+
+// YIN / Normalized Autocorrelation Pitch Detector
+function detectPitchYIN(buf, sampleRate, minFreq, maxFreq) {
+  let sumSq = 0;
+  for (let i = 0; i < buf.length; i++) {
+    sumSq += buf[i] * buf[i];
+  }
+  const rms = Math.sqrt(sumSq / buf.length);
+  if (rms < gateThreshold) {
+    return { freq: -1, rms };
+  }
+
+  const minTau = Math.max(2, Math.floor(sampleRate / maxFreq));
+  const maxTau = Math.min(Math.floor(buf.length / 2), Math.ceil(sampleRate / minFreq));
+
+  const yin = new Float32Array(maxTau);
+  yin[0] = 1;
+  let runningSum = 0;
+
+  for (let tau = 1; tau < maxTau; tau++) {
+    let diff = 0;
+    for (let i = 0; i < maxTau; i++) {
+      const delta = buf[i] - buf[i + tau];
+      diff += delta * delta;
+    }
+    runningSum += diff;
+    yin[tau] = runningSum > 0 ? (diff * tau) / runningSum : 1;
+  }
+
+  let bestTau = -1;
+  const threshold = 0.18;
+  for (let tau = minTau; tau < maxTau - 1; tau++) {
+    if (yin[tau] < threshold && yin[tau] < yin[tau - 1] && yin[tau] <= yin[tau + 1]) {
+      bestTau = tau;
+      break;
+    }
+  }
+
+  if (bestTau === -1) {
+    // Fallback to global minimum if clear enough
+    let minVal = 0.32;
+    for (let tau = minTau; tau < maxTau - 1; tau++) {
+      if (yin[tau] < minVal) {
+        minVal = yin[tau];
+        bestTau = tau;
+      }
+    }
+  }
+
+  if (bestTau === -1) return { freq: -1, rms };
+
+  // Parabolic interpolation for sub-sample precision
+  const s0 = yin[bestTau - 1];
+  const s1 = yin[bestTau];
+  const s2 = yin[bestTau + 1];
+  const denom = 2 * (2 * s1 - s2 - s0);
+  const betterTau = denom !== 0 ? bestTau + (s2 - s0) / denom : bestTau;
+
+  return { freq: sampleRate / betterTau, rms };
+}
+
+// Musical Note Math & Scale Quantizer
+function freqToMidi(freq) {
+  return 69 + 12 * Math.log2(freq / 440.0);
+}
+
+function midiToFreq(midi) {
+  return 440.0 * Math.pow(2, (midi - 69) / 12.0);
+}
+
+function midiToNoteName(midi) {
+  const rounded = Math.round(midi);
+  const name = NOTE_NAMES[((rounded % 12) + 12) % 12];
+  const oct = Math.floor(rounded / 12) - 1;
+  return `${name}${oct}`;
+}
+
+function snapMidiToScale(rawMidi, scaleKey, snapMode) {
+  const allowedDegrees = SCALES[scaleKey] || SCALES.chromatic;
+  const baseOctave = Math.floor(rawMidi / 12);
+  let bestMidi = Math.round(rawMidi);
+  let minDiff = 999;
+
+  for (let oct = baseOctave - 1; oct <= baseOctave + 1; oct++) {
+    for (const deg of allowedDegrees) {
+      const candidate = oct * 12 + deg;
+      const diff = Math.abs(rawMidi - candidate);
+      if (diff < minDiff) {
+        minDiff = diff;
+        bestMidi = candidate;
+      }
+    }
+  }
+
+  if (snapMode === "natural") {
+    return rawMidi;
+  } else if (snapMode === "strict") {
+    return bestMidi;
+  } else {
+    // Magnetic snap: pulls 75% toward scale center, preserving subtle vibrato
+    return bestMidi * 0.78 + rawMidi * 0.22;
+  }
+}
+
+// ============================================================================
+// MAIN REAL-TIME PROCESSING LOOP & PIANO ROLL VISUALIZER
+// ============================================================================
+
+function initCanvasLoop() {
+  const canvas = document.getElementById("rollCanvas");
+  const ctx = canvas.getContext("2d");
+  const timeBuf = new Float32Array(2048);
+
+  function frame() {
+    requestAnimationFrame(frame);
+
+    let detectedHz = -1;
+    let rms = 0;
+
+    if ((isLive || isRecording) && analyser && audioCtx) {
+      analyser.getFloatTimeDomainData(timeBuf);
+      const vocalMode = document.getElementById("vocalMode").value;
+      const minF = vocalMode === "whistle" ? 280 : 80;
+      const maxF = vocalMode === "whistle" ? 3600 : 1200;
+
+      const res = detectPitchYIN(timeBuf, audioCtx.sampleRate, minF, maxF);
+      detectedHz = res.freq;
+      rms = res.rms;
+    }
+
+    if (detectedHz > 0) {
+      // Smooth frequency jitter
+      if (smoothedFreq === 0 || Math.abs(detectedHz - smoothedFreq) / smoothedFreq > 0.18) {
+        smoothedFreq = detectedHz;
+      } else {
+        smoothedFreq = smoothedFreq * 0.65 + detectedHz * 0.35;
+      }
+
+      const rawMidi = freqToMidi(smoothedFreq);
+      const shiftedRawMidi = rawMidi + octaveShift * 12;
+      const scaleKey = document.getElementById("scaleSelect").value;
+      const snapMode = document.getElementById("snapMode").value;
+
+      const playedMidi = snapMidiToScale(shiftedRawMidi, scaleKey, snapMode);
+      const playedFreq = midiToFreq(playedMidi);
+      const normDynamics = Math.min(1.0, Math.max(0.15, (rms - gateThreshold) * 9.5));
+
+      // Update Top Metrics
+      document.getElementById("detectedNoteDisplay").textContent = midiToNoteName(rawMidi);
+      document.getElementById("detectedHzDisplay").textContent = `${smoothedFreq.toFixed(1)} Hz`;
+      document.getElementById("playedNoteDisplay").textContent = midiToNoteName(playedMidi);
+      document.getElementById("volumeDisplay").textContent = `${Math.round(normDynamics * 100)}%`;
+
+      // Record frame if recording
+      if (isRecording) {
+        recordedFrames.push({
+          timeOffsetMs: performance.now() - recordStartTime,
+          rawMidi,
+          snappedMidi: Math.round(playedMidi),
+          playedMidi,
+          rms: normDynamics
+        });
+        const sec = ((performance.now() - recordStartTime) / 1000).toFixed(1);
+        document.getElementById("recDuration").textContent = `${sec}s (Recording...)`;
+      }
+
+      // Play Live Audio if in Live Mode
+      if (isLive) {
+        driveInstrumentVoice(playedFreq, playedMidi, normDynamics);
+      }
+
+      pitchHistory.push({ rawMidi: shiftedRawMidi, playedMidi, active: true });
+    } else {
+      smoothedFreq = 0;
+      if (!isPlayingRecorded) {
+        stopContinuousVoice();
+        lastTriggeredMidi = -1;
+        document.getElementById("detectedNoteDisplay").textContent = "--";
+        document.getElementById("detectedHzDisplay").textContent = "Listening...";
+        document.getElementById("playedNoteDisplay").textContent = "--";
+        document.getElementById("volumeDisplay").textContent = "0%";
+      }
+
+      if (isRecording) {
+        recordedFrames.push({
+          timeOffsetMs: performance.now() - recordStartTime,
+          rawMidi: -1,
+          snappedMidi: -1,
+          playedMidi: -1,
+          rms: 0
+        });
+        const sec = ((performance.now() - recordStartTime) / 1000).toFixed(1);
+        document.getElementById("recDuration").textContent = `${sec}s (Recording...)`;
+      }
+
+      if (!isPlayingRecorded) {
+        pitchHistory.push({ rawMidi: -1, playedMidi: -1, active: false });
+      }
+    }
+
+    if (pitchHistory.length > MAX_HISTORY) {
+      pitchHistory.shift();
+    }
+
+    drawPianoRoll(canvas, ctx);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function driveInstrumentVoice(playedFreq, playedMidi, normDynamics) {
+  if (currentInstrument.type === "continuous") {
+    if (!activeContinuousVoice || activeContinuousVoice.instId !== currentInstrument.id) {
+      stopContinuousVoice();
+      activeContinuousVoice = createContinuousVoice(currentInstrument.id, playedFreq);
+    }
+    activeContinuousVoice.setPitchAndDynamics(playedFreq, normDynamics);
+  } else {
+    // Percussive / Plucked (Piano, Guitar, Harp): trigger when note changes or re-articulated
+    const roundedMidi = Math.round(playedMidi);
+    const nowMs = performance.now();
+    if (roundedMidi !== lastTriggeredMidi || (nowMs - lastNoteTriggerTime > 480 && lastTriggeredMidi === -1)) {
+      triggerPercussiveNote(currentInstrument.id, midiToFreq(roundedMidi), normDynamics);
+      lastTriggeredMidi = roundedMidi;
+      lastNoteTriggerTime = nowMs;
+    }
+  }
+}
+
+function drawPianoRoll(canvas, ctx) {
+  if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+  }
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // Determine vertical MIDI range based on recent active notes
+  let centerMidi = 64;
+  for (let i = pitchHistory.length - 1; i >= 0; i--) {
+    if (pitchHistory[i].active && pitchHistory[i].playedMidi > 0) {
+      centerMidi = pitchHistory[i].playedMidi;
+      break;
+    }
+  }
+  const minMidi = Math.floor(centerMidi) - 12;
+  const maxMidi = Math.floor(centerMidi) + 12;
+  const midiSpan = maxMidi - minMidi;
+
+  // Draw horizontal note lanes
+  for (let m = minMidi; m <= maxMidi; m++) {
+    const y = h - ((m - minMidi) / midiSpan) * h;
+    const isC = (m % 12 === 0);
+    ctx.strokeStyle = isC ? "rgba(56, 189, 248, 0.22)" : "rgba(255, 255, 255, 0.05)";
+    ctx.lineWidth = isC ? 1.5 : 1;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+
+    if (m % 2 === 0) {
+      ctx.fillStyle = isC ? "#38bdf8" : "rgba(148, 163, 184, 0.45)";
+      ctx.font = "11px Segoe UI";
+      ctx.fillText(midiToNoteName(m), w - 36, y - 3);
+    }
+  }
+
+  // Draw Raw Whistle Curve (Cyan)
+  ctx.strokeStyle = "#38bdf8";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  let started = false;
+  for (let i = 0; i < pitchHistory.length; i++) {
+    const pt = pitchHistory[i];
+    const x = (i / MAX_HISTORY) * (w - 48);
+    if (pt.active && pt.rawMidi > 0) {
+      const y = h - ((pt.rawMidi - minMidi) / midiSpan) * h;
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else ctx.lineTo(x, y);
+    } else {
+      started = false;
+    }
+  }
+  ctx.stroke();
+
+  // Draw Played Instrument Note Curve (Glowing Emerald)
+  ctx.strokeStyle = "#10b981";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  started = false;
+  for (let i = 0; i < pitchHistory.length; i++) {
+    const pt = pitchHistory[i];
+    const x = (i / MAX_HISTORY) * (w - 48);
+    if (pt.active && pt.playedMidi > 0) {
+      const y = h - ((pt.playedMidi - minMidi) / midiSpan) * h;
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else ctx.lineTo(x, y);
+    } else {
+      started = false;
+    }
+  }
+  ctx.stroke();
+}
+
+// ============================================================================
+// RECORDED MELODY PLAYBACK, DEMO & EXPORT (WAV / MIDI)
+// ============================================================================
+
+function finalizeRecording() {
+  const activeCount = recordedFrames.filter(f => f.rawMidi > 0).length;
+  if (activeCount < 5) {
+    document.getElementById("recDuration").textContent = "No whistle detected";
+    return;
+  }
+  const totalSec = (recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000).toFixed(1);
+  document.getElementById("recDuration").textContent = `${totalSec}s Ready!`;
+  document.getElementById("btnPlayRec").disabled = false;
+  document.getElementById("btnStopRec").disabled = false;
+  document.getElementById("btnExportWav").disabled = false;
+  document.getElementById("btnExportMidi").disabled = false;
+
+  // Automatically play back the recorded whistle on the chosen instrument!
+  playRecordedMelody();
+}
+
+async function playRecordedMelody() {
+  if (recordedFrames.length === 0) return;
+  await ensureAudioContext();
+  stopRecordedPlayback();
+
+  isPlayingRecorded = true;
+  updateStatusBadge(`Playing: ${currentInstrument.name}`, "live");
+  lastTriggeredMidi = -1;
+
+  const scaleKey = document.getElementById("scaleSelect").value;
+  const snapMode = document.getElementById("snapMode").value;
+
+  recordedFrames.forEach((frame, idx) => {
+    const tid = setTimeout(() => {
+      if (!isPlayingRecorded) return;
+      if (frame.rawMidi > 0) {
+        const shiftedRaw = frame.rawMidi + octaveShift * 12;
+        const playedMidi = snapMidiToScale(shiftedRaw, scaleKey, snapMode);
+        const playedFreq = midiToFreq(playedMidi);
+
+        document.getElementById("detectedNoteDisplay").textContent = midiToNoteName(frame.rawMidi);
+        document.getElementById("playedNoteDisplay").textContent = midiToNoteName(playedMidi);
+        document.getElementById("volumeDisplay").textContent = `${Math.round(frame.rms * 100)}%`;
+
+        driveInstrumentVoice(playedFreq, playedMidi, frame.rms);
+        pitchHistory.push({ rawMidi: shiftedRaw, playedMidi, active: true });
+      } else {
+        stopContinuousVoice();
+        lastTriggeredMidi = -1;
+        pitchHistory.push({ rawMidi: -1, playedMidi: -1, active: false });
+      }
+      if (idx === recordedFrames.length - 1) {
+        stopRecordedPlayback();
+      }
+    }, frame.timeOffsetMs);
+    playbackTimerIds.push(tid);
+  });
+}
+
+function stopRecordedPlayback() {
+  isPlayingRecorded = false;
+  playbackTimerIds.forEach(id => clearTimeout(id));
+  playbackTimerIds = [];
+  stopContinuousVoice();
+  lastTriggeredMidi = -1;
+  if (!isLive && !isRecording) {
+    updateStatusBadge("Mic Standby", "");
+  }
+}
+
+// Built-in Demo Melody ("Skye Boat Song / Highland Whistle Air") so Eric can test all 10 instruments immediately!
+function loadDemoMelody() {
+  const melodyNotes = [
+    // Note MIDI (Whistle register ~G5-E6), durationMs
+    { midi: 79, dur: 450 }, { midi: 81, dur: 250 }, { midi: 79, dur: 450 }, { midi: 74, dur: 650 },
+    { midi: 0,  dur: 120 },
+    { midi: 76, dur: 450 }, { midi: 79, dur: 250 }, { midi: 76, dur: 450 }, { midi: 72, dur: 700 },
+    { midi: 0,  dur: 150 },
+    { midi: 79, dur: 450 }, { midi: 81, dur: 250 }, { midi: 79, dur: 450 }, { midi: 84, dur: 650 },
+    { midi: 83, dur: 450 }, { midi: 81, dur: 450 }, { midi: 79, dur: 900 }
+  ];
+
+  recordedFrames = [];
+  let t = 0;
+  const stepMs = 20;
+  melodyNotes.forEach(n => {
+    const steps = Math.floor(n.dur / stepMs);
+    for (let s = 0; s < steps; s++) {
+      if (n.midi === 0) {
+        recordedFrames.push({ timeOffsetMs: t, rawMidi: -1, snappedMidi: -1, playedMidi: -1, rms: 0 });
+      } else {
+        // Add subtle realistic human whistle vibrato
+        const vib = Math.sin(t * 0.035) * 0.12;
+        recordedFrames.push({
+          timeOffsetMs: t,
+          rawMidi: n.midi + vib,
+          snappedMidi: n.midi,
+          playedMidi: n.midi + vib,
+          rms: 0.72
+        });
+      }
+      t += stepMs;
+    }
+  });
+
+  finalizeRecording();
+}
+
+// Offline WAV Renderer & Exporter
+async function exportRecordingWAV() {
+  if (recordedFrames.length === 0) return;
+  const durationSec = (recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000) + 1.5;
+  const sampleRate = 44100;
+  const offlineCtx = new OfflineAudioContext(2, Math.ceil(durationSec * sampleRate), sampleRate);
+
+  const scaleKey = document.getElementById("scaleSelect").value;
+  const snapMode = document.getElementById("snapMode").value;
+
+  // Render notes onto OfflineAudioContext
+  let prevMidi = -1;
+  for (let i = 0; i < recordedFrames.length; i++) {
+    const f = recordedFrames[i];
+    const nextF = recordedFrames[i + 1];
+    const dt = nextF ? Math.max(0.015, (nextF.timeOffsetMs - f.timeOffsetMs) / 1000) : 0.025;
+    const tSec = f.timeOffsetMs / 1000;
+
+    if (f.rawMidi > 0) {
+      const shifted = f.rawMidi + octaveShift * 12;
+      const playedMidi = snapMidiToScale(shifted, scaleKey, snapMode);
+      const freq = midiToFreq(playedMidi);
+
+      const osc = offlineCtx.createOscillator();
+      const gain = offlineCtx.createGain();
+      osc.type = currentInstrument.id === "flute" || currentInstrument.id === "harp" ? "sine" : "triangle";
+      osc.frequency.setValueAtTime(freq, tSec);
+
+      gain.gain.setValueAtTime(f.rms * 0.35, tSec);
+      gain.gain.linearRampToValueAtTime(0.0001, tSec + dt * 1.8);
+
+      osc.connect(gain);
+      gain.connect(offlineCtx.destination);
+      osc.start(tSec);
+      osc.stop(tSec + dt * 1.9);
+      prevMidi = Math.round(playedMidi);
+    }
+  }
+
+  const renderedBuffer = await offlineCtx.startRendering();
+  const wavBlob = audioBufferToWavBlob(renderedBuffer);
+  const url = URL.createObjectURL(wavBlob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `Jarvis_WhistleSynth_${currentInstrument.id}.wav`;
+  a.click();
+}
+
+function audioBufferToWavBlob(buffer) {
+  const numOfChan = buffer.numberOfChannels;
+  const length = buffer.length * numOfChan * 2 + 44;
+  const out = new ArrayBuffer(length);
+  const view = new DataView(out);
+  const channels = [];
+  let pos = 0;
+
+  function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+  function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+  setUint32(0x46464952); // "RIFF"
+  setUint32(length - 8);
+  setUint32(0x45564157); // "WAVE"
+  setUint32(0x20746d66); // "fmt "
+  setUint32(16);
+  setUint16(1);
+  setUint16(numOfChan);
+  setUint32(buffer.sampleRate);
+  setUint32(buffer.sampleRate * 2 * numOfChan);
+  setUint16(numOfChan * 2);
+  setUint16(16);
+  setUint32(0x61746164); // "data"
+  setUint32(length - pos - 4);
+
+  for (let i = 0; i < numOfChan; i++) channels.push(buffer.getChannelData(i));
+  let offset = 0;
+  while (pos < length) {
+    for (let i = 0; i < numOfChan; i++) {
+      let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+      sample = (sample < 0 ? sample * 32768 : sample * 32767) | 0;
+      view.setInt16(pos, sample, true);
+      pos += 2;
+    }
+    offset++;
+  }
+  return new Blob([out], { type: "audio/wav" });
+}
+
+// Standard MIDI File (.mid) Exporter
+function exportRecordingMIDI() {
+  if (recordedFrames.length === 0) return;
+  const scaleKey = document.getElementById("scaleSelect").value;
+
+  // Group frames into discrete MIDI note events
+  const events = [];
+  let activeNote = -1;
+  let lastTick = 0;
+  const msPerTick = 2; // 500 ticks per second
+
+  recordedFrames.forEach(f => {
+    const tick = Math.round(f.timeOffsetMs / msPerTick);
+    const note = f.rawMidi > 0 ? Math.round(snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, "strict")) : -1;
+    if (note !== activeNote) {
+      if (activeNote > 0) {
+        events.push({ delta: Math.max(0, tick - lastTick), type: 0x80, note: activeNote, vel: 0 });
+        lastTick = tick;
+      }
+      if (note > 0) {
+        events.push({ delta: Math.max(0, tick - lastTick), type: 0x90, note: note, vel: 96 });
+        lastTick = tick;
+      }
+      activeNote = note;
+    }
+  });
+  if (activeNote > 0) {
+    events.push({ delta: 100, type: 0x80, note: activeNote, vel: 0 });
+  }
+
+  function varLen(v) {
+    const bytes = [v & 0x7f];
+    while ((v >>= 7) > 0) bytes.unshift((v & 0x7f) | 0x80);
+    return bytes;
+  }
+
+  const track = [];
+  events.forEach(ev => {
+    track.push(...varLen(ev.delta), ev.type, ev.note & 0x7f, ev.vel & 0x7f);
+  });
+  track.push(0x00, 0xff, 0x2f, 0x00); // End of Track
+
+  const header = [
+    0x4d,0x54,0x68,0x64, 0x00,0x00,0x00,0x06,
+    0x00,0x00, 0x00,0x01, 0x00,0xf4,
+    0x4d,0x54,0x72,0x6b,
+    (track.length >> 24) & 0xff, (track.length >> 16) & 0xff,
+    (track.length >> 8) & 0xff, track.length & 0xff
+  ];
+
+  const midiBytes = new Uint8Array([...header, ...track]);
+  const blob = new Blob([midiBytes], { type: "audio/midi" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `Jarvis_Whistle_Melody.mid`;
+  a.click();
+}
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
