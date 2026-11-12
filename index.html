@@ -497,6 +497,92 @@
     font-size: 12.5px;
     line-height: 1.4;
   }
+
+  .btn-qr-link {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #ffffff;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .btn-qr-link:hover {
+    background: linear-gradient(135deg, #0369a1, #075985);
+    border-color: #38bdf8;
+    transform: translateY(-1px);
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  .modal-card {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-width: 420px;
+    width: 90%;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    text-align: center;
+  }
+  .modal-card h3 {
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .modal-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .modal-card img {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    background: #fff;
+    padding: 8px;
+    margin: 0 auto 16px auto;
+    display: block;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .modal-link-box {
+    background: #1e293b;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #38bdf8;
+    word-break: break-all;
+    margin-bottom: 14px;
+    user-select: all;
+  }
+  .modal-btn-close {
+    background: #334155;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .modal-btn-close:hover {
+    background: #475569;
+  }
 </style>
 </head>
 <body>
@@ -510,6 +596,7 @@
     </div>
   </div>
   <div class="status-bar">
+    <button class="btn-qr-link" onclick="openQrModal()" title="Open on Mobile / Outside Home">📱 Phone / Outdoor Access</button>
     <div class="badge" id="latencyBadge">⚡ Audio Latency: <span id="latencyVal">-- ms</span></div>
     <div class="badge">
       <div class="dot" id="statusDot"></div>
@@ -517,6 +604,23 @@
     </div>
   </div>
 </header>
+
+<!-- Modal QR Code -->
+<div class="modal-overlay" id="qrModal" onclick="if(event.target === this) closeQrModal()">
+  <div class="modal-card">
+    <h3>📱 Use Anywhere Outside (4G / Offline)</h3>
+    <p>Scan with your Redmi camera or Chrome to open the secure app on your phone:</p>
+    <img src="qr_whistle.png" alt="WhistleSynth Mobile QR Code">
+    <div class="modal-link-box">https://eric1ramaz-sys.github.io/whistle-synth/</div>
+    <p style="font-size:12px; color:#94a3b8; text-align:left; margin-bottom:14px;">
+      💡 <b>To install on your home screen:</b><br>
+      1. Open the link above in Chrome on your phone.<br>
+      2. Tap the 3 dots (⋮) &gt; <b>"Install app"</b> or <b>"Add to Home screen"</b>.<br>
+      3. It works 100% offline in the hills, car, or garden without Wi-Fi!
+    </p>
+    <button class="modal-btn-close" onclick="closeQrModal()">Close</button>
+  </div>
+</div>
 
 <div class="studio-grid">
 
@@ -946,10 +1050,13 @@ function updateVocalRange() {
 
 async function ensureAudioContext() {
   if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)({
-      latencyHint: "interactive",
-      sampleRate: 48000
-    });
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)({
+        latencyHint: "interactive"
+      });
+    } catch (e) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
 
     synthMasterGain = audioCtx.createGain();
     synthMasterGain.gain.value = masterVol;
@@ -1246,14 +1353,20 @@ async function startMicStream() {
   // Critical: disable aggressive noiseSuppression in Headphones mode so Chrome doesn't mute steady whistling!
   const constraints = {
     audio: {
-      deviceId: deviceId && deviceId !== "default" ? { exact: deviceId } : undefined,
+      deviceId: deviceId && deviceId !== "default" ? { ideal: deviceId } : undefined,
       echoCancellation: isSpeakers,
       noiseSuppression: isSpeakers,
       autoGainControl: false
     }
   };
 
-  micStream = await navigator.mediaDevices.getUserMedia(constraints);
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia(constraints);
+  } catch (err) {
+    console.warn("Targeted audio constraints failed, falling back to basic audio", err);
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  }
+
   enumerateMics(); // Refresh labels after permission granted
 
   micSource = audioCtx.createMediaStreamSource(micStream);
@@ -1890,6 +2003,14 @@ function exportRecordingMIDI() {
   a.href = url;
   a.download = `Jarvis_Whistle_Melody.mid`;
   a.click();
+}
+
+function openQrModal() {
+  document.getElementById("qrModal").style.display = "flex";
+}
+
+function closeQrModal() {
+  document.getElementById("qrModal").style.display = "none";
 }
 
 if ("serviceWorker" in navigator) {

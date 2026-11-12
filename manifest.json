@@ -3,6 +3,7 @@
   "short_name": "WhistleSynth",
   "description": "Real-Time Whistle & Hum to Musical Orchestra",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0b0f17",
   "theme_color": "#0b0f17",
