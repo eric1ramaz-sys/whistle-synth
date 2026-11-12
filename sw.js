@@ -1,4 +1,4 @@
-const CACHE_NAME = 'whistlesynth-v2';
+const CACHE_NAME = 'whistlesynth-v3';
 const ASSETS = [
   './',
   './index.html',

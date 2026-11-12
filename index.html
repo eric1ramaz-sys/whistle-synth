@@ -583,6 +583,75 @@
   .modal-btn-close:hover {
     background: #475569;
   }
+
+  .vu-container {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .vu-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .vu-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: #1e293b;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .vu-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #64748b;
+    transition: width 0.05s linear;
+  }
+  .vu-bar-fill.active {
+    background: linear-gradient(90deg, #10b981, #38bdf8);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+  }
+  .btn-test-sound {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+    transition: all 0.15s ease;
+  }
+  .btn-test-sound:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #34d399;
+  }
+  .btn-clean-reload {
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-clean-reload:hover {
+    background: #334155;
+    color: #fff;
+  }
 </style>
 </head>
 <body>
@@ -591,13 +660,14 @@
   <div class="brand">
     <div class="brand-icon">🎶</div>
     <div>
-      <h1>Jarvis WhistleSynth Studio</h1>
+      <h1>Jarvis WhistleSynth Studio <span style="font-size:11px; color:#38bdf8; font-weight:normal; background:rgba(56,189,248,0.15); padding:2px 8px; border-radius:12px; margin-left:6px;">v2.1 Outdoor</span></h1>
       <p>Real-Time Whistle & Hum to Musical Orchestra — Zero Cloud Delay</p>
     </div>
   </div>
   <div class="status-bar">
+    <button class="btn-clean-reload" onclick="forceCleanReload()" title="Force update to newest version">🔄 Clear Cache & Reload</button>
     <button class="btn-qr-link" onclick="openQrModal()" title="Open on Mobile / Outside Home">📱 Phone / Outdoor Access</button>
-    <div class="badge" id="latencyBadge">⚡ Audio Latency: <span id="latencyVal">-- ms</span></div>
+    <div class="badge" id="latencyBadge">⚡ Latency: <span id="latencyVal">-- ms</span></div>
     <div class="badge">
       <div class="dot" id="statusDot"></div>
       <span id="statusText">Mic Standby</span>
@@ -640,6 +710,22 @@
       <button class="btn-big btn-record" id="btnRecord" onclick="toggleRecord()">
         <span id="recIcon">🔴</span>
         <span id="recLabel">Record Melody (No Delay)</span>
+      </button>
+
+      <!-- Live Mic Input VU Meter -->
+      <div class="vu-container">
+        <div class="vu-header">
+          <span>🎙️ Live Mic Sound Level</span>
+          <span id="vuValText">0% (Standby)</span>
+        </div>
+        <div class="vu-bar-bg">
+          <div class="vu-bar-fill" id="vuBarFill"></div>
+        </div>
+      </div>
+
+      <!-- Quick Speaker Check -->
+      <button class="btn-test-sound" onclick="testPhoneSpeaker()" title="Play a test note to confirm phone speaker works">
+        🔊 Tap to Test Phone Speaker
       </button>
     </div>
 
@@ -927,7 +1013,7 @@ const INSTRUMENTS = [
 // State
 let currentInstrument = INSTRUMENTS[0];
 let octaveShift = -2;
-let gateThreshold = 0.018;
+let gateThreshold = 0.005;
 let masterVol = 0.85;
 let reverbWet = 0.35;
 
@@ -935,6 +1021,7 @@ let audioCtx = null;
 let micStream = null;
 let analyser = null;
 let micSource = null;
+let audioSinkGain = null;
 let isLive = false;
 let isRecording = false;
 let isPlayingRecorded = false;
@@ -1347,16 +1434,17 @@ async function startMicStream() {
     micStream.getTracks().forEach(t => t.stop());
   }
 
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
   const deviceId = document.getElementById("micSelect").value;
-  const isSpeakers = document.getElementById("acousticMode").value === "speakers";
+  const isSpeakers = document.getElementById("acousticMode").value === "speakers" || isMobile;
 
-  // Critical: disable aggressive noiseSuppression in Headphones mode so Chrome doesn't mute steady whistling!
+  // On mobile/speakers, echoCancellation prevents speaker loop; autoGainControl ensures soft whistles are heard
   const constraints = {
     audio: {
       deviceId: deviceId && deviceId !== "default" ? { ideal: deviceId } : undefined,
       echoCancellation: isSpeakers,
-      noiseSuppression: isSpeakers,
-      autoGainControl: false
+      noiseSuppression: false,
+      autoGainControl: isMobile ? true : !isSpeakers
     }
   };
 
@@ -1367,12 +1455,26 @@ async function startMicStream() {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
   }
 
+  // Ensure AudioContext is resumed in case Android OS suspended it during the permission prompt
+  if (audioCtx.state === "suspended") {
+    await audioCtx.resume();
+  }
+
   enumerateMics(); // Refresh labels after permission granted
 
   micSource = audioCtx.createMediaStreamSource(micStream);
   analyser = audioCtx.createAnalyser();
   analyser.fftSize = 2048;
   micSource.connect(analyser);
+
+  // FIX CHROMIUM MOBILE MIC PULL BUG:
+  // On Android Chrome, AnalyserNode does NOT pull microphone buffers unless connected to destination!
+  if (!audioSinkGain) {
+    audioSinkGain = audioCtx.createGain();
+    audioSinkGain.gain.value = 0.0;
+    audioSinkGain.connect(audioCtx.destination);
+  }
+  analyser.connect(audioSinkGain);
 }
 
 async function changeMicrophone() {
@@ -1453,6 +1555,7 @@ function detectPitchYIN(buf, sampleRate, minFreq, maxFreq) {
     sumSq += buf[i] * buf[i];
   }
   const rms = Math.sqrt(sumSq / buf.length);
+  updateLiveVuMeter(rms);
   if (rms < gateThreshold) {
     return { freq: -1, rms };
   }
@@ -2005,6 +2108,86 @@ function exportRecordingMIDI() {
   a.click();
 }
 
+function updateLiveVuMeter(rms) {
+  const bar = document.getElementById("vuBarFill");
+  const val = document.getElementById("vuValText");
+  if (!bar || !val) return;
+  if (rms <= 0) {
+    bar.style.width = "0%";
+    bar.className = "vu-bar-fill";
+    val.textContent = "0% (Standby)";
+    val.style.color = "#94a3b8";
+    return;
+  }
+  const pct = Math.min(100, Math.max(1, Math.round((rms / 0.05) * 100)));
+  bar.style.width = pct + "%";
+  if (rms >= gateThreshold) {
+    bar.className = "vu-bar-fill active";
+    val.textContent = `${pct}% (Sound Detected)`;
+    val.style.color = "#34d399";
+  } else {
+    bar.className = "vu-bar-fill";
+    val.textContent = `${pct}% (Below Gate)`;
+    val.style.color = "#94a3b8";
+  }
+}
+
+async function testPhoneSpeaker() {
+  try {
+    await ensureAudioContext();
+    if (audioCtx.state === "suspended") {
+      await audioCtx.resume();
+    }
+    updateStatusBadge(`🔊 Testing ${currentInstrument.name}...`, "live");
+
+    if (currentInstrument.type === "continuous") {
+      const v = createContinuousVoice(currentInstrument.id, 220);
+      v.setPitchAndDynamics(220, 0.85);
+      setTimeout(() => {
+        v.release();
+        if (!isLive && !isRecording) updateStatusBadge("Mic Standby", "");
+      }, 1000);
+    } else {
+      triggerPercussiveNote(currentInstrument.id, 261.63, 0.85);
+      setTimeout(() => triggerPercussiveNote(currentInstrument.id, 329.63, 0.85), 250);
+      setTimeout(() => {
+        triggerPercussiveNote(currentInstrument.id, 392.00, 0.85);
+        if (!isLive && !isRecording) updateStatusBadge("Mic Standby", "");
+      }, 500);
+    }
+  } catch (err) {
+    alert("Audio context error: " + err.message);
+  }
+}
+
+async function forceCleanReload() {
+  try {
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      for (const key of keys) {
+        await caches.delete(key);
+      }
+    }
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const reg of registrations) {
+        await reg.unregister();
+      }
+    }
+  } catch (e) {}
+  window.location.reload(true);
+}
+
+// Global Touch / Click Audio Unlock for Mobile Browsers
+const unlockAudio = async () => {
+  if (audioCtx && audioCtx.state === "suspended") {
+    try { await audioCtx.resume(); } catch(e){}
+  }
+};
+['touchstart', 'touchend', 'click'].forEach(evt => {
+  window.addEventListener(evt, unlockAudio, { passive: true });
+});
+
 function openQrModal() {
   document.getElementById("qrModal").style.display = "flex";
 }
@@ -2015,7 +2198,20 @@ function closeQrModal() {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
+    navigator.serviceWorker.register("./sw.js").then(reg => {
+      reg.update();
+      reg.onupdatefound = () => {
+        const installingWorker = reg.installing;
+        if (installingWorker) {
+          installingWorker.onstatechange = () => {
+            if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+              console.log("New version of WhistleSynth installed. Reloading...");
+              window.location.reload();
+            }
+          };
+        }
+      };
+    }).catch(() => {});
   });
 }
 </script>
