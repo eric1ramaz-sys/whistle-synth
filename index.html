@@ -411,7 +411,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     overflow-y: auto;
-    max-height: 520px;
+    max-height: 560px;
     padding-right: 4px;
   }
 
@@ -652,6 +652,131 @@
     background: #334155;
     color: #fff;
   }
+
+  /* Tidy & Interactive Note Editor */
+  .tidy-box {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-tidy {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3);
+  }
+  .btn-tidy:hover:not(:disabled) {
+    filter: brightness(1.12);
+    border-color: transparent;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    transform: translateY(-1px);
+  }
+
+  .note-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 230px;
+    overflow-y: auto;
+    padding: 4px 2px;
+  }
+
+  .note-strip-empty {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 6px 2px;
+    line-height: 1.4;
+  }
+
+  .note-chip {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    transition: border-color 0.15s ease;
+  }
+  .note-chip:hover {
+    border-color: var(--accent);
+  }
+  .note-chip.suspect {
+    border-color: var(--gold);
+    background: rgba(245, 158, 11, 0.14);
+  }
+
+  .note-play-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0 2px;
+    font-family: inherit;
+  }
+  .note-play-btn:hover .note-name-txt {
+    color: var(--accent);
+  }
+  .note-num-txt {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .note-name-txt {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--emerald);
+  }
+  .note-chip.suspect .note-name-txt {
+    color: #fbbf24;
+  }
+  .note-dur-txt {
+    font-size: 10.5px;
+    color: var(--text-muted);
+  }
+
+  .note-actions {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .note-act-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #0f172a;
+    color: var(--text-main);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+  }
+  .note-act-btn:hover {
+    border-color: var(--accent);
+    background: rgba(56, 189, 248, 0.16);
+  }
+  .note-act-btn.del {
+    color: #fda4af;
+    border-color: rgba(244, 63, 94, 0.35);
+  }
+  .note-act-btn.del:hover {
+    background: rgba(244, 63, 94, 0.25);
+    border-color: var(--rose);
+    color: #ffffff;
+  }
 </style>
 </head>
 <body>
@@ -660,7 +785,7 @@
   <div class="brand">
     <div class="brand-icon">🎶</div>
     <div>
-      <h1>Jarvis WhistleSynth Studio <span style="font-size:11px; color:#38bdf8; font-weight:normal; background:rgba(56,189,248,0.15); padding:2px 8px; border-radius:12px; margin-left:6px;">v2.1 Outdoor</span></h1>
+      <h1>Jarvis WhistleSynth Studio <span style="font-size:11px; color:#38bdf8; font-weight:normal; background:rgba(56,189,248,0.15); padding:2px 8px; border-radius:12px; margin-left:6px;">v2.2 Studio &amp; Tidy</span></h1>
       <p>Real-Time Whistle & Hum to Musical Orchestra — Zero Cloud Delay</p>
     </div>
   </div>
@@ -743,6 +868,14 @@
         </button>
       </div>
       <div class="btn-row">
+        <button class="btn-secondary btn-tidy" id="btnAutoTidy" onclick="autoTidyMelody()" disabled title="Remove short squeaks and tune shaky notes automatically">
+          ✨ Tidy Up Melody (Auto-Clean)
+        </button>
+        <button class="btn-secondary" id="btnUndoTidy" onclick="restoreOriginalMelody()" disabled title="Undo last cleanup or restore original whistle">
+          ↩️ Undo / Restore Original
+        </button>
+      </div>
+      <div class="btn-row">
         <button class="btn-secondary" id="btnExportWav" onclick="exportRecordingWAV()" disabled>
           💾 Save Audio (.WAV)
         </button>
@@ -753,6 +886,23 @@
       <button class="btn-secondary" onclick="loadDemoMelody()">
         ✨ Load Demo Whistle Tune (Test Orchestra)
       </button>
+    </div>
+
+    <div class="tidy-box">
+      <div class="control-label">
+        <span>🧹 Tidy &amp; Edit Notes</span>
+        <span class="val" id="noteCountLabel">0 Notes</span>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span>Glitch / Squeak Filter Threshold</span>
+          <span class="val" id="glitchMsLabel">110 ms</span>
+        </div>
+        <input type="range" id="glitchMsSlider" min="60" max="250" step="10" value="110" oninput="updateGlitchThreshold(this.value)">
+      </div>
+      <div class="note-strip" id="noteEditorList">
+        <div class="note-strip-empty">Record a whistle melody (or click Load Demo) to preview, tune (▼/▲), or delete (🗑️) individual bad notes.</div>
+      </div>
     </div>
 
     <div class="control-group">
@@ -793,7 +943,7 @@
     </div>
 
     <div class="tip-banner">
-      💡 <strong>Tip for Eric:</strong> In <em>Record Melody</em> mode, you can whistle freely without any speaker echo, then click any instrument on the right to hear your melody transformed!
+      💡 <strong>Tip for Eric:</strong> In <em>Record Melody</em> mode, whistle freely, click <strong>✨ Tidy Up Melody</strong> to clear glitches &amp; tune shaky notes, or tap 🗑️ on any bad note below!
     </div>
   </div>
 
@@ -919,6 +1069,24 @@ const SCALES = {
 
 const INSTRUMENTS = [
   {
+    id: "electric_lead",
+    name: "Electric Lead Guitar",
+    emoji: "⚡",
+    desc: "Singing overdriven tube-amp solo guitar with sustain & vibrato.",
+    tag: "Rock / Solo Sustained",
+    defaultOctave: -2,
+    type: "continuous"
+  },
+  {
+    id: "electric_clean",
+    name: "Clean Electric Guitar",
+    emoji: "🎸",
+    desc: "Crisp Fender-style plucked electric guitar with warm chorus shimmer.",
+    tag: "Note Triggered",
+    defaultOctave: -2,
+    type: "percussive"
+  },
+  {
     id: "cello",
     name: "Solo Cello",
     emoji: "🎻",
@@ -964,6 +1132,33 @@ const INSTRUMENTS = [
     type: "continuous"
   },
   {
+    id: "trumpet",
+    name: "Warm Jazz Trumpet",
+    emoji: "🎺",
+    desc: "Expressive brass horn that brightens dynamically with your breath.",
+    tag: "Expressive Continuous",
+    defaultOctave: -2,
+    type: "continuous"
+  },
+  {
+    id: "harmonica",
+    name: "Blues Harmonica",
+    emoji: "🎶",
+    desc: "Breathy reed harmonica with tremolo warble & warm grit.",
+    tag: "Expressive Continuous",
+    defaultOctave: -1,
+    type: "continuous"
+  },
+  {
+    id: "bagpipes",
+    name: "Highland Bagpipes",
+    emoji: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    desc: "Authentic Scottish chanter reed with continuous fifth & octave drones.",
+    tag: "Scotland Special",
+    defaultOctave: -1,
+    type: "continuous"
+  },
+  {
     id: "piano",
     name: "Concert Grand Piano",
     emoji: "🎹",
@@ -977,6 +1172,15 @@ const INSTRUMENTS = [
     name: "Spanish Nylon Guitar",
     emoji: "🎸",
     desc: "Warm acoustic plucked strings with wooden body resonance.",
+    tag: "Note Triggered",
+    defaultOctave: -2,
+    type: "percussive"
+  },
+  {
+    id: "bass",
+    name: "Studio Electric Bass",
+    emoji: "🎸",
+    desc: "Deep, punchy electric bass guitar pluck with rich low fundamental.",
     tag: "Note Triggered",
     defaultOctave: -2,
     type: "percussive"
@@ -1040,8 +1244,11 @@ let smoothedFreq = 0;
 const pitchHistory = [];
 const MAX_HISTORY = 280;
 
-// Recorded Melody frames: { timeOffsetMs, rawHz, snappedMidi, rms }
+// Recorded Melody frames: { timeOffsetMs, rawMidi, snappedMidi, playedMidi, rms }
 let recordedFrames = [];
+let originalRecordedFrames = [];
+let undoStack = [];
+let glitchThresholdMs = 110;
 let recordStartTime = 0;
 let playbackTimerIds = [];
 
@@ -1094,6 +1301,10 @@ function setOctave(oct) {
   });
   document.getElementById("octaveShiftInfo").textContent =
     `Octave Shift: ${oct > 0 ? "+" + oct : oct} (${oct === 0 ? "Same pitch" : (oct < 0 ? Math.abs(oct) + " oct lower" : oct + " oct higher")})`;
+  if (recordedFrames.length > 0) {
+    renderNoteEditor();
+    if (!isLive && !isRecording && !isPlayingRecorded) syncPianoRollFromRecorded();
+  }
 }
 
 function updateGate(val) {
@@ -1125,6 +1336,10 @@ function updateSnapInfo() {
   document.getElementById("pitchSnapInfo").textContent =
     snap === "magnetic" ? "Magnetic Snap" : (snap === "strict" ? "Strict Note Lock" : "Natural Slide");
   document.getElementById("scaleStatusLabel").textContent = "Scale: " + scale;
+  if (recordedFrames.length > 0) {
+    renderNoteEditor();
+    if (!isLive && !isRecording && !isPlayingRecorded) syncPianoRollFromRecorded();
+  }
 }
 
 function updateVocalRange() {
@@ -1185,23 +1400,39 @@ function createConcertHallReverb(ctx, duration, decay) {
   return convolver;
 }
 
-// Create Expressive Continuous Voice (Cello, Violin, Flute, Shakuhachi, Sax, Organ, Vangelis)
-function createContinuousVoice(instId, initialFreq) {
-  const now = audioCtx.currentTime;
-  const voiceGain = audioCtx.createGain();
-  voiceGain.gain.setValueAtTime(0.0001, now);
-  voiceGain.connect(synthMasterGain);
+function makeDistortionCurve(drive = 6.0) {
+  const nSamples = 8192;
+  const curve = new Float32Array(nSamples);
+  const norm = Math.tanh(drive) || 1;
+  for (let i = 0; i < nSamples; i++) {
+    const x = (i * 2) / (nSamples - 1) - 1;
+    curve[i] = Math.tanh(x * drive) / norm;
+  }
+  return curve;
+}
 
-  const osc1 = audioCtx.createOscillator();
-  const osc2 = audioCtx.createOscillator();
-  const subOsc = audioCtx.createOscillator();
-  const filter = audioCtx.createBiquadFilter();
+// Create Expressive Continuous Voice (Live or OfflineAudioContext)
+function createContinuousVoice(instId, initialFreq, ctx = audioCtx, dest = synthMasterGain, startTime = null) {
+  const now = startTime !== null ? startTime : ctx.currentTime;
+  const voiceGain = ctx.createGain();
+  voiceGain.gain.setValueAtTime(0.0001, now);
+  voiceGain.connect(dest);
+
+  const osc1 = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const subOsc = ctx.createOscillator();
+  const filter = ctx.createBiquadFilter();
 
   // Natural gentle vibrato LFO
-  const lfo = audioCtx.createOscillator();
-  const lfoGain = audioCtx.createGain();
-  lfo.frequency.value = 5.5;
-  lfoGain.gain.value = instId === "violin" || instId === "cello" ? 3.2 : (instId === "shakuhachi" ? 4.5 : 1.5);
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.frequency.value = instId === "electric_lead" ? 5.8 : (instId === "harmonica" ? 6.5 : 5.5);
+  lfoGain.gain.value =
+    instId === "violin" || instId === "cello" ? 3.2 :
+    instId === "shakuhachi" ? 4.5 :
+    instId === "electric_lead" ? 4.0 :
+    instId === "harmonica" ? 3.6 :
+    instId === "bagpipes" ? 0.6 : 1.5;
   lfo.connect(lfoGain);
   lfoGain.connect(osc1.frequency);
   lfoGain.connect(osc2.frequency);
@@ -1210,20 +1441,20 @@ function createContinuousVoice(instId, initialFreq) {
   let noiseSource = null;
   let noiseGain = null;
   if (instId === "flute" || instId === "shakuhachi") {
-    const bufSize = audioCtx.sampleRate * 2;
-    const noiseBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const bufSize = ctx.sampleRate * 2;
+    const noiseBuf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
     const out = noiseBuf.getChannelData(0);
     for (let i = 0; i < bufSize; i++) out[i] = Math.random() * 2 - 1;
-    noiseSource = audioCtx.createBufferSource();
+    noiseSource = ctx.createBufferSource();
     noiseSource.buffer = noiseBuf;
     noiseSource.loop = true;
 
-    const noiseFilter = audioCtx.createBiquadFilter();
+    const noiseFilter = ctx.createBiquadFilter();
     noiseFilter.type = "bandpass";
     noiseFilter.frequency.value = instId === "shakuhachi" ? 1400 : 2200;
     noiseFilter.Q.value = 2.5;
 
-    noiseGain = audioCtx.createGain();
+    noiseGain = ctx.createGain();
     noiseGain.gain.value = instId === "shakuhachi" ? 0.14 : 0.06;
 
     noiseSource.connect(noiseFilter);
@@ -1232,8 +1463,64 @@ function createContinuousVoice(instId, initialFreq) {
     noiseSource.start(now);
   }
 
+  // Optional Highland Bagpipes Drones (A2 + A3 fifth/octave drone bed)
+  let droneOsc1 = null;
+  let droneOsc2 = null;
+  if (instId === "bagpipes") {
+    droneOsc1 = ctx.createOscillator();
+    droneOsc2 = ctx.createOscillator();
+    droneOsc1.type = "sawtooth";
+    droneOsc2.type = "sawtooth";
+    droneOsc1.frequency.setValueAtTime(110, now); // A2 bass drone
+    droneOsc2.frequency.setValueAtTime(220, now); // A3 tenor drone
+
+    const droneFilter = ctx.createBiquadFilter();
+    droneFilter.type = "lowpass";
+    droneFilter.frequency.value = 950;
+    droneFilter.Q.value = 1.4;
+
+    const droneGain = ctx.createGain();
+    droneGain.gain.value = 0.16;
+
+    droneOsc1.connect(droneFilter);
+    droneOsc2.connect(droneFilter);
+    droneFilter.connect(droneGain);
+    droneGain.connect(voiceGain);
+
+    droneOsc1.start(now);
+    droneOsc2.start(now);
+  }
+
   // Configure Timbre per Instrument
-  if (instId === "cello") {
+  if (instId === "electric_lead") {
+    osc1.type = "sawtooth";
+    osc2.type = "square";
+    subOsc.type = "triangle";
+    filter.type = "lowpass";
+    filter.frequency.value = 2400;
+    filter.Q.value = 2.4;
+  } else if (instId === "bagpipes") {
+    osc1.type = "sawtooth";
+    osc2.type = "square";
+    subOsc.type = "triangle";
+    filter.type = "bandpass";
+    filter.frequency.value = 2100;
+    filter.Q.value = 1.2;
+  } else if (instId === "harmonica") {
+    osc1.type = "sawtooth";
+    osc2.type = "triangle";
+    subOsc.type = "sine";
+    filter.type = "lowpass";
+    filter.frequency.value = 1950;
+    filter.Q.value = 2.5;
+  } else if (instId === "trumpet") {
+    osc1.type = "sawtooth";
+    osc2.type = "triangle";
+    subOsc.type = "sine";
+    filter.type = "lowpass";
+    filter.frequency.value = 1500;
+    filter.Q.value = 1.8;
+  } else if (instId === "cello") {
     osc1.type = "sawtooth";
     osc2.type = "triangle";
     subOsc.type = "sine";
@@ -1283,21 +1570,41 @@ function createContinuousVoice(instId, initialFreq) {
     filter.Q.value = 1.6;
   }
 
-  const osc2Gain = audioCtx.createGain();
-  osc2Gain.gain.value = instId === "vangelis" || instId === "violin" ? 0.55 : 0.35;
+  const osc2Gain = ctx.createGain();
+  osc2Gain.gain.value =
+    instId === "vangelis" || instId === "violin" ? 0.55 :
+    instId === "electric_lead" ? 0.45 : 0.35;
 
-  const subGain = audioCtx.createGain();
-  subGain.gain.value = instId === "organ" || instId === "cello" ? 0.5 : 0.2;
+  const subGain = ctx.createGain();
+  subGain.gain.value = instId === "organ" || instId === "cello" ? 0.5 : (instId === "electric_lead" ? 0.25 : 0.2);
 
   osc1.frequency.setValueAtTime(initialFreq, now);
   osc2.frequency.setValueAtTime(initialFreq * (instId === "organ" ? 2.0 : 1.004), now);
   subOsc.frequency.setValueAtTime(initialFreq * 0.5, now);
 
-  osc1.connect(filter);
-  osc2.connect(osc2Gain);
-  osc2Gain.connect(filter);
-  subOsc.connect(subGain);
-  subGain.connect(filter);
+  // Route through preamp waveshaper before cabinet filter for Electric Lead Guitar & Harmonica
+  if (instId === "electric_lead" || instId === "harmonica") {
+    const preDrive = ctx.createGain();
+    preDrive.gain.value = instId === "electric_lead" ? 0.85 : 0.55;
+    const shaper = ctx.createWaveShaper();
+    shaper.curve = makeDistortionCurve(instId === "electric_lead" ? 8.5 : 2.6);
+    shaper.oversample = "4x";
+
+    osc1.connect(preDrive);
+    osc2.connect(osc2Gain);
+    osc2Gain.connect(preDrive);
+    subOsc.connect(subGain);
+    subGain.connect(preDrive);
+
+    preDrive.connect(shaper);
+    shaper.connect(filter);
+  } else {
+    osc1.connect(filter);
+    osc2.connect(osc2Gain);
+    osc2Gain.connect(filter);
+    subOsc.connect(subGain);
+    subGain.connect(filter);
+  }
   filter.connect(voiceGain);
 
   osc1.start(now);
@@ -1312,23 +1619,48 @@ function createContinuousVoice(instId, initialFreq) {
     subOsc,
     lfo,
     noiseSource,
+    droneOsc1,
+    droneOsc2,
     filter,
     voiceGain,
-    setPitchAndDynamics(freq, dynamics) {
-      const t = audioCtx.currentTime;
+    setPitchAndDynamics(freq, dynamics, atTime = null) {
+      const t = atTime !== null ? atTime : ctx.currentTime;
       osc1.frequency.setTargetAtTime(freq, t, 0.018);
       osc2.frequency.setTargetAtTime(freq * (instId === "organ" ? 2.0 : 1.004), t, 0.018);
       subOsc.frequency.setTargetAtTime(freq * 0.5, t, 0.018);
 
       // Expressive filter opening with louder breath
-      const baseCut = instId === "cello" ? 800 : (instId === "saxophone" ? 1100 : 1600);
-      filter.frequency.setTargetAtTime(baseCut + dynamics * 1800, t, 0.03);
+      const baseCut =
+        instId === "cello" ? 800 :
+        instId === "trumpet" ? 900 :
+        instId === "saxophone" ? 1100 :
+        instId === "harmonica" ? 1300 :
+        instId === "electric_lead" ? 1500 :
+        instId === "bagpipes" ? 1900 : 1600;
+      const sweep = instId === "trumpet" ? 2500 : (instId === "electric_lead" ? 1400 : 1800);
+      filter.frequency.setTargetAtTime(baseCut + dynamics * sweep, t, 0.03);
 
-      const targetGain = Math.min(0.85, Math.max(0.05, dynamics * 1.1));
+      const maxVoice = instId === "electric_lead" ? 0.65 : 0.85;
+      const targetGain = Math.min(maxVoice, Math.max(0.05, dynamics * 1.1));
       voiceGain.gain.setTargetAtTime(targetGain, t, 0.025);
     },
-    stop() {
-      const t = audioCtx.currentTime;
+    stop(atTime = null) {
+      if (atTime !== null) {
+        // Offline deterministic stop
+        voiceGain.gain.setTargetAtTime(0.0001, atTime, 0.03);
+        const stopAt = atTime + 0.12;
+        try {
+          osc1.stop(stopAt);
+          osc2.stop(stopAt);
+          subOsc.stop(stopAt);
+          lfo.stop(stopAt);
+          if (noiseSource) noiseSource.stop(stopAt);
+          if (droneOsc1) droneOsc1.stop(stopAt);
+          if (droneOsc2) droneOsc2.stop(stopAt);
+        } catch(e) {}
+        return;
+      }
+      const t = ctx.currentTime;
       voiceGain.gain.setTargetAtTime(0.0001, t, 0.04);
       setTimeout(() => {
         try {
@@ -1337,6 +1669,8 @@ function createContinuousVoice(instId, initialFreq) {
           subOsc.stop();
           lfo.stop();
           if (noiseSource) noiseSource.stop();
+          if (droneOsc1) droneOsc1.stop();
+          if (droneOsc2) droneOsc2.stop();
           voiceGain.disconnect();
         } catch(e) {}
       }, 180);
@@ -1351,24 +1685,47 @@ function stopContinuousVoice() {
   }
 }
 
-// Trigger Percussive / Plucked Note (Grand Piano, Acoustic Guitar, Celtic Harp)
-function triggerPercussiveNote(instId, freq, velocity) {
-  if (!audioCtx) return;
-  const now = audioCtx.currentTime;
-  const noteGain = audioCtx.createGain();
-  noteGain.connect(synthMasterGain);
+// Trigger Percussive / Plucked Note (Clean Electric Guitar, Piano, Acoustic Guitar, Bass, Harp)
+function triggerPercussiveNote(instId, freq, velocity, ctx = audioCtx, dest = synthMasterGain, startTime = null) {
+  if (!ctx || !dest) return;
+  const now = startTime !== null ? startTime : ctx.currentTime;
+  const noteGain = ctx.createGain();
+  noteGain.connect(dest);
 
-  const osc1 = audioCtx.createOscillator();
-  const osc2 = audioCtx.createOscillator();
-  const filter = audioCtx.createBiquadFilter();
+  const osc1 = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const filter = ctx.createBiquadFilter();
   filter.type = "lowpass";
 
   let decayTime = 1.6;
-  if (instId === "piano") {
+  let osc2Mult = 2.0;
+  let overtoneStart = 0.15;
+  let overtoneEnd = 0.001;
+
+  if (instId === "electric_clean") {
+    osc1.type = "sawtooth";
+    osc2.type = "triangle";
+    osc2Mult = 1.003; // Warm chorus shimmer
+    filter.frequency.setValueAtTime(3600, now);
+    filter.frequency.exponentialRampToValueAtTime(650, now + 1.8);
+    overtoneStart = 0.45;
+    overtoneEnd = 0.05;
+    decayTime = 2.0;
+  } else if (instId === "bass") {
+    osc1.type = "triangle";
+    osc2.type = "sine";
+    osc2Mult = 0.5; // Rich sub-fundamental octave below
+    filter.frequency.setValueAtTime(1400, now);
+    filter.frequency.exponentialRampToValueAtTime(180, now + 1.1);
+    overtoneStart = 0.55;
+    overtoneEnd = 0.04;
+    decayTime = 1.4;
+  } else if (instId === "piano") {
     osc1.type = "triangle";
     osc2.type = "sawtooth";
     filter.frequency.setValueAtTime(3200, now);
     filter.frequency.exponentialRampToValueAtTime(450, now + 1.4);
+    overtoneStart = 0.22;
     decayTime = 1.8;
   } else if (instId === "guitar") {
     osc1.type = "sawtooth";
@@ -1385,11 +1742,11 @@ function triggerPercussiveNote(instId, freq, velocity) {
   }
 
   osc1.frequency.setValueAtTime(freq, now);
-  osc2.frequency.setValueAtTime(freq * 2.0, now); // Harmonic overtone
+  osc2.frequency.setValueAtTime(freq * osc2Mult, now);
 
-  const overtoneGain = audioCtx.createGain();
-  overtoneGain.gain.setValueAtTime(instId === "piano" ? 0.22 : 0.15, now);
-  overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + decayTime * 0.4);
+  const overtoneGain = ctx.createGain();
+  overtoneGain.gain.setValueAtTime(overtoneStart, now);
+  overtoneGain.gain.exponentialRampToValueAtTime(overtoneEnd, now + decayTime * 0.65);
 
   const peakGain = Math.min(0.85, Math.max(0.18, velocity));
   noteGain.gain.setValueAtTime(0.001, now);
@@ -1854,23 +2211,370 @@ function drawPianoRoll(canvas, ctx) {
 }
 
 // ============================================================================
-// RECORDED MELODY PLAYBACK, DEMO & EXPORT (WAV / MIDI)
+// RECORDED MELODY PLAYBACK, TIDY UP, NOTE EDITOR, DEMO & EXPORT (WAV / MIDI)
 // ============================================================================
 
-function finalizeRecording() {
+function pushUndoState() {
+  undoStack.push(recordedFrames.map(f => ({ ...f })));
+  if (undoStack.length > 25) undoStack.shift();
+  const btnUndo = document.getElementById("btnUndoTidy");
+  if (btnUndo) btnUndo.disabled = false;
+}
+
+function updateGlitchThreshold(val) {
+  glitchThresholdMs = parseInt(val, 10) || 110;
+  document.getElementById("glitchMsLabel").textContent = glitchThresholdMs + " ms";
+  if (recordedFrames.length > 0) renderNoteEditor();
+}
+
+function finalizeRecording(isNewCapture = true) {
   const activeCount = recordedFrames.filter(f => f.rawMidi > 0).length;
   if (activeCount < 5) {
     document.getElementById("recDuration").textContent = "No whistle detected";
     return;
   }
-  const totalSec = (recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000).toFixed(1);
-  document.getElementById("recDuration").textContent = `${totalSec}s Ready!`;
-  document.getElementById("btnPlayRec").disabled = false;
-  document.getElementById("btnStopRec").disabled = false;
-  document.getElementById("btnExportWav").disabled = false;
-  document.getElementById("btnExportMidi").disabled = false;
-
+  if (isNewCapture) {
+    originalRecordedFrames = recordedFrames.map(f => ({ ...f }));
+    undoStack = [];
+    document.getElementById("btnUndoTidy").disabled = true;
+  }
+  refreshRecordedUI();
   // Automatically play back the recorded whistle on the chosen instrument!
+  playRecordedMelody();
+}
+
+function refreshRecordedUI(statusNote = "") {
+  const hasFrames = recordedFrames.some(f => f.rawMidi > 0);
+  document.getElementById("btnPlayRec").disabled = !hasFrames;
+  document.getElementById("btnStopRec").disabled = !hasFrames;
+  document.getElementById("btnAutoTidy").disabled = !hasFrames;
+  document.getElementById("btnExportWav").disabled = !hasFrames;
+  document.getElementById("btnExportMidi").disabled = !hasFrames;
+
+  if (!hasFrames) {
+    document.getElementById("recDuration").textContent = "0.0s (Empty)";
+  } else {
+    const totalSec = (recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000).toFixed(1);
+    document.getElementById("recDuration").textContent = statusNote ? `${totalSec}s — ${statusNote}` : `${totalSec}s Ready!`;
+  }
+  renderNoteEditor();
+  if (!isLive && !isRecording && !isPlayingRecorded) {
+    syncPianoRollFromRecorded();
+  }
+}
+
+function syncPianoRollFromRecorded() {
+  pitchHistory.length = 0;
+  if (recordedFrames.length === 0) return;
+  const scaleKey = document.getElementById("scaleSelect").value;
+  const snapMode = document.getElementById("snapMode").value;
+  const step = Math.max(1, Math.ceil(recordedFrames.length / MAX_HISTORY));
+  for (let i = 0; i < recordedFrames.length; i += step) {
+    const f = recordedFrames[i];
+    if (f.rawMidi > 0) {
+      const shiftedRaw = f.rawMidi + octaveShift * 12;
+      const playedMidi = snapMidiToScale(shiftedRaw, scaleKey, snapMode);
+      pitchHistory.push({ rawMidi: shiftedRaw, playedMidi, active: true });
+    } else {
+      pitchHistory.push({ rawMidi: -1, playedMidi: -1, active: false });
+    }
+  }
+}
+
+function extractNoteSegments() {
+  const scaleKey = document.getElementById("scaleSelect").value;
+  const segs = [];
+  let cur = null;
+
+  for (let i = 0; i < recordedFrames.length; i++) {
+    const f = recordedFrames[i];
+    if (f.rawMidi > 0) {
+      const qMidi = Math.round(snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, "strict"));
+      if (!cur || cur.qMidi !== qMidi) {
+        if (cur) segs.push(cur);
+        cur = {
+          index: segs.length,
+          startIdx: i,
+          endIdx: i,
+          startMs: f.timeOffsetMs,
+          endMs: f.timeOffsetMs,
+          qMidi
+        };
+      } else {
+        cur.endIdx = i;
+        cur.endMs = f.timeOffsetMs;
+      }
+    } else if (cur) {
+      segs.push(cur);
+      cur = null;
+    }
+  }
+  if (cur) segs.push(cur);
+
+  segs.forEach((seg, idx) => {
+    seg.index = idx;
+    const nextStart = seg.endIdx + 1 < recordedFrames.length
+      ? recordedFrames[seg.endIdx + 1].timeOffsetMs
+      : seg.endMs + 20;
+    seg.durationMs = Math.max(20, Math.round(nextStart - seg.startMs));
+    seg.isSuspect = seg.durationMs < glitchThresholdMs;
+  });
+
+  return segs;
+}
+
+function renderNoteEditor() {
+  const listEl = document.getElementById("noteEditorList");
+  const countEl = document.getElementById("noteCountLabel");
+  if (!listEl || !countEl) return;
+
+  const segs = extractNoteSegments();
+  if (segs.length === 0) {
+    countEl.textContent = "0 Notes";
+    listEl.innerHTML = `<div class="note-strip-empty">Record a whistle melody (or click Load Demo) to preview, tune (▼/▲), or delete (🗑️) individual bad notes.</div>`;
+    return;
+  }
+
+  const suspectCount = segs.filter(s => s.isSuspect).length;
+  countEl.textContent = suspectCount > 0
+    ? `${segs.length} Notes (${suspectCount} ⚠️ glitch)`
+    : `${segs.length} Notes`;
+
+  listEl.innerHTML = "";
+  segs.forEach((seg, idx) => {
+    const chip = document.createElement("div");
+    chip.className = "note-chip" + (seg.isSuspect ? " suspect" : "");
+    const durLabel = seg.durationMs >= 1000 ? (seg.durationMs / 1000).toFixed(1) + "s" : seg.durationMs + "ms";
+    const warnBadge = seg.isSuspect ? " ⚠️" : "";
+
+    chip.innerHTML = `
+      <button class="note-play-btn" onclick="previewSegment(${idx})" title="Click to hear this note">
+        <span class="note-num-txt">#${idx + 1}${warnBadge}</span>
+        <span class="note-name-txt">${midiToNoteName(seg.qMidi)}</span>
+        <span class="note-dur-txt">${durLabel}</span>
+      </button>
+      <div class="note-actions">
+        <button class="note-act-btn" onclick="nudgeSegment(${idx}, -1)" title="Lower note 1 semitone">▼</button>
+        <button class="note-act-btn" onclick="nudgeSegment(${idx}, 1)" title="Raise note 1 semitone">▲</button>
+        <button class="note-act-btn del" onclick="deleteSegment(${idx})" title="Delete this bad note">🗑️</button>
+      </div>
+    `;
+    listEl.appendChild(chip);
+  });
+}
+
+async function previewSegment(segIdx) {
+  const segs = extractNoteSegments();
+  const seg = segs[segIdx];
+  if (!seg) return;
+  await ensureAudioContext();
+  const freq = midiToFreq(seg.qMidi);
+  const durMs = Math.min(850, Math.max(240, seg.durationMs));
+  if (currentInstrument.type === "continuous") {
+    const v = createContinuousVoice(currentInstrument.id, freq);
+    v.setPitchAndDynamics(freq, 0.8);
+    setTimeout(() => v.stop(), durMs);
+  } else {
+    triggerPercussiveNote(currentInstrument.id, freq, 0.85);
+  }
+}
+
+function nudgeSegment(segIdx, semitones) {
+  const segs = extractNoteSegments();
+  const seg = segs[segIdx];
+  if (!seg) return;
+  stopRecordedPlayback();
+  pushUndoState();
+  for (let i = seg.startIdx; i <= seg.endIdx; i++) {
+    recordedFrames[i].rawMidi += semitones;
+    recordedFrames[i].snappedMidi += semitones;
+    recordedFrames[i].playedMidi += semitones;
+  }
+  refreshRecordedUI(`Tuned note #${segIdx + 1}`);
+  previewSegment(segIdx);
+}
+
+function deleteSegment(segIdx) {
+  const segs = extractNoteSegments();
+  const seg = segs[segIdx];
+  if (!seg) return;
+  stopRecordedPlayback();
+  pushUndoState();
+
+  const startMs = recordedFrames[seg.startIdx].timeOffsetMs;
+  const endMs = seg.endIdx + 1 < recordedFrames.length
+    ? recordedFrames[seg.endIdx + 1].timeOffsetMs
+    : recordedFrames[seg.endIdx].timeOffsetMs + 20;
+  const removedMs = Math.max(20, endMs - startMs);
+
+  recordedFrames.splice(seg.startIdx, seg.endIdx - seg.startIdx + 1);
+  for (let i = seg.startIdx; i < recordedFrames.length; i++) {
+    recordedFrames[i].timeOffsetMs = Math.max(0, recordedFrames[i].timeOffsetMs - removedMs);
+  }
+  refreshRecordedUI(`Removed note #${segIdx + 1}`);
+}
+
+function restoreOriginalMelody() {
+  stopRecordedPlayback();
+  if (undoStack.length > 0) {
+    recordedFrames = undoStack.pop();
+    if (undoStack.length === 0) {
+      document.getElementById("btnUndoTidy").disabled = true;
+    }
+    refreshRecordedUI(undoStack.length === 0 ? "Original Restored" : "Undid Last Edit");
+  } else if (originalRecordedFrames.length > 0) {
+    recordedFrames = originalRecordedFrames.map(f => ({ ...f }));
+    document.getElementById("btnUndoTidy").disabled = true;
+    refreshRecordedUI("Original Restored");
+  }
+}
+
+function autoTidyMelody() {
+  if (recordedFrames.length === 0) return;
+  stopRecordedPlayback();
+  pushUndoState();
+
+  const scaleKey = document.getElementById("scaleSelect").value;
+  const snapMode = document.getElementById("snapMode").value;
+  let frames = recordedFrames.map(f => ({ ...f }));
+
+  // 1. Estimate typical frame interval
+  const diffs = [];
+  for (let i = 1; i < frames.length; i++) {
+    const d = frames[i].timeOffsetMs - frames[i - 1].timeOffsetMs;
+    if (d > 2 && d < 120) diffs.push(d);
+  }
+  const avgStepMs = diffs.length > 0 ? diffs.reduce((a, b) => a + b, 0) / diffs.length : 20;
+
+  // 2. Heal brief breath dropouts (< 65 ms silence between similar notes)
+  let i = 0;
+  while (i < frames.length) {
+    if (frames[i].rawMidi <= 0) {
+      let gapEnd = i;
+      while (gapEnd + 1 < frames.length && frames[gapEnd + 1].rawMidi <= 0) gapEnd++;
+      const prevIdx = i - 1;
+      const nextIdx = gapEnd + 1;
+      if (prevIdx >= 0 && nextIdx < frames.length) {
+        const gapMs = frames[nextIdx].timeOffsetMs - frames[prevIdx].timeOffsetMs;
+        const prevMidi = snapMidiToScale(frames[prevIdx].rawMidi + octaveShift * 12, scaleKey, "strict");
+        const nextMidi = snapMidiToScale(frames[nextIdx].rawMidi + octaveShift * 12, scaleKey, "strict");
+        if (gapMs < 65 && Math.abs(prevMidi - nextMidi) <= 1) {
+          const fillMidi = (frames[prevIdx].rawMidi + frames[nextIdx].rawMidi) / 2;
+          const fillRms = (frames[prevIdx].rms + frames[nextIdx].rms) / 2;
+          for (let k = i; k <= gapEnd; k++) {
+            frames[k].rawMidi = fillMidi;
+            frames[k].rms = Math.max(0.25, fillRms);
+          }
+        }
+      }
+      i = gapEnd + 1;
+    } else {
+      i++;
+    }
+  }
+
+  // 3. Group into contiguous pitch / silence blocks
+  const blocks = [];
+  let curBlock = null;
+  for (let idx = 0; idx < frames.length; idx++) {
+    const f = frames[idx];
+    const qMidi = f.rawMidi > 0 ? Math.round(snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, "strict")) : -1;
+    if (!curBlock || curBlock.qMidi !== qMidi) {
+      if (curBlock) blocks.push(curBlock);
+      curBlock = { qMidi, frames: [f] };
+    } else {
+      curBlock.frames.push(f);
+    }
+  }
+  if (curBlock) blocks.push(curBlock);
+
+  for (let b = 0; b < blocks.length; b++) {
+    const blk = blocks[b];
+    const startMs = blk.frames[0].timeOffsetMs;
+    const endMs = b + 1 < blocks.length
+      ? blocks[b + 1].frames[0].timeOffsetMs
+      : blk.frames[blk.frames.length - 1].timeOffsetMs + avgStepMs;
+    blk.durationMs = Math.max(avgStepMs, endMs - startMs);
+  }
+
+  // 4. Filter out short squeaks/glitches (< glitchThresholdMs)
+  let removedGlitches = 0;
+  const keptBlocks = [];
+  for (let b = 0; b < blocks.length; b++) {
+    const blk = blocks[b];
+    if (blk.qMidi > 0 && blk.durationMs < glitchThresholdMs) {
+      removedGlitches++;
+      continue;
+    }
+    keptBlocks.push(blk);
+  }
+
+  // Trim leading and trailing silence
+  while (keptBlocks.length > 0 && keptBlocks[0].qMidi <= 0) keptBlocks.shift();
+  while (keptBlocks.length > 0 && keptBlocks[keptBlocks.length - 1].qMidi <= 0) keptBlocks.pop();
+
+  if (keptBlocks.length === 0) {
+    alert(`All notes were shorter than the ${glitchThresholdMs} ms filter. Lower the Glitch Filter slider and try again.`);
+    restoreOriginalMelody();
+    return;
+  }
+
+  // 5. Merge identical adjacent blocks and stabilize pitch inside each kept note
+  const mergedBlocks = [];
+  for (const blk of keptBlocks) {
+    const last = mergedBlocks[mergedBlocks.length - 1];
+    if (last && last.qMidi === blk.qMidi) {
+      last.frames.push(...blk.frames);
+    } else {
+      mergedBlocks.push({ qMidi: blk.qMidi, frames: [...blk.frames] });
+    }
+  }
+
+  const cleanedFrames = [];
+  let tunedNotes = 0;
+  let cursorMs = 40;
+
+  for (const blk of mergedBlocks) {
+    if (blk.qMidi > 0) {
+      tunedNotes++;
+      const sortedRaw = blk.frames.map(f => f.rawMidi).sort((a, b) => a - b);
+      const medianRaw = sortedRaw[Math.floor(sortedRaw.length / 2)];
+      const lockedPlayedMidi = snapMidiToScale(medianRaw + octaveShift * 12, scaleKey, "strict");
+      const targetRaw = lockedPlayedMidi - octaveShift * 12;
+      const pull = snapMode === "strict" ? 1.0 : 0.9;
+
+      for (let k = 0; k < blk.frames.length; k++) {
+        const src = blk.frames[k];
+        const dt = k > 0 ? Math.max(8, Math.min(50, src.timeOffsetMs - blk.frames[k - 1].timeOffsetMs)) : avgStepMs;
+        if (k > 0) cursorMs += dt;
+        const smoothedRaw = src.rawMidi * (1 - pull) + targetRaw * pull;
+        cleanedFrames.push({
+          timeOffsetMs: Math.round(cursorMs),
+          rawMidi: smoothedRaw,
+          snappedMidi: Math.round(lockedPlayedMidi),
+          playedMidi: lockedPlayedMidi,
+          rms: Math.max(0.28, src.rms)
+        });
+      }
+      cursorMs += avgStepMs;
+    } else {
+      const rawGapMs = Math.min(450, blk.frames.length * avgStepMs);
+      const gapSteps = Math.max(1, Math.round(rawGapMs / avgStepMs));
+      for (let s = 0; s < gapSteps; s++) {
+        cleanedFrames.push({
+          timeOffsetMs: Math.round(cursorMs),
+          rawMidi: -1,
+          snappedMidi: -1,
+          playedMidi: -1,
+          rms: 0
+        });
+        cursorMs += avgStepMs;
+      }
+    }
+  }
+
+  recordedFrames = cleanedFrames;
+  refreshRecordedUI(`Cleaned ${removedGlitches} glitch${removedGlitches === 1 ? "" : "es"}, tuned ${tunedNotes} notes!`);
   playRecordedMelody();
 }
 
@@ -1880,6 +2584,7 @@ async function playRecordedMelody() {
   stopRecordedPlayback();
 
   isPlayingRecorded = true;
+  pitchHistory.length = 0;
   updateStatusBadge(`Playing: ${currentInstrument.name}`, "live");
   lastTriggeredMidi = -1;
 
@@ -1924,7 +2629,7 @@ function stopRecordedPlayback() {
   }
 }
 
-// Built-in Demo Melody ("Skye Boat Song / Highland Whistle Air") so Eric can test all 10 instruments immediately!
+// Built-in Demo Melody ("Skye Boat Song / Highland Whistle Air") so Eric can test all 16 instruments immediately!
 function loadDemoMelody() {
   const melodyNotes = [
     // Note MIDI (Whistle register ~G5-E6), durationMs
@@ -1959,45 +2664,69 @@ function loadDemoMelody() {
     }
   });
 
-  finalizeRecording();
+  finalizeRecording(true);
 }
 
-// Offline WAV Renderer & Exporter
+// Offline WAV Renderer & Exporter (Uses full instrument synth + reverb)
 async function exportRecordingWAV() {
   if (recordedFrames.length === 0) return;
-  const durationSec = (recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000) + 1.5;
+  const durationSec = (recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000) + 2.2;
   const sampleRate = 44100;
   const offlineCtx = new OfflineAudioContext(2, Math.ceil(durationSec * sampleRate), sampleRate);
+
+  const offMaster = offlineCtx.createGain();
+  offMaster.gain.value = masterVol;
+  const offDry = offlineCtx.createGain();
+  offDry.gain.value = 1.0 - reverbWet * 0.4;
+  const offWet = offlineCtx.createGain();
+  offWet.gain.value = reverbWet;
+  const offReverb = createConcertHallReverb(offlineCtx, 2.4, 2.2);
+
+  offMaster.connect(offDry);
+  offMaster.connect(offReverb);
+  offReverb.connect(offWet);
+  offDry.connect(offlineCtx.destination);
+  offWet.connect(offlineCtx.destination);
 
   const scaleKey = document.getElementById("scaleSelect").value;
   const snapMode = document.getElementById("snapMode").value;
 
-  // Render notes onto OfflineAudioContext
-  let prevMidi = -1;
-  for (let i = 0; i < recordedFrames.length; i++) {
-    const f = recordedFrames[i];
-    const nextF = recordedFrames[i + 1];
-    const dt = nextF ? Math.max(0.015, (nextF.timeOffsetMs - f.timeOffsetMs) / 1000) : 0.025;
-    const tSec = f.timeOffsetMs / 1000;
-
-    if (f.rawMidi > 0) {
-      const shifted = f.rawMidi + octaveShift * 12;
-      const playedMidi = snapMidiToScale(shifted, scaleKey, snapMode);
-      const freq = midiToFreq(playedMidi);
-
-      const osc = offlineCtx.createOscillator();
-      const gain = offlineCtx.createGain();
-      osc.type = currentInstrument.id === "flute" || currentInstrument.id === "harp" ? "sine" : "triangle";
-      osc.frequency.setValueAtTime(freq, tSec);
-
-      gain.gain.setValueAtTime(f.rms * 0.35, tSec);
-      gain.gain.linearRampToValueAtTime(0.0001, tSec + dt * 1.8);
-
-      osc.connect(gain);
-      gain.connect(offlineCtx.destination);
-      osc.start(tSec);
-      osc.stop(tSec + dt * 1.9);
-      prevMidi = Math.round(playedMidi);
+  if (currentInstrument.type === "percussive") {
+    let lastMidi = -1;
+    let lastTrigMs = -1000;
+    for (let i = 0; i < recordedFrames.length; i++) {
+      const f = recordedFrames[i];
+      if (f.rawMidi > 0) {
+        const playedMidi = snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, snapMode);
+        const rounded = Math.round(playedMidi);
+        if (rounded !== lastMidi || (f.timeOffsetMs - lastTrigMs > 480 && lastMidi === -1)) {
+          triggerPercussiveNote(currentInstrument.id, midiToFreq(rounded), f.rms, offlineCtx, offMaster, f.timeOffsetMs / 1000);
+          lastMidi = rounded;
+          lastTrigMs = f.timeOffsetMs;
+        }
+      } else {
+        lastMidi = -1;
+      }
+    }
+  } else {
+    let curVoice = null;
+    for (let i = 0; i < recordedFrames.length; i++) {
+      const f = recordedFrames[i];
+      const tSec = f.timeOffsetMs / 1000;
+      if (f.rawMidi > 0) {
+        const playedMidi = snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, snapMode);
+        const freq = midiToFreq(playedMidi);
+        if (!curVoice) {
+          curVoice = createContinuousVoice(currentInstrument.id, freq, offlineCtx, offMaster, tSec);
+        }
+        curVoice.setPitchAndDynamics(freq, f.rms, tSec);
+      } else if (curVoice) {
+        curVoice.stop(tSec);
+        curVoice = null;
+      }
+    }
+    if (curVoice) {
+      curVoice.stop((recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000) + 0.08);
     }
   }
 
@@ -2144,7 +2873,7 @@ async function testPhoneSpeaker() {
       const v = createContinuousVoice(currentInstrument.id, 220);
       v.setPitchAndDynamics(220, 0.85);
       setTimeout(() => {
-        v.release();
+        v.stop();
         if (!isLive && !isRecording) updateStatusBadge("Mic Standby", "");
       }, 1000);
     } else {
