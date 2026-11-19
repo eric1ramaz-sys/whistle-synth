@@ -3,26 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0b0f17">
+<meta name="theme-color" content="#0d0a07">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
-<title>Jarvis WhistleSynth — Whistle & Hum to Musical Instruments</title>
+<title>Satchmo Whistle Trumpet — 1930s Solo Trumpet Studio</title>
 <style>
   :root {
-    --bg-dark: #0b0f17;
-    --bg-panel: #151c28;
-    --bg-card: #1e293b;
-    --accent: #38bdf8;
-    --accent-glow: rgba(56, 189, 248, 0.25);
-    --gold: #f59e0b;
-    --emerald: #10b981;
-    --rose: #f43f5e;
-    --purple: #a855f7;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border: #334155;
+    --bg-dark: #0d0a07;
+    --bg-panel: #18130e;
+    --bg-card: #241c14;
+    --accent: #e8b34a;
+    --accent-bright: #f5c451;
+    --accent-glow: rgba(232, 179, 74, 0.28);
+    --amber: #d97706;
+    --gold: #f5c451;
+    --emerald: #34d399;
+    --ice: #7dd3fc;
+    --rose: #e11d48;
+    --text-main: #faf6ee;
+    --text-muted: #b8aa96;
+    --border: #3d3022;
   }
 
   * {
@@ -33,7 +35,7 @@
   }
 
   body {
-    background: var(--bg-dark);
+    background: radial-gradient(circle at top center, #1b140d 0%, var(--bg-dark) 62%);
     color: var(--text-main);
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
@@ -48,11 +50,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--bg-panel);
+    background: linear-gradient(135deg, #1d1610, #140f0a);
     padding: 16px 24px;
     border-radius: 16px;
-    border: 1px solid var(--border);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    border: 1px solid rgba(232, 179, 74, 0.3);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.55);
   }
 
   .brand {
@@ -62,33 +64,47 @@
   }
 
   .brand-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #0284c7, #6366f1);
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #b45309, #f5c451);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+    font-size: 28px;
+    box-shadow: 0 0 20px rgba(232, 179, 74, 0.42);
   }
 
   .brand h1 {
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.4px;
+    color: var(--text-main);
+  }
+
+  .version-pill {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 600;
+    background: rgba(232, 179, 74, 0.14);
+    border: 1px solid rgba(232, 179, 74, 0.35);
+    padding: 2px 9px;
+    border-radius: 12px;
+    margin-left: 8px;
+    vertical-align: middle;
   }
 
   .brand p {
     font-size: 13px;
     color: var(--text-muted);
-    margin-top: 2px;
+    margin-top: 3px;
   }
 
   .status-bar {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
   .badge {
@@ -107,13 +123,18 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #64748b;
+    background: #8a7b68;
   }
 
   .dot.live {
-    background: var(--emerald);
-    box-shadow: 0 0 10px var(--emerald);
+    background: var(--gold);
+    box-shadow: 0 0 10px var(--gold);
     animation: pulse 1.4s infinite;
+  }
+
+  .dot.ready {
+    background: var(--emerald);
+    box-shadow: 0 0 8px var(--emerald);
   }
 
   .dot.rec {
@@ -130,7 +151,7 @@
   /* Main Grid */
   .studio-grid {
     display: grid;
-    grid-template-columns: 360px 1fr 370px;
+    grid-template-columns: 365px 1fr 375px;
     gap: 18px;
     flex: 1;
   }
@@ -160,10 +181,11 @@
       font-size: 24px;
     }
     .canvas-wrap {
-      min-height: 200px;
+      min-height: 210px;
     }
-    .inst-grid {
-      max-height: 360px;
+    .tuner-header,
+    .controls-row-3 {
+      grid-template-columns: 1fr !important;
     }
   }
 
@@ -174,12 +196,12 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    gap: 15px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.38);
   }
 
   .panel-title {
-    font-size: 14px;
+    font-size: 13.5px;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--accent);
@@ -187,7 +209,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(232, 179, 74, 0.16);
     padding-bottom: 10px;
   }
 
@@ -195,11 +217,11 @@
   .transport-box {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 11px;
   }
 
   .btn-big {
-    padding: 16px 20px;
+    padding: 15px 18px;
     border-radius: 12px;
     border: none;
     font-size: 16px;
@@ -210,36 +232,38 @@
     justify-content: center;
     gap: 12px;
     transition: all 0.18s ease;
-    color: white;
+    color: #161008;
   }
 
   .btn-live {
-    background: linear-gradient(135deg, #059669, #10b981);
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, #d97706, #f5c451);
+    box-shadow: 0 4px 18px rgba(232, 179, 74, 0.35);
   }
-  .btn-live:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-live:hover { filter: brightness(1.08); transform: translateY(-1px); }
   .btn-live.active {
-    background: linear-gradient(135deg, #dc2626, #ef4444);
+    background: linear-gradient(135deg, #b91c1c, #ef4444);
+    color: #fff;
     box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
   }
 
   .btn-record {
-    background: linear-gradient(135deg, #e11d48, #f43f5e);
+    background: linear-gradient(135deg, #be123c, #f43f5e);
+    color: #fff;
     box-shadow: 0 4px 16px rgba(244, 63, 94, 0.3);
   }
   .btn-record:hover { filter: brightness(1.1); transform: translateY(-1px); }
   .btn-record.recording {
-    background: #9f1239;
+    background: #881337;
     box-shadow: 0 0 24px rgba(244, 63, 94, 0.8);
   }
 
   .btn-secondary {
-    padding: 11px 14px;
+    padding: 10px 13px;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--bg-card);
     color: var(--text-main);
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -250,7 +274,7 @@
   }
   .btn-secondary:hover:not(:disabled) {
     border-color: var(--accent);
-    background: rgba(56, 189, 248, 0.12);
+    background: rgba(232, 179, 74, 0.14);
   }
   .btn-secondary:disabled {
     opacity: 0.4;
@@ -270,6 +294,7 @@
     display: flex;
     justify-content: space-between;
     font-weight: 600;
+    gap: 8px;
   }
 
   .control-label span.val {
@@ -284,9 +309,13 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     color: var(--text-main);
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     outline: none;
+  }
+
+  select:focus {
+    border-color: var(--accent);
   }
 
   input[type="range"] {
@@ -298,17 +327,17 @@
 
   .pill-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
   }
 
   .pill-btn {
-    padding: 9px 6px;
+    padding: 10px 6px;
     border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--bg-card);
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
@@ -316,8 +345,8 @@
   }
 
   .pill-btn.active {
-    background: var(--accent);
-    color: #0b0f17;
+    background: linear-gradient(135deg, #d97706, #f5c451);
+    color: #161008;
     border-color: var(--accent);
     box-shadow: 0 0 12px var(--accent-glow);
   }
@@ -333,7 +362,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 14px 18px;
+    padding: 14px 16px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -341,7 +370,7 @@
   }
 
   .metric-label {
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -349,28 +378,28 @@
   }
 
   .metric-big {
-    font-size: 36px;
+    font-size: 34px;
     font-weight: 800;
-    color: var(--accent);
+    color: var(--ice);
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
 
   .metric-sub {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--gold);
-    margin-top: 4px;
+    margin-top: 5px;
     font-weight: 600;
   }
 
   .canvas-wrap {
     flex: 1;
     position: relative;
-    background: #070a10;
+    background: #100c08;
     border-radius: 14px;
     border: 1px solid var(--border);
     overflow: hidden;
-    min-height: 320px;
+    min-height: 330px;
     display: flex;
     flex-direction: column;
   }
@@ -388,13 +417,14 @@
     left: 16px;
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
     pointer-events: none;
     font-size: 12px;
-    color: var(--text-muted);
-    background: rgba(15, 23, 42, 0.8);
+    color: var(--text-main);
+    background: rgba(20, 15, 10, 0.84);
     padding: 6px 12px;
     border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(232, 179, 74, 0.25);
   }
 
   .legend-dot {
@@ -402,24 +432,78 @@
     width: 9px;
     height: 9px;
     border-radius: 50%;
-    margin-right: 5px;
+    margin-right: 6px;
   }
 
-  /* Instrument Grid */
-  .inst-grid {
+  .controls-row-3 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    overflow-y: auto;
-    max-height: 560px;
-    padding-right: 4px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
   }
 
-  .inst-card {
+  /* Hero Trumpet & Voicing Selector */
+  .trumpet-hero {
+    background: linear-gradient(145deg, rgba(232, 179, 74, 0.16), rgba(36, 28, 20, 0.96));
+    border: 2px solid var(--accent);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 0 22px rgba(232, 179, 74, 0.18);
+  }
+
+  .trumpet-hero-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .trumpet-hero-icon {
+    font-size: 34px;
+    line-height: 1;
+  }
+
+  .trumpet-hero h2 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .trumpet-hero p {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .engine-status-pill {
+    align-self: flex-start;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(52, 211, 153, 0.14);
+    border: 1px solid rgba(52, 211, 153, 0.35);
+    color: var(--emerald);
+  }
+
+  .engine-status-pill.loading {
+    background: rgba(232, 179, 74, 0.14);
+    border-color: rgba(232, 179, 74, 0.35);
+    color: var(--gold);
+  }
+
+  .voicing-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .voicing-card {
     background: var(--bg-card);
     border: 2px solid var(--border);
     border-radius: 12px;
-    padding: 12px;
+    padding: 12px 14px;
     cursor: pointer;
     transition: all 0.16s ease;
     display: flex;
@@ -427,59 +511,57 @@
     gap: 4px;
   }
 
-  .inst-card:hover {
-    border-color: #64748b;
+  .voicing-card:hover {
+    border-color: #7c6244;
     transform: translateY(-1px);
   }
 
-  .inst-card.active {
+  .voicing-card.active {
     border-color: var(--accent);
-    background: linear-gradient(145deg, rgba(56, 189, 248, 0.18), rgba(30, 41, 59, 0.95));
-    box-shadow: 0 0 18px var(--accent-glow);
+    background: linear-gradient(145deg, rgba(232, 179, 74, 0.18), rgba(36, 28, 20, 0.98));
+    box-shadow: 0 0 16px var(--accent-glow);
   }
 
-  .inst-top {
+  .voicing-top {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
   }
 
-  .inst-emoji {
-    font-size: 24px;
-  }
-
-  .inst-name {
-    font-size: 14px;
+  .voicing-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14.5px;
     font-weight: 700;
     color: var(--text-main);
   }
 
-  .inst-desc {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    line-height: 1.3;
+  .voicing-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(232, 179, 74, 0.14);
+    color: var(--gold);
   }
 
-  .inst-tag {
-    align-self: flex-start;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.07);
-    color: var(--gold);
-    margin-top: 2px;
+  .voicing-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.35;
   }
 
   /* Recorded Clip Box */
   .recorded-box {
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(15, 11, 8, 0.78);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 14px;
+    padding: 13px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 9px;
   }
 
   .btn-row {
@@ -488,21 +570,38 @@
     gap: 8px;
   }
 
+  .auto-polish-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text-main);
+    padding: 4px 2px;
+    cursor: pointer;
+  }
+
+  .auto-polish-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
   .tip-banner {
-    background: rgba(245, 158, 11, 0.12);
-    border: 1px solid rgba(245, 158, 11, 0.35);
-    color: #fcd34d;
-    padding: 10px 14px;
+    background: rgba(232, 179, 74, 0.1);
+    border: 1px solid rgba(232, 179, 74, 0.3);
+    color: #fde68a;
+    padding: 10px 13px;
     border-radius: 10px;
     font-size: 12.5px;
-    line-height: 1.4;
+    line-height: 1.45;
   }
 
   .btn-qr-link {
-    background: linear-gradient(135deg, #0284c7, #0369a1);
+    background: linear-gradient(135deg, #b45309, #d97706);
     color: #ffffff;
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    padding: 6px 12px;
+    border: 1px solid rgba(245, 196, 81, 0.45);
+    padding: 7px 12px;
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
@@ -513,14 +612,29 @@
     transition: all 0.2s ease;
   }
   .btn-qr-link:hover {
-    background: linear-gradient(135deg, #0369a1, #075985);
-    border-color: #38bdf8;
+    filter: brightness(1.1);
     transform: translateY(-1px);
   }
+
+  .btn-clean-reload {
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-clean-reload:hover {
+    border-color: var(--accent);
+    color: #fff;
+  }
+
   .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.78);
     backdrop-filter: blur(4px);
     display: none;
     align-items: center;
@@ -528,18 +642,18 @@
     z-index: 9999;
   }
   .modal-card {
-    background: #0f172a;
-    border: 1px solid var(--border);
+    background: #18130e;
+    border: 1px solid var(--accent);
     border-radius: 16px;
     max-width: 420px;
     width: 90%;
     padding: 24px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.65);
     text-align: center;
   }
   .modal-card h3 {
     font-size: 18px;
-    color: var(--accent);
+    color: var(--gold);
     margin-bottom: 8px;
   }
   .modal-card p {
@@ -559,19 +673,19 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
   .modal-link-box {
-    background: #1e293b;
+    background: #0d0a07;
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 8px 12px;
     font-family: monospace;
     font-size: 12px;
-    color: #38bdf8;
+    color: var(--gold);
     word-break: break-all;
     margin-bottom: 14px;
     user-select: all;
   }
   .modal-btn-close {
-    background: #334155;
+    background: #3d3022;
     color: #fff;
     border: none;
     padding: 8px 20px;
@@ -580,47 +694,44 @@
     cursor: pointer;
     font-weight: 600;
   }
-  .modal-btn-close:hover {
-    background: #475569;
-  }
+  .modal-btn-close:hover { background: #544230; }
 
   .vu-container {
-    background: #0f172a;
+    background: #100c08;
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 8px 12px;
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin-top: 6px;
   }
   .vu-header {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--text-muted);
   }
   .vu-bar-bg {
     width: 100%;
     height: 10px;
-    background: #1e293b;
+    background: #241c14;
     border-radius: 5px;
     overflow: hidden;
   }
   .vu-bar-fill {
     height: 100%;
     width: 0%;
-    background: #64748b;
+    background: #6b5b49;
     transition: width 0.05s linear;
   }
   .vu-bar-fill.active {
-    background: linear-gradient(90deg, #10b981, #38bdf8);
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    background: linear-gradient(90deg, #34d399, #f5c451);
+    box-shadow: 0 0 8px rgba(245, 196, 81, 0.5);
   }
   .btn-test-sound {
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    color: #34d399;
+    background: rgba(232, 179, 74, 0.14);
+    border: 1px solid rgba(232, 179, 74, 0.42);
+    color: var(--gold);
     padding: 9px 14px;
     border-radius: 8px;
     font-size: 12.5px;
@@ -631,49 +742,35 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 6px;
     transition: all 0.15s ease;
   }
   .btn-test-sound:hover {
-    background: rgba(16, 185, 129, 0.25);
-    border-color: #34d399;
-  }
-  .btn-clean-reload {
-    background: #1e293b;
-    color: #94a3b8;
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .btn-clean-reload:hover {
-    background: #334155;
-    color: #fff;
+    background: rgba(232, 179, 74, 0.24);
+    border-color: var(--gold);
   }
 
   /* Tidy & Interactive Note Editor */
   .tidy-box {
-    background: rgba(15, 23, 42, 0.75);
-    border: 1px solid rgba(56, 189, 248, 0.25);
+    background: rgba(15, 11, 8, 0.78);
+    border: 1px solid rgba(232, 179, 74, 0.25);
     border-radius: 12px;
-    padding: 14px;
+    padding: 13px;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
   .btn-tidy {
-    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    background: linear-gradient(135deg, #b45309, #f59e0b);
     border: none;
-    color: #ffffff;
-    box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3);
+    color: #161008;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
   }
   .btn-tidy:hover:not(:disabled) {
-    filter: brightness(1.12);
+    filter: brightness(1.1);
     border-color: transparent;
-    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    background: linear-gradient(135deg, #b45309, #f59e0b);
     transform: translateY(-1px);
   }
 
@@ -681,7 +778,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    max-height: 230px;
+    max-height: 210px;
     overflow-y: auto;
     padding: 4px 2px;
   }
@@ -689,7 +786,7 @@
   .note-strip-empty {
     font-size: 12px;
     color: var(--text-muted);
-    padding: 6px 2px;
+    padding: 4px 2px;
     line-height: 1.4;
   }
 
@@ -704,12 +801,10 @@
     font-size: 12px;
     transition: border-color 0.15s ease;
   }
-  .note-chip:hover {
-    border-color: var(--accent);
-  }
+  .note-chip:hover { border-color: var(--accent); }
   .note-chip.suspect {
-    border-color: var(--gold);
-    background: rgba(245, 158, 11, 0.14);
+    border-color: var(--amber);
+    background: rgba(217, 119, 6, 0.16);
   }
 
   .note-play-btn {
@@ -724,25 +819,11 @@
     padding: 0 2px;
     font-family: inherit;
   }
-  .note-play-btn:hover .note-name-txt {
-    color: var(--accent);
-  }
-  .note-num-txt {
-    font-size: 10px;
-    color: var(--text-muted);
-  }
-  .note-name-txt {
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--emerald);
-  }
-  .note-chip.suspect .note-name-txt {
-    color: #fbbf24;
-  }
-  .note-dur-txt {
-    font-size: 10.5px;
-    color: var(--text-muted);
-  }
+  .note-play-btn:hover .note-name-txt { color: var(--gold); }
+  .note-num-txt { font-size: 10px; color: var(--text-muted); }
+  .note-name-txt { font-size: 13px; font-weight: 800; color: var(--emerald); }
+  .note-chip.suspect .note-name-txt { color: #fbbf24; }
+  .note-dur-txt { font-size: 10.5px; color: var(--text-muted); }
 
   .note-actions {
     display: flex;
@@ -754,7 +835,7 @@
     height: 24px;
     border-radius: 6px;
     border: 1px solid var(--border);
-    background: #0f172a;
+    background: #100c08;
     color: var(--text-main);
     font-size: 11px;
     font-weight: 700;
@@ -766,7 +847,7 @@
   }
   .note-act-btn:hover {
     border-color: var(--accent);
-    background: rgba(56, 189, 248, 0.16);
+    background: rgba(232, 179, 74, 0.18);
   }
   .note-act-btn.del {
     color: #fda4af;
@@ -783,19 +864,19 @@
 
 <header>
   <div class="brand">
-    <div class="brand-icon">🎶</div>
+    <div class="brand-icon">🎺</div>
     <div>
-      <h1>Jarvis WhistleSynth Studio <span style="font-size:11px; color:#38bdf8; font-weight:normal; background:rgba(56,189,248,0.15); padding:2px 8px; border-radius:12px; margin-left:6px;">v2.2 Studio &amp; Tidy</span></h1>
-      <p>Real-Time Whistle & Hum to Musical Orchestra — Zero Cloud Delay</p>
+      <h1>Satchmo Whistle Trumpet <span class="version-pill">1930s Solo Edition • v3.0</span></h1>
+      <p>Whistle any tune — transformed into a warm 1930s Louis Armstrong solo trumpet, automatically tuned</p>
     </div>
   </div>
   <div class="status-bar">
-    <button class="btn-clean-reload" onclick="forceCleanReload()" title="Force update to newest version">🔄 Clear Cache & Reload</button>
+    <button class="btn-clean-reload" onclick="forceCleanReload()" title="Force update to newest version">🔄 Clear Cache &amp; Reload</button>
     <button class="btn-qr-link" onclick="openQrModal()" title="Open on Mobile / Outside Home">📱 Phone / Outdoor Access</button>
     <div class="badge" id="latencyBadge">⚡ Latency: <span id="latencyVal">-- ms</span></div>
     <div class="badge">
       <div class="dot" id="statusDot"></div>
-      <span id="statusText">Mic Standby</span>
+      <span id="statusText">Loading Real Brass...</span>
     </div>
   </div>
 </header>
@@ -803,15 +884,15 @@
 <!-- Modal QR Code -->
 <div class="modal-overlay" id="qrModal" onclick="if(event.target === this) closeQrModal()">
   <div class="modal-card">
-    <h3>📱 Use Anywhere Outside (4G / Offline)</h3>
-    <p>Scan with your Redmi camera or Chrome to open the secure app on your phone:</p>
-    <img src="qr_whistle.png" alt="WhistleSynth Mobile QR Code">
+    <h3>📱 Play Trumpet Anywhere (4G / Offline)</h3>
+    <p>Scan with your Redmi camera or Chrome to open Satchmo Whistle Trumpet on your phone:</p>
+    <img src="qr_whistle.png" alt="Satchmo Whistle Trumpet Mobile QR Code">
     <div class="modal-link-box">https://eric1ramaz-sys.github.io/whistle-synth/</div>
-    <p style="font-size:12px; color:#94a3b8; text-align:left; margin-bottom:14px;">
+    <p style="font-size:12px; color:#b8aa96; text-align:left; margin-bottom:14px;">
       💡 <b>To install on your home screen:</b><br>
       1. Open the link above in Chrome on your phone.<br>
       2. Tap the 3 dots (⋮) &gt; <b>"Install app"</b> or <b>"Add to Home screen"</b>.<br>
-      3. It works 100% offline in the hills, car, or garden without Wi-Fi!
+      3. All 29 real trumpet studio samples work 100% offline outdoors!
     </p>
     <button class="modal-btn-close" onclick="closeQrModal()">Close</button>
   </div>
@@ -819,25 +900,24 @@
 
 <div class="studio-grid">
 
-  <!-- LEFT PANEL: Mic, Transport & Recording -->
+  <!-- LEFT PANEL: Whistle, Record & Fine-Tune -->
   <div class="panel">
     <div class="panel-title">
-      <span>1. Microphone & Studio Mode</span>
+      <span>1. Whistle &amp; Record</span>
       <span>🎙️</span>
     </div>
 
     <div class="transport-box">
       <button class="btn-big btn-live" id="btnLive" onclick="toggleLive()">
-        <span id="liveIcon">▶️</span>
-        <span id="liveLabel">Start Live Whistle Play</span>
+        <span id="liveIcon">🎺</span>
+        <span id="liveLabel">Start Live Trumpet</span>
       </button>
 
       <button class="btn-big btn-record" id="btnRecord" onclick="toggleRecord()">
         <span id="recIcon">🔴</span>
-        <span id="recLabel">Record Melody (No Delay)</span>
+        <span id="recLabel">Record 1930s Solo</span>
       </button>
 
-      <!-- Live Mic Input VU Meter -->
       <div class="vu-container">
         <div class="vu-header">
           <span>🎙️ Live Mic Sound Level</span>
@@ -848,60 +928,63 @@
         </div>
       </div>
 
-      <!-- Quick Speaker Check -->
-      <button class="btn-test-sound" onclick="testPhoneSpeaker()" title="Play a test note to confirm phone speaker works">
-        🔊 Tap to Test Phone Speaker
+      <button class="btn-test-sound" onclick="testPhoneSpeaker()" title="Hear a real 1930s solo trumpet test phrase">
+        🔊 Test 1930s Trumpet Sound
       </button>
     </div>
 
     <div class="recorded-box">
       <div class="control-label">
-        <span>Recorded Melody Memory</span>
+        <span>Recorded Solo Memory</span>
         <span class="val" id="recDuration">0.0s (Empty)</span>
       </div>
       <div class="btn-row">
         <button class="btn-secondary" id="btnPlayRec" onclick="playRecordedMelody()" disabled>
-          🔊 Play with Instrument
+          🔊 Play Trumpet Solo
         </button>
         <button class="btn-secondary" id="btnStopRec" onclick="stopRecordedPlayback()" disabled>
           ⏹️ Stop
         </button>
       </div>
       <div class="btn-row">
-        <button class="btn-secondary btn-tidy" id="btnAutoTidy" onclick="autoTidyMelody()" disabled title="Remove short squeaks and tune shaky notes automatically">
-          ✨ Tidy Up Melody (Auto-Clean)
+        <button class="btn-secondary btn-tidy" id="btnAutoTidy" onclick="autoTidyMelody()" disabled title="Clean squeaks, detect your key, and tune out-of-tune notes">
+          ✨ Polish &amp; Tune Solo
         </button>
-        <button class="btn-secondary" id="btnUndoTidy" onclick="restoreOriginalMelody()" disabled title="Undo last cleanup or restore original whistle">
-          ↩️ Undo / Restore Original
+        <button class="btn-secondary" id="btnUndoTidy" onclick="restoreOriginalMelody()" disabled title="Compare raw whistle or undo last tune">
+          ↩️ Undo / Raw Whistle
         </button>
       </div>
       <div class="btn-row">
         <button class="btn-secondary" id="btnExportWav" onclick="exportRecordingWAV()" disabled>
-          💾 Save Audio (.WAV)
+          💾 Save Trumpet (.WAV)
         </button>
         <button class="btn-secondary" id="btnExportMidi" onclick="exportRecordingMIDI()" disabled>
           🎼 Save Notes (.MID)
         </button>
       </div>
       <button class="btn-secondary" onclick="loadDemoMelody()">
-        ✨ Load Demo Whistle Tune (Test Orchestra)
+        🎺 Play 1930s Satchmo Demo
       </button>
+      <label class="auto-polish-row" title="Automatically clean squeaks and pull out-of-tune notes into key when you stop recording">
+        <input type="checkbox" id="autoPolishToggle" checked>
+        <span>✨ Auto-polish &amp; tune every recording when I stop</span>
+      </label>
     </div>
 
     <div class="tidy-box">
       <div class="control-label">
-        <span>🧹 Tidy &amp; Edit Notes</span>
+        <span>🧹 Fine-Tune Notes</span>
         <span class="val" id="noteCountLabel">0 Notes</span>
       </div>
       <div class="control-group">
         <div class="control-label">
-          <span>Glitch / Squeak Filter Threshold</span>
+          <span>Squeak / Breath Glitch Filter</span>
           <span class="val" id="glitchMsLabel">110 ms</span>
         </div>
         <input type="range" id="glitchMsSlider" min="60" max="250" step="10" value="110" oninput="updateGlitchThreshold(this.value)">
       </div>
       <div class="note-strip" id="noteEditorList">
-        <div class="note-strip-empty">Record a whistle melody (or click Load Demo) to preview, tune (▼/▲), or delete (🗑️) individual bad notes.</div>
+        <div class="note-strip-empty">Record a whistle solo (or click 1930s Satchmo Demo) to hear, nudge (▼/▲), or remove (🗑️) any note.</div>
       </div>
     </div>
 
@@ -919,8 +1002,8 @@
         <span>Voice / Whistle Mode</span>
       </div>
       <select id="vocalMode" onchange="updateVocalRange()">
-        <option value="whistle" selected>😗 Whistling (Pure Sine 300 Hz – 3500 Hz)</option>
-        <option value="hum">🎙️ Humming / Singing (85 Hz – 1100 Hz)</option>
+        <option value="whistle" selected>😗 Whistling (340 Hz – 3500 Hz)</option>
+        <option value="hum">🎙️ Humming / Singing (85 Hz – 1150 Hz)</option>
       </select>
     </div>
 
@@ -941,112 +1024,165 @@
       </div>
       <input type="range" id="gateSlider" min="2" max="50" value="15" oninput="updateGate(this.value)">
     </div>
-
-    <div class="tip-banner">
-      💡 <strong>Tip for Eric:</strong> In <em>Record Melody</em> mode, whistle freely, click <strong>✨ Tidy Up Melody</strong> to clear glitches &amp; tune shaky notes, or tap 🗑️ on any bad note below!
-    </div>
   </div>
 
-  <!-- CENTER PANEL: Live Tuner & Piano Roll -->
+  <!-- CENTER PANEL: Live Pitch & Auto-Tune Telescope -->
   <div class="panel">
     <div class="panel-title">
-      <span>2. Live Pitch Telescope & Musical Roll</span>
-      <span id="scaleStatusLabel">Scale: Chromatic (All Notes)</span>
+      <span>2. Live Pitch &amp; Auto-Tune Telescope</span>
+      <span id="scaleStatusLabel">Auto-Key: Ready</span>
     </div>
 
     <div class="tuner-header">
       <div class="metric-card">
-        <div class="metric-label">Your Whistle Note</div>
+        <div class="metric-label">Your Whistle</div>
         <div class="metric-big" id="detectedNoteDisplay">--</div>
         <div class="metric-sub" id="detectedHzDisplay">0.0 Hz</div>
       </div>
 
       <div class="metric-card">
-        <div class="metric-label">Instrument Playing</div>
-        <div class="metric-big" id="playedNoteDisplay" style="color: var(--emerald);">--</div>
-        <div class="metric-sub" id="octaveShiftInfo">Octave Shift: 0</div>
+        <div class="metric-label">1930s Trumpet Playing</div>
+        <div class="metric-big" id="playedNoteDisplay" style="color: var(--gold);">--</div>
+        <div class="metric-sub" id="octaveShiftInfo">Octave: -2 (Best)</div>
       </div>
 
       <div class="metric-card">
-        <div class="metric-label">Breath / Dynamics</div>
-        <div class="metric-big" id="volumeDisplay" style="color: var(--gold);">0%</div>
-        <div class="metric-sub" id="pitchSnapInfo">Magnetic Pitch Snap</div>
+        <div class="metric-label">Breath &amp; Auto-Key</div>
+        <div class="metric-big" id="volumeDisplay" style="color: var(--emerald);">0%</div>
+        <div class="metric-sub" id="pitchSnapInfo">Smart Satchmo Tune</div>
       </div>
     </div>
 
     <div class="canvas-wrap">
       <div class="canvas-overlay">
-        <span><i class="legend-dot" style="background:#38bdf8;"></i>Your Raw Whistle Pitch</span>
-        <span><i class="legend-dot" style="background:#10b981;"></i>Instrument Note Played</span>
+        <span><i class="legend-dot" style="background:#7dd3fc;"></i>Your Raw Whistle</span>
+        <span><i class="legend-dot" style="background:#f5c451;"></i>Tuned 1930s Solo Trumpet</span>
       </div>
       <canvas id="rollCanvas"></canvas>
     </div>
 
-    <!-- Musical Pitch Assist & Octave Bar -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+    <div class="controls-row-3">
       <div class="control-group">
         <div class="control-label">
-          <span>Octave Transpose (Lower / Higher)</span>
-        </div>
-        <div class="pill-row">
-          <div class="pill-btn" data-oct="-2" onclick="setOctave(-2)">-2 Oct</div>
-          <div class="pill-btn" data-oct="-1" onclick="setOctave(-1)">-1 Oct</div>
-          <div class="pill-btn active" data-oct="0" onclick="setOctave(0)">0 (Natural)</div>
-          <div class="pill-btn" data-oct="1" onclick="setOctave(1)">+1 Oct</div>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <div class="control-label">
-          <span>Pitch Tuning Assist</span>
+          <span>Out-of-Tune Rescue</span>
         </div>
         <select id="snapMode" onchange="updateSnapInfo()">
-          <option value="magnetic" selected>🧲 Magnetic Snap (Smooth + In Tune)</option>
-          <option value="strict">🎹 Strict Note Lock (100% Pitch Perfect)</option>
-          <option value="natural">🌊 Natural Slide & Vibrato (Unfiltered)</option>
+          <option value="smart" selected>✨ Smart Satchmo Tune (Auto-Improve)</option>
+          <option value="strict">🎯 Maximum Pitch Lock (Never Wrong Note)</option>
+          <option value="natural">🌊 Gentle Assist (Keep Slides)</option>
         </select>
       </div>
 
       <div class="control-group">
         <div class="control-label">
-          <span>Musical Scale Key</span>
+          <span>1930s Jazz Mood / Key</span>
         </div>
         <select id="scaleSelect" onchange="updateSnapInfo()">
-          <option value="chromatic" selected>🎼 All 12 Notes (Chromatic)</option>
-          <option value="major_c">☀️ C Major (Happy / Bright)</option>
-          <option value="minor_a">🌙 A Minor (Emotional / Cinema)</option>
-          <option value="pentatonic">🏯 Japanese Pentatonic (L'Eau Noire)</option>
-          <option value="celtic">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scottish Highland Modal (Dorian)</option>
+          <option value="auto_jazz" selected>✨ Auto-Fit My Tune (Any Key)</option>
+          <option value="blues_bb">🎺 New Orleans Blues (Bb Blues)</option>
+          <option value="minor_d">🌙 St. James Smoky Blues (D Minor)</option>
+          <option value="major_f">☀️ Wonderful World Ballad (F Major)</option>
+          <option value="major_c">🎷 Golden 1930s Swing (C Major)</option>
+          <option value="chromatic">🎼 All 12 Notes (Pure Tuning Only)</option>
         </select>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Trumpet Register</span>
+        </div>
+        <div class="pill-row">
+          <div class="pill-btn active" data-oct="-2" onclick="setOctave(-2)">-2 Oct (Best)</div>
+          <div class="pill-btn" data-oct="-1" onclick="setOctave(-1)">-1 Oct</div>
+          <div class="pill-btn" data-oct="0" onclick="setOctave(0)">0 (Hum)</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- RIGHT PANEL: Instrument Orchestra -->
+  <!-- RIGHT PANEL: 1930s Louis Armstrong Solo Trumpet -->
   <div class="panel">
     <div class="panel-title">
-      <span>3. Select Musical Instrument</span>
-      <span>🎻</span>
+      <span>3. 1930s Louis Armstrong Trumpet</span>
+      <span>🎺</span>
     </div>
 
-    <div class="inst-grid" id="instrumentGrid">
-      <!-- Populated dynamically by JS -->
-    </div>
-
-    <div class="control-group" style="margin-top: auto;">
-      <div class="control-label">
-        <span>Concert Hall Reverb (Echo Space)</span>
-        <span class="val" id="reverbValLabel">35%</span>
+    <div class="trumpet-hero">
+      <div class="trumpet-hero-top">
+        <div class="trumpet-hero-icon">🎺</div>
+        <div>
+          <h2>1930s Louis Armstrong Solo Trumpet</h2>
+          <p>Dedicated acoustic solo horn — real brass recordings through a vintage ribbon microphone &amp; tube club stage.</p>
+        </div>
       </div>
-      <input type="range" id="reverbSlider" min="0" max="90" value="35" oninput="updateReverb(this.value)">
+      <div class="engine-status-pill loading" id="brassEngineBadge">⏳ Loading Real Studio Brass...</div>
     </div>
 
     <div class="control-group">
       <div class="control-label">
-        <span>Master Instrument Volume</span>
-        <span class="val" id="masterVolLabel">85%</span>
+        <span>Horn Voicing / Mute</span>
       </div>
-      <input type="range" id="masterVolSlider" min="10" max="100" value="85" oninput="updateMasterVolume(this.value)">
+      <div class="voicing-list" id="voicingList">
+        <div class="voicing-card active" data-voicing="open" onclick="selectVoicing('open')">
+          <div class="voicing-top">
+            <span class="voicing-title"><span>🎺</span><span>Open Golden Bell</span></span>
+            <span class="voicing-tag">1930s Lead</span>
+          </div>
+          <div class="voicing-desc">Classic Satchmo open horn — ringing, brassy, and warm with expressive lip-scoop.</div>
+        </div>
+
+        <div class="voicing-card" data-voicing="ballad" onclick="selectVoicing('ballad')">
+          <div class="voicing-top">
+            <span class="voicing-title"><span>🌙</span><span>Velvet Ballad</span></span>
+            <span class="voicing-tag">Warm Vibrato</span>
+          </div>
+          <div class="voicing-desc">Intimate late-night solo tone recorded with natural acoustic brass vibrato.</div>
+        </div>
+
+        <div class="voicing-card" data-voicing="muted" onclick="selectVoicing('muted')">
+          <div class="voicing-top">
+            <span class="voicing-title"><span>🍸</span><span>Smoky Club Mute</span></span>
+            <span class="voicing-tag">Harmon Mute</span>
+          </div>
+          <div class="voicing-desc">Vintage 1930s Harmon-muted trumpet for smoky New Orleans jazz clubs.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>Satchmo Soul &amp; Vibrato</span>
+        <span class="val" id="soulValLabel">65%</span>
+      </div>
+      <input type="range" id="soulSlider" min="0" max="100" value="65" oninput="updateSoul(this.value)">
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>1930s Vintage Warmth (Ribbon &amp; Tube)</span>
+        <span class="val" id="vintageValLabel">70%</span>
+      </div>
+      <input type="range" id="vintageSlider" min="0" max="100" value="70" oninput="updateVintage(this.value)">
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>1930s Jazz Club Reverb</span>
+        <span class="val" id="reverbValLabel">40%</span>
+      </div>
+      <input type="range" id="reverbSlider" min="0" max="90" value="40" oninput="updateReverb(this.value)">
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span>Master Trumpet Volume</span>
+        <span class="val" id="masterVolLabel">88%</span>
+      </div>
+      <input type="range" id="masterVolSlider" min="10" max="100" value="88" oninput="updateMasterVolume(this.value)">
+    </div>
+
+    <div class="tip-banner" style="margin-top:auto;">
+      🎺 <strong>How it helps your pitch:</strong> Even if your whistle drifts flat, sharp, or wobbles between notes, <em>Smart Satchmo Tune</em> finds your natural key and plays rich, confident 1930s brass on pitch!
     </div>
   </div>
 
@@ -1054,174 +1190,33 @@
 
 <script>
 // ============================================================================
-// JARVIS WHISTLESYNTH — REAL-TIME PITCH & EXPRESSIVE INSTRUMENT ENGINE
+// SATCHMO WHISTLE TRUMPET v3.0 — 1930s SOLO TRUMPET & SMART PITCH ENGINE
 // ============================================================================
 
 const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const TRUMPET_MIN_MIDI = 53; // F3
+const TRUMPET_MAX_MIDI = 84; // C6
 
-const SCALES = {
-  chromatic: [0,1,2,3,4,5,6,7,8,9,10,11],
-  major_c:   [0,2,4,5,7,9,11],
-  minor_a:   [0,2,3,5,7,8,10],
-  pentatonic:[0,2,4,7,9],        // C D E G A (Classic East Asian / Scottish Pentatonic)
-  celtic:    [0,2,3,5,7,9,10]    // Dorian Highland scale
+const FIXED_SCALES = {
+  blues_bb:  { id: "blues_bb",  label: "Bb Blues",      pcs: [10, 1, 3, 4, 5, 8], tonic: 10 },
+  minor_d:   { id: "minor_d",   label: "D Minor Blues", pcs: [2, 4, 5, 7, 8, 9, 10, 0], tonic: 2 },
+  major_f:   { id: "major_f",   label: "F Major",       pcs: [5, 7, 9, 10, 0, 2, 4], tonic: 5 },
+  major_c:   { id: "major_c",   label: "C Major",       pcs: [0, 2, 4, 5, 7, 9, 11], tonic: 0 },
+  chromatic: { id: "chromatic", label: "Chromatic",     pcs: [0,1,2,3,4,5,6,7,8,9,10,11], tonic: 0 }
 };
 
-const INSTRUMENTS = [
-  {
-    id: "electric_lead",
-    name: "Electric Lead Guitar",
-    emoji: "⚡",
-    desc: "Singing overdriven tube-amp solo guitar with sustain & vibrato.",
-    tag: "Rock / Solo Sustained",
-    defaultOctave: -2,
-    type: "continuous"
-  },
-  {
-    id: "electric_clean",
-    name: "Clean Electric Guitar",
-    emoji: "🎸",
-    desc: "Crisp Fender-style plucked electric guitar with warm chorus shimmer.",
-    tag: "Note Triggered",
-    defaultOctave: -2,
-    type: "percussive"
-  },
-  {
-    id: "cello",
-    name: "Solo Cello",
-    emoji: "🎻",
-    desc: "Deep, warm bowed strings. Auto-shifts whistle down 2 octaves.",
-    tag: "Expressive Continuous",
-    defaultOctave: -2,
-    type: "continuous"
-  },
-  {
-    id: "violin",
-    name: "Stradivarius Violin",
-    emoji: "🎻",
-    desc: "Soaring lyrical strings with natural vibrato and bow dynamics.",
-    tag: "Expressive Continuous",
-    defaultOctave: -1,
-    type: "continuous"
-  },
-  {
-    id: "flute",
-    name: "Concert Silver Flute",
-    emoji: "🪈",
-    desc: "Silky, airy woodwind that mirrors your breath naturally.",
-    tag: "Expressive Continuous",
-    defaultOctave: -1,
-    type: "continuous"
-  },
-  {
-    id: "shakuhachi",
-    name: "Japanese Shakuhachi",
-    emoji: "🎋",
-    desc: "1600s bamboo zen flute with breathy attack & pitch bends.",
-    tag: "L'Eau Noire Special",
-    defaultOctave: -1,
-    type: "continuous"
-  },
-  {
-    id: "saxophone",
-    name: "Tenor Saxophone",
-    emoji: "🎷",
-    desc: "Warm brassy reed tone for jazz & expressive melodies.",
-    tag: "Expressive Continuous",
-    defaultOctave: -2,
-    type: "continuous"
-  },
-  {
-    id: "trumpet",
-    name: "Warm Jazz Trumpet",
-    emoji: "🎺",
-    desc: "Expressive brass horn that brightens dynamically with your breath.",
-    tag: "Expressive Continuous",
-    defaultOctave: -2,
-    type: "continuous"
-  },
-  {
-    id: "harmonica",
-    name: "Blues Harmonica",
-    emoji: "🎶",
-    desc: "Breathy reed harmonica with tremolo warble & warm grit.",
-    tag: "Expressive Continuous",
-    defaultOctave: -1,
-    type: "continuous"
-  },
-  {
-    id: "bagpipes",
-    name: "Highland Bagpipes",
-    emoji: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-    desc: "Authentic Scottish chanter reed with continuous fifth & octave drones.",
-    tag: "Scotland Special",
-    defaultOctave: -1,
-    type: "continuous"
-  },
-  {
-    id: "piano",
-    name: "Concert Grand Piano",
-    emoji: "🎹",
-    desc: "Crisp acoustic hammer strikes triggered on each distinct note.",
-    tag: "Note Triggered",
-    defaultOctave: -1,
-    type: "percussive"
-  },
-  {
-    id: "guitar",
-    name: "Spanish Nylon Guitar",
-    emoji: "🎸",
-    desc: "Warm acoustic plucked strings with wooden body resonance.",
-    tag: "Note Triggered",
-    defaultOctave: -2,
-    type: "percussive"
-  },
-  {
-    id: "bass",
-    name: "Studio Electric Bass",
-    emoji: "🎸",
-    desc: "Deep, punchy electric bass guitar pluck with rich low fundamental.",
-    tag: "Note Triggered",
-    defaultOctave: -2,
-    type: "percussive"
-  },
-  {
-    id: "harp",
-    name: "Scottish Celtic Harp",
-    emoji: "🪉",
-    desc: "Luminous, ringing plucked strings that shimmer in the hall.",
-    tag: "Note Triggered",
-    defaultOctave: -1,
-    type: "percussive"
-  },
-  {
-    id: "organ",
-    name: "Cathedral Pipe Organ",
-    emoji: "⛪",
-    desc: "Majestic multi-pipe harmonic sustain with deep bass pipes.",
-    tag: "Expressive Continuous",
-    defaultOctave: -2,
-    type: "continuous"
-  },
-  {
-    id: "vangelis",
-    name: "Cinema CS-80 Synth",
-    emoji: "🌌",
-    desc: "Lush Vangelis / Blade Runner emotional analog synthesizer.",
-    tag: "Expressive Continuous",
-    defaultOctave: -2,
-    type: "continuous"
-  }
-];
-
 // State
-let currentInstrument = INSTRUMENTS[0];
+let currentVoicing = "open";
 let octaveShift = -2;
-let gateThreshold = 0.005;
-let masterVol = 0.85;
-let reverbWet = 0.35;
+let gateThreshold = 0.003 + (15 / 100) * 0.10;
+let masterVol = 0.88;
+let reverbWet = 0.40;
+let soulAmount = 0.65;
+let vintageAmount = 0.70;
 
 let audioCtx = null;
+let liveBus = null;
+let liveVoiceCtrl = null;
 let micStream = null;
 let analyser = null;
 let micSource = null;
@@ -1230,15 +1225,14 @@ let isLive = false;
 let isRecording = false;
 let isPlayingRecorded = false;
 
-// Live Synth Nodes
-let synthMasterGain = null;
-let reverbNode = null;
-let reverbGain = null;
-let dryGain = null;
-let activeContinuousVoice = null;
 let lastTriggeredMidi = -1;
-let lastNoteTriggerTime = 0;
 let smoothedFreq = 0;
+
+// Sample Pack State
+const SAMPLE_BANK = { open: [], ballad: [], muted: [] };
+let samplePackManifestReady = false;
+let samplePackReadyCount = 0;
+let samplePackTotalCount = 0;
 
 // History for Piano Roll Canvas (last 280 frames)
 const pitchHistory = [];
@@ -1251,103 +1245,1154 @@ let undoStack = [];
 let glitchThresholdMs = 110;
 let recordStartTime = 0;
 let playbackTimerIds = [];
+let lastDetectedKeyLabel = "F Major";
 
-// Initialize UI
-window.addEventListener("DOMContentLoaded", () => {
-  renderInstrumentGrid();
-  setOctave(currentInstrument.defaultOctave);
-  enumerateMics();
-  initCanvasLoop();
-});
+// ============================================================================
+// MUSICAL PITCH, AUTO-KEY & INTELLIGENT OUT-OF-TUNE RESCUE ENGINE
+// ============================================================================
 
-function renderInstrumentGrid() {
-  const grid = document.getElementById("instrumentGrid");
-  grid.innerHTML = "";
-  INSTRUMENTS.forEach(inst => {
-    const card = document.createElement("div");
-    card.className = "inst-card" + (inst.id === currentInstrument.id ? " active" : "");
-    card.onclick = () => selectInstrument(inst);
-    card.innerHTML = `
-      <div class="inst-top">
-        <span class="inst-emoji">${inst.emoji}</span>
-        <span class="inst-name">${inst.name}</span>
-      </div>
-      <div class="inst-desc">${inst.desc}</div>
-      <div class="inst-tag">${inst.tag}</div>
-    `;
-    grid.appendChild(card);
-  });
+function freqToMidi(freq) {
+  return 69 + 12 * Math.log2(freq / 440.0);
 }
 
-function selectInstrument(inst) {
-  currentInstrument = inst;
-  setOctave(inst.defaultOctave);
-  renderInstrumentGrid();
+function midiToFreq(midi) {
+  return 440.0 * Math.pow(2, (midi - 69) / 12.0);
+}
 
-  // Rebuild continuous voice if running
-  if (activeContinuousVoice) {
-    stopContinuousVoice();
+function midiToNoteName(midi) {
+  const rounded = Math.round(midi);
+  const name = NOTE_NAMES[((rounded % 12) + 12) % 12];
+  const oct = Math.floor(rounded / 12) - 1;
+  return `${name}${oct}`;
+}
+
+function clampToTrumpetRange(midi) {
+  let m = midi;
+  while (m < TRUMPET_MIN_MIDI) m += 12;
+  while (m > TRUMPET_MAX_MIDI) m -= 12;
+  return m;
+}
+
+function nearestMidiInPitchClasses(rawMidi, pcs) {
+  const allowed = (pcs && pcs.length > 0) ? pcs : FIXED_SCALES.chromatic.pcs;
+  const baseOct = Math.floor(rawMidi / 12);
+  let best = Math.round(rawMidi);
+  let minDiff = 999;
+  for (let oct = baseOct - 1; oct <= baseOct + 1; oct++) {
+    for (let i = 0; i < allowed.length; i++) {
+      const candidate = oct * 12 + allowed[i];
+      const d = Math.abs(rawMidi - candidate);
+      if (d < minDiff) {
+        minDiff = d;
+        best = candidate;
+      }
+    }
   }
-  // If playing back a recorded melody, restart with the new instrument immediately!
-  if (isPlayingRecorded) {
-    playRecordedMelody();
+  return best;
+}
+
+function detectBestJazzKey(pcWeights, firstPc = -1, lastPc = -1) {
+  const total = pcWeights.reduce((a, b) => a + b, 0);
+  if (total <= 0) {
+    return { id: "major_f", label: "F Major", pcs: [5, 7, 9, 10, 0, 2, 4], tonic: 5, mode: "major", confidence: 0 };
+  }
+
+  let best = null;
+  let bestScore = -1e9;
+
+  for (let tonic = 0; tonic < 12; tonic++) {
+    // 1. Major / Satchmo Jazz Key (allows blue b3 and b7 color gently)
+    const majSteps = [0, 2, 4, 5, 7, 9, 11];
+    const majPcs = majSteps.map(s => (tonic + s) % 12);
+    const majBlue = new Set([(tonic + 3) % 12, (tonic + 10) % 12]);
+    let majScore = 0;
+    for (let pc = 0; pc < 12; pc++) {
+      const w = pcWeights[pc];
+      if (w <= 0) continue;
+      if (pc === tonic) majScore += w * 1.32;
+      else if (pc === (tonic + 7) % 12) majScore += w * 1.18;
+      else if (pc === (tonic + 4) % 12) majScore += w * 1.10;
+      else if (majPcs.includes(pc)) majScore += w * 1.0;
+      else if (majBlue.has(pc)) majScore -= w * 0.12;
+      else majScore -= w * 1.45;
+    }
+    if (firstPc === tonic) majScore += total * 0.06;
+    if (lastPc === tonic) majScore += total * 0.11;
+    if (majScore > bestScore) {
+      bestScore = majScore;
+      best = {
+        id: `auto_maj_${tonic}`,
+        label: `${NOTE_NAMES[tonic]} Major`,
+        pcs: majPcs,
+        tonic,
+        mode: "major",
+        confidence: Math.max(0, Math.min(1, majScore / total))
+      };
+    }
+
+    // 2. Natural / Blues Minor Key
+    const minSteps = [0, 2, 3, 5, 7, 8, 10];
+    const minPcs = minSteps.map(s => (tonic + s) % 12);
+    const minBlue5 = (tonic + 6) % 12;
+    let minScore = 0;
+    for (let pc = 0; pc < 12; pc++) {
+      const w = pcWeights[pc];
+      if (w <= 0) continue;
+      if (pc === tonic) minScore += w * 1.28;
+      else if (pc === (tonic + 7) % 12) minScore += w * 1.14;
+      else if (minPcs.includes(pc)) minScore += w * 1.0;
+      else if (pc === minBlue5) minScore -= w * 0.25;
+      else minScore -= w * 1.45;
+    }
+    if (firstPc === tonic) minScore += total * 0.05;
+    if (lastPc === tonic) minScore += total * 0.10;
+    if (minScore > bestScore) {
+      bestScore = minScore;
+      best = {
+        id: `auto_min_${tonic}`,
+        label: `${NOTE_NAMES[tonic]} Minor`,
+        pcs: minPcs,
+        tonic,
+        mode: "minor",
+        confidence: Math.max(0, Math.min(1, minScore / total))
+      };
+    }
+  }
+
+  return best;
+}
+
+class SmartPitchTracker {
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.rawWindow = [];
+    this.lastRawMidi = -1;
+    this.pendingOnsetCount = 0;
+    this.lockedMidi = -1;
+    this.noteFrameCount = 0;
+    this.escapeCandidate = -1;
+    this.escapeCount = 0;
+    this.tuningBias = 0;
+    this.pcWeights = new Array(12).fill(0);
+    this.totalFrames = 0;
+    this.detectedKey = detectBestJazzKey(this.pcWeights);
+  }
+
+  onSilence() {
+    this.rawWindow = [];
+    this.pendingOnsetCount = 0;
+    this.lockedMidi = -1;
+    this.noteFrameCount = 0;
+    this.escapeCandidate = -1;
+    this.escapeCount = 0;
+  }
+
+  processFrame(rawMidi, scaleSetting, snapMode, octShift) {
+    if (!(rawMidi > 0)) {
+      this.onSilence();
+      return null;
+    }
+
+    // 1. Single-frame octave-jump guard against harmonic squeaks
+    if (this.lastRawMidi > 0 && Math.abs(rawMidi - this.lastRawMidi) > 9.5 && this.rawWindow.length > 0) {
+      this.lastRawMidi = rawMidi;
+      if (this.lockedMidi > 0) {
+        return {
+          midi: clampToTrumpetRange(this.lockedMidi),
+          rawShiftedMidi: rawMidi + octShift * 12,
+          centsOffset: 0,
+          correctionCents: 0,
+          keyLabel: this.getActiveKeyLabel(scaleSetting),
+          isTuned: true
+        };
+      }
+      return null;
+    }
+    this.lastRawMidi = rawMidi;
+
+    // 2. 2-frame onset confirmation (ignores fleeting lip-formation chirps)
+    if (this.lockedMidi < 0) {
+      this.pendingOnsetCount++;
+      this.rawWindow.push(rawMidi);
+      if (this.rawWindow.length > 3) this.rawWindow.shift();
+      if (this.pendingOnsetCount < 2) {
+        return null;
+      }
+    } else {
+      this.rawWindow.push(rawMidi);
+      if (this.rawWindow.length > 3) this.rawWindow.shift();
+    }
+
+    // 3. 3-frame median smoothing
+    const sorted = [...this.rawWindow].sort((a, b) => a - b);
+    const medianRaw = sorted[Math.floor(sorted.length / 2)];
+    const shiftedRaw = medianRaw + octShift * 12;
+
+    // 4. Adaptive tuning-bias calibration (tracks consistent flat/sharp whistle drift)
+    const rawCentsFromNearest = shiftedRaw - Math.round(shiftedRaw);
+    if (Math.abs(rawCentsFromNearest - this.tuningBias) < 0.45) {
+      this.tuningBias = this.tuningBias * 0.965 + rawCentsFromNearest * 0.035;
+      this.tuningBias = Math.max(-0.45, Math.min(0.45, this.tuningBias));
+    }
+    const calibratedMidi = shiftedRaw - this.tuningBias * 0.85;
+
+    // 5. Update rolling live key histogram
+    const chromMidi = Math.round(calibratedMidi);
+    const chromPc = ((chromMidi % 12) + 12) % 12;
+    for (let i = 0; i < 12; i++) this.pcWeights[i] *= 0.996;
+    this.pcWeights[chromPc] += 1.0;
+    this.totalFrames++;
+    if (this.totalFrames >= 16) {
+      this.detectedKey = detectBestJazzKey(this.pcWeights);
+    }
+
+    const activeScale = scaleSetting === "auto_jazz"
+      ? (this.totalFrames >= 18 ? this.detectedKey : { label: "Listening...", pcs: FIXED_SCALES.chromatic.pcs, tonic: 5 })
+      : (FIXED_SCALES[scaleSetting] || FIXED_SCALES.chromatic);
+
+    // 6. Compute improved target MIDI by rescue mode
+    let targetMidi;
+    if (snapMode === "natural") {
+      const center = scaleSetting === "chromatic"
+        ? Math.round(calibratedMidi)
+        : nearestMidiInPitchClasses(calibratedMidi, activeScale.pcs);
+      targetMidi = center * 0.75 + calibratedMidi * 0.25;
+      this.lockedMidi = Math.round(center);
+    } else {
+      let candidate = snapMode === "strict"
+        ? nearestMidiInPitchClasses(calibratedMidi, activeScale.pcs)
+        : Math.round(calibratedMidi);
+
+      // Hysteresis note lock: require >= 62 cents escape for 2 consecutive frames
+      if (this.lockedMidi > 0 && candidate !== this.lockedMidi) {
+        const distFromLock = Math.abs(calibratedMidi - this.lockedMidi);
+        if (distFromLock < 0.62) {
+          candidate = this.lockedMidi;
+          this.escapeCount = 0;
+        } else {
+          if (this.escapeCandidate === candidate) {
+            this.escapeCount++;
+          } else {
+            this.escapeCandidate = candidate;
+            this.escapeCount = 1;
+          }
+          if (this.escapeCount < 2) {
+            candidate = this.lockedMidi;
+          } else {
+            this.lockedMidi = candidate;
+            this.noteFrameCount = 0;
+            this.escapeCount = 0;
+          }
+        }
+      } else if (this.lockedMidi < 0) {
+        this.lockedMidi = candidate;
+        this.noteFrameCount = 0;
+      }
+
+      this.noteFrameCount++;
+
+      // Smart mode: rescue brief accidental off-key semitone slips while preserving deliberate held blue notes
+      if (snapMode === "smart" && activeScale.pcs.length < 12) {
+        const candPc = ((candidate % 12) + 12) % 12;
+        if (!activeScale.pcs.includes(candPc)) {
+          const tonic = activeScale.tonic ?? 5;
+          const rel = (candPc - tonic + 12) % 12;
+          const isBlueColor = (rel === 3 || rel === 6 || rel === 10);
+          if (!isBlueColor || this.noteFrameCount < 8) {
+            candidate = nearestMidiInPitchClasses(calibratedMidi, activeScale.pcs);
+            this.lockedMidi = candidate;
+          }
+        }
+      }
+      targetMidi = candidate;
+    }
+
+    const playedMidi = clampToTrumpetRange(targetMidi);
+    const centsOffset = Math.round((shiftedRaw - Math.round(shiftedRaw)) * 100);
+    const correctionCents = Math.round((playedMidi - shiftedRaw) * 100);
+
+    return {
+      midi: playedMidi,
+      rawShiftedMidi: shiftedRaw,
+      centsOffset,
+      correctionCents,
+      keyLabel: this.getActiveKeyLabel(scaleSetting),
+      isTuned: Math.abs(centsOffset) <= 14 || Math.abs(correctionCents) >= 12
+    };
+  }
+
+  getActiveKeyLabel(scaleSetting) {
+    if (scaleSetting !== "auto_jazz") {
+      return (FIXED_SCALES[scaleSetting] || FIXED_SCALES.chromatic).label;
+    }
+    return this.totalFrames >= 18 ? this.detectedKey.label : "Listening...";
   }
 }
 
-function setOctave(oct) {
-  octaveShift = oct;
-  document.querySelectorAll(".pill-btn").forEach(btn => {
-    btn.classList.toggle("active", parseInt(btn.dataset.oct) === oct);
-  });
-  document.getElementById("octaveShiftInfo").textContent =
-    `Octave Shift: ${oct > 0 ? "+" + oct : oct} (${oct === 0 ? "Same pitch" : (oct < 0 ? Math.abs(oct) + " oct lower" : oct + " oct higher")})`;
-  if (recordedFrames.length > 0) {
-    renderNoteEditor();
-    if (!isLive && !isRecording && !isPlayingRecorded) syncPianoRollFromRecorded();
+const liveTracker = new SmartPitchTracker();
+
+function polishRecordedSolo(frames, options = {}) {
+  const scaleSetting = options.scaleSetting || "auto_jazz";
+  const snapMode = options.snapMode || "smart";
+  const octShift = options.octaveShift !== undefined ? options.octaveShift : -2;
+  const minNoteMs = options.glitchThresholdMs || 110;
+
+  let work = frames.map(f => ({ ...f }));
+  if (work.length === 0) {
+    return { frames: [], keyInfo: FIXED_SCALES.major_f, removedGlitches: 0, tunedNotes: 0, avgCorrectionCents: 0 };
   }
-}
 
-function updateGate(val) {
-  document.getElementById("gateValLabel").textContent = val + "%";
-  // Map 2..50 to RMS 0.004 .. 0.08
-  gateThreshold = 0.003 + (val / 100) * 0.10;
-}
-
-function updateReverb(val) {
-  document.getElementById("reverbValLabel").textContent = val + "%";
-  reverbWet = val / 100;
-  if (reverbGain && dryGain && audioCtx) {
-    reverbGain.gain.setTargetAtTime(reverbWet, audioCtx.currentTime, 0.03);
-    dryGain.gain.setTargetAtTime(1.0 - reverbWet * 0.4, audioCtx.currentTime, 0.03);
+  // 1. Estimate typical frame step
+  const diffs = [];
+  for (let i = 1; i < work.length; i++) {
+    const d = work[i].timeOffsetMs - work[i - 1].timeOffsetMs;
+    if (d > 2 && d < 120) diffs.push(d);
   }
-}
+  const avgStepMs = diffs.length > 0 ? diffs.reduce((a, b) => a + b, 0) / diffs.length : 20;
 
-function updateMasterVolume(val) {
-  document.getElementById("masterVolLabel").textContent = val + "%";
-  masterVol = val / 100;
-  if (synthMasterGain && audioCtx) {
-    synthMasterGain.gain.setTargetAtTime(masterVol, audioCtx.currentTime, 0.03);
+  // 2. Global pitch-center calibration (fix consistent flat/sharp whistling)
+  const offsets = [];
+  for (let i = 0; i < work.length; i++) {
+    if (work[i].rawMidi > 0) {
+      const m = work[i].rawMidi;
+      offsets.push(m - Math.round(m));
+    }
   }
-}
-
-function updateSnapInfo() {
-  const snap = document.getElementById("snapMode").value;
-  const scale = document.getElementById("scaleSelect").selectedOptions[0].text;
-  document.getElementById("pitchSnapInfo").textContent =
-    snap === "magnetic" ? "Magnetic Snap" : (snap === "strict" ? "Strict Note Lock" : "Natural Slide");
-  document.getElementById("scaleStatusLabel").textContent = "Scale: " + scale;
-  if (recordedFrames.length > 0) {
-    renderNoteEditor();
-    if (!isLive && !isRecording && !isPlayingRecorded) syncPianoRollFromRecorded();
+  let globalBias = 0;
+  if (offsets.length > 0) {
+    offsets.sort((a, b) => a - b);
+    globalBias = Math.max(-0.48, Math.min(0.48, offsets[Math.floor(offsets.length / 2)]));
   }
-}
+  for (let i = 0; i < work.length; i++) {
+    if (work[i].rawMidi > 0) {
+      work[i].calRawMidi = work[i].rawMidi - globalBias * 0.9;
+    } else {
+      work[i].calRawMidi = -1;
+    }
+  }
 
-function updateVocalRange() {
-  smoothedFreq = 0;
+  // 3. Heal brief breath dropouts (< 75 ms between same/adjacent notes)
+  let idx = 0;
+  while (idx < work.length) {
+    if (work[idx].calRawMidi <= 0) {
+      let gapEnd = idx;
+      while (gapEnd + 1 < work.length && work[gapEnd + 1].calRawMidi <= 0) gapEnd++;
+      const prevIdx = idx - 1;
+      const nextIdx = gapEnd + 1;
+      if (prevIdx >= 0 && nextIdx < work.length) {
+        const gapMs = work[nextIdx].timeOffsetMs - work[prevIdx].timeOffsetMs;
+        const pMidi = Math.round(work[prevIdx].calRawMidi + octShift * 12);
+        const nMidi = Math.round(work[nextIdx].calRawMidi + octShift * 12);
+        if (gapMs < 75 && Math.abs(pMidi - nMidi) <= 1) {
+          const fillRaw = (work[prevIdx].rawMidi + work[nextIdx].rawMidi) / 2;
+          const fillCal = (work[prevIdx].calRawMidi + work[nextIdx].calRawMidi) / 2;
+          const fillRms = (work[prevIdx].rms + work[nextIdx].rms) / 2;
+          for (let k = idx; k <= gapEnd; k++) {
+            work[k].rawMidi = fillRaw;
+            work[k].calRawMidi = fillCal;
+            work[k].rms = Math.max(0.28, fillRms);
+          }
+        }
+      }
+      idx = gapEnd + 1;
+    } else {
+      idx++;
+    }
+  }
+
+  // 4. Group into contiguous pitch / silence blocks
+  const blocks = [];
+  let curBlock = null;
+  for (let i = 0; i < work.length; i++) {
+    const f = work[i];
+    const qMidi = f.calRawMidi > 0 ? Math.round(f.calRawMidi + octShift * 12) : -1;
+    if (!curBlock || curBlock.qMidi !== qMidi) {
+      if (curBlock) blocks.push(curBlock);
+      curBlock = { qMidi, frames: [f] };
+    } else {
+      curBlock.frames.push(f);
+    }
+  }
+  if (curBlock) blocks.push(curBlock);
+
+  for (let b = 0; b < blocks.length; b++) {
+    const blk = blocks[b];
+    const startMs = blk.frames[0].timeOffsetMs;
+    const endMs = b + 1 < blocks.length
+      ? blocks[b + 1].frames[0].timeOffsetMs
+      : blk.frames[blk.frames.length - 1].timeOffsetMs + avgStepMs;
+    blk.durationMs = Math.max(avgStepMs, endMs - startMs);
+  }
+
+  // 5. Filter out short squeaks / glitches (< minNoteMs)
+  let removedGlitches = 0;
+  const keptBlocks = [];
+  for (let b = 0; b < blocks.length; b++) {
+    const blk = blocks[b];
+    if (blk.qMidi > 0 && blk.durationMs < minNoteMs) {
+      removedGlitches++;
+      continue;
+    }
+    keptBlocks.push(blk);
+  }
+
+  while (keptBlocks.length > 0 && keptBlocks[0].qMidi <= 0) keptBlocks.shift();
+  while (keptBlocks.length > 0 && keptBlocks[keptBlocks.length - 1].qMidi <= 0) keptBlocks.pop();
+
+  if (keptBlocks.filter(b => b.qMidi > 0).length === 0) {
+    return null;
+  }
+
+  // 6. Detect best key across kept musical notes
+  const pcHist = new Array(12).fill(0);
+  let firstPc = -1;
+  let lastPc = -1;
+  for (const blk of keptBlocks) {
+    if (blk.qMidi > 0) {
+      const pc = ((blk.qMidi % 12) + 12) % 12;
+      if (firstPc < 0) firstPc = pc;
+      lastPc = pc;
+      pcHist[pc] += Math.max(1, blk.durationMs / 40);
+    }
+  }
+  const keyInfo = scaleSetting === "auto_jazz"
+    ? detectBestJazzKey(pcHist, firstPc, lastPc)
+    : (FIXED_SCALES[scaleSetting] || FIXED_SCALES.chromatic);
+
+  // 7. Out-of-tune note rescue & harmonic stabilization per kept note
+  for (const blk of keptBlocks) {
+    if (blk.qMidi <= 0) continue;
+    const sortedCal = blk.frames.map(f => f.calRawMidi).sort((a, b) => a - b);
+    const medianCal = sortedCal[Math.floor(sortedCal.length / 2)];
+    const shiftedCal = medianCal + octShift * 12;
+
+    let targetMidi;
+    if (snapMode === "strict") {
+      targetMidi = nearestMidiInPitchClasses(shiftedCal, keyInfo.pcs);
+    } else if (snapMode === "smart") {
+      const chrom = Math.round(shiftedCal);
+      const pc = ((chrom % 12) + 12) % 12;
+      if (keyInfo.pcs.includes(pc)) {
+        targetMidi = chrom;
+      } else {
+        const rel = (pc - (keyInfo.tonic ?? 5) + 12) % 12;
+        const isHeldBlue = (rel === 3 || rel === 6 || rel === 10) && blk.durationMs >= 260;
+        targetMidi = isHeldBlue ? chrom : nearestMidiInPitchClasses(shiftedCal, keyInfo.pcs);
+      }
+    } else {
+      targetMidi = keyInfo.pcs.length < 12
+        ? nearestMidiInPitchClasses(shiftedCal, keyInfo.pcs)
+        : Math.round(shiftedCal);
+    }
+    blk.rescuedMidi = clampToTrumpetRange(targetMidi);
+  }
+
+  // 8. Merge identical adjacent rescued notes
+  const merged = [];
+  for (const blk of keptBlocks) {
+    const last = merged[merged.length - 1];
+    const keyMidi = blk.qMidi > 0 ? blk.rescuedMidi : -1;
+    if (last && last.finalMidi === keyMidi) {
+      last.frames.push(...blk.frames);
+    } else {
+      merged.push({ finalMidi: keyMidi, frames: [...blk.frames] });
+    }
+  }
+
+  // 9. Rebuild clean timeline frames with natural breath contour
+  const cleanedFrames = [];
+  let tunedNotes = 0;
+  let correctionAbsSum = 0;
+  let correctionCount = 0;
+  let cursorMs = 30;
+
+  for (const blk of merged) {
+    if (blk.finalMidi > 0) {
+      tunedNotes++;
+      const targetRaw = blk.finalMidi - octShift * 12;
+      const pull = snapMode === "natural" ? 0.82 : 1.0;
+
+      for (let k = 0; k < blk.frames.length; k++) {
+        const src = blk.frames[k];
+        const dt = k > 0 ? Math.max(8, Math.min(50, src.timeOffsetMs - blk.frames[k - 1].timeOffsetMs)) : avgStepMs;
+        if (k > 0) cursorMs += dt;
+
+        correctionAbsSum += Math.abs(blk.finalMidi - (src.rawMidi + octShift * 12)) * 100;
+        correctionCount++;
+
+        const smoothedRaw = src.rawMidi * (1 - pull) + targetRaw * pull;
+        cleanedFrames.push({
+          timeOffsetMs: Math.round(cursorMs),
+          rawMidi: smoothedRaw,
+          snappedMidi: blk.finalMidi,
+          playedMidi: blk.finalMidi,
+          polishedOctave: octShift,
+          rms: Math.max(0.32, Math.min(0.95, src.rms))
+        });
+      }
+      cursorMs += avgStepMs;
+    } else {
+      const rawGapMs = Math.min(420, blk.frames.length * avgStepMs);
+      const gapSteps = Math.max(1, Math.round(rawGapMs / avgStepMs));
+      for (let s = 0; s < gapSteps; s++) {
+        cleanedFrames.push({
+          timeOffsetMs: Math.round(cursorMs),
+          rawMidi: -1,
+          snappedMidi: -1,
+          playedMidi: -1,
+          rms: 0
+        });
+        cursorMs += avgStepMs;
+      }
+    }
+  }
+
+  return {
+    frames: cleanedFrames,
+    keyInfo,
+    removedGlitches,
+    tunedNotes,
+    avgCorrectionCents: correctionCount > 0 ? Math.round(correctionAbsSum / correctionCount) : 0
+  };
 }
 
 // ============================================================================
-// AUDIO CONTEXT & SYNTHESIS ENGINE
+// REAL 1930s TRUMPET SAMPLE LOADER & VINTAGE AUDIO ENGINE
+// ============================================================================
+
+async function loadSamplePackManifest() {
+  const badgeEl = document.getElementById("brassEngineBadge");
+  try {
+    const resp = await fetch("./samples/trumpet_manifest.json");
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const manifest = await resp.json();
+
+    samplePackTotalCount = 0;
+    for (const v of ["open", "ballad", "muted"]) {
+      const list = (manifest.voicings && manifest.voicings[v]) || [];
+      SAMPLE_BANK[v] = list.map(entry => ({
+        midi: entry.midi,
+        measuredMidi: entry.measuredMidi,
+        durationSec: entry.durationSec,
+        file: entry.file,
+        rawBuffer: null,
+        decodedBuffer: null,
+        onsetSec: 0.024
+      }));
+      samplePackTotalCount += list.length;
+    }
+    samplePackManifestReady = true;
+
+    // Fetch raw MP3 bytes immediately (open first, then ballad & muted)
+    await fetchVoicingRawBytes("open");
+    fetchVoicingRawBytes("ballad").then(() => fetchVoicingRawBytes("muted"));
+  } catch (err) {
+    console.warn("Could not load trumpet sample manifest, falling back to FM brass:", err);
+    if (badgeEl) {
+      badgeEl.className = "engine-status-pill loading";
+      badgeEl.textContent = "🎺 Warm Brass Synth Mode (Offline Fallback)";
+    }
+    if (!isLive && !isRecording && !isPlayingRecorded) {
+      updateStatusBadge("1930s Brass Synth Ready", "ready");
+    }
+  }
+}
+
+async function fetchVoicingRawBytes(voicing) {
+  const entries = SAMPLE_BANK[voicing] || [];
+  await Promise.all(entries.map(async entry => {
+    if (entry.rawBuffer) return;
+    try {
+      const r = await fetch("./" + entry.file);
+      if (!r.ok) return;
+      entry.rawBuffer = await r.arrayBuffer();
+      samplePackReadyCount++;
+      updateSampleStatusUI();
+      if (audioCtx && !entry.decodedBuffer) {
+        await decodeEntryForLiveCtx(entry);
+      }
+    } catch (e) {}
+  }));
+  updateSampleStatusUI();
+}
+
+function findBufferOnsetSec(audioBuffer) {
+  const data = audioBuffer.getChannelData(0);
+  const sr = audioBuffer.sampleRate;
+  const maxScan = Math.min(data.length, Math.floor(0.25 * sr));
+  for (let i = 0; i < maxScan; i++) {
+    if (Math.abs(data[i]) > 0.008) {
+      const pre = Math.max(0, i - Math.round(0.002 * sr));
+      return pre / sr;
+    }
+  }
+  return 0;
+}
+
+async function decodeEntryForLiveCtx(entry) {
+  if (!audioCtx || !entry.rawBuffer || entry.decodedBuffer) return entry.decodedBuffer;
+  try {
+    const decoded = await audioCtx.decodeAudioData(entry.rawBuffer.slice(0));
+    entry.decodedBuffer = decoded;
+    entry.onsetSec = findBufferOnsetSec(decoded);
+    return decoded;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function ensureVoicingDecoded(voicing, targetCtx = null) {
+  const entries = SAMPLE_BANK[voicing] || [];
+  await fetchVoicingRawBytes(voicing);
+  if (!targetCtx || targetCtx === audioCtx) {
+    await Promise.all(entries.map(e => decodeEntryForLiveCtx(e)));
+    return null;
+  }
+  // Decode/clone cleanly for OfflineAudioContext WAV export
+  const map = new Map();
+  await Promise.all(entries.map(async entry => {
+    if (entry.decodedBuffer) {
+      const buf = targetCtx.createBuffer(
+        entry.decodedBuffer.numberOfChannels,
+        entry.decodedBuffer.length,
+        entry.decodedBuffer.sampleRate
+      );
+      for (let c = 0; c < entry.decodedBuffer.numberOfChannels; c++) {
+        buf.copyToChannel(entry.decodedBuffer.getChannelData(c), c);
+      }
+      map.set(entry, { buffer: buf, onsetSec: entry.onsetSec });
+    } else if (entry.rawBuffer) {
+      try {
+        const buf = await targetCtx.decodeAudioData(entry.rawBuffer.slice(0));
+        map.set(entry, { buffer: buf, onsetSec: findBufferOnsetSec(buf) });
+      } catch (e) {}
+    }
+  }));
+  return map;
+}
+
+function updateSampleStatusUI() {
+  const badgeEl = document.getElementById("brassEngineBadge");
+  if (!badgeEl) return;
+  if (!samplePackManifestReady || samplePackTotalCount === 0) return;
+
+  if (samplePackReadyCount >= samplePackTotalCount) {
+    badgeEl.className = "engine-status-pill";
+    badgeEl.textContent = `✅ Real Studio Brass • ${samplePackTotalCount} Samples Cached`;
+    if (!isLive && !isRecording && !isPlayingRecorded) {
+      updateStatusBadge("🎺 Real 1930s Brass Ready", "ready");
+    }
+  } else {
+    const openDone = SAMPLE_BANK.open.filter(e => e.rawBuffer !== null).length;
+    if (openDone === SAMPLE_BANK.open.length && SAMPLE_BANK.open.length > 0) {
+      badgeEl.className = "engine-status-pill";
+      badgeEl.textContent = `🎺 Open Trumpet Ready (${samplePackReadyCount}/${samplePackTotalCount} cached)`;
+      if (!isLive && !isRecording && !isPlayingRecorded) {
+        updateStatusBadge("🎺 Real 1930s Brass Ready", "ready");
+      }
+    } else {
+      badgeEl.className = "engine-status-pill loading";
+      badgeEl.textContent = `⏳ Loading Real Brass (${samplePackReadyCount}/${samplePackTotalCount})...`;
+    }
+  }
+}
+
+function findClosestSample(voicing, targetMidi) {
+  const list = SAMPLE_BANK[voicing] || [];
+  let best = null;
+  let bestDist = 999;
+  for (let i = 0; i < list.length; i++) {
+    const s = list[i];
+    if (!s.decodedBuffer && !s.rawBuffer) continue;
+    const d = Math.abs(targetMidi - s.midi);
+    if (d < bestDist) {
+      bestDist = d;
+      best = s;
+    }
+  }
+  return best;
+}
+
+function createWarmJazzClubIR(ctx, duration = 1.6, decay = 2.5) {
+  const rate = ctx.sampleRate;
+  const length = Math.floor(rate * duration);
+  const preDelaySamples = Math.floor(0.014 * rate);
+  const impulse = ctx.createBuffer(2, length, rate);
+
+  for (let ch = 0; ch < 2; ch++) {
+    const data = impulse.getChannelData(ch);
+    let lp = 0;
+    for (let i = 0; i < length; i++) {
+      if (i < preDelaySamples) {
+        data[i] = 0;
+        continue;
+      }
+      const tNorm = (i - preDelaySamples) / Math.max(1, length - preDelaySamples);
+      const raw = (Math.random() * 2 - 1) * Math.pow(1 - tNorm, decay);
+      // Warm wooden jazz room damping (~3.2 kHz lowpass smoothing)
+      lp = lp * 0.72 + raw * 0.28;
+      data[i] = lp * 0.9;
+    }
+  }
+  const convolver = ctx.createConvolver();
+  convolver.buffer = impulse;
+  return convolver;
+}
+
+function makeVintageTubeCurve(vintage = 0.7) {
+  const n = 4096;
+  const curve = new Float32Array(n);
+  const drive = 1.0 + vintage * 1.45;
+  const bias = 0.055 * vintage;
+  const dcOffset = Math.tanh(bias);
+  const norm = Math.tanh(drive + bias) - dcOffset || 1;
+  for (let i = 0; i < n; i++) {
+    const x = (i * 2) / (n - 1) - 1;
+    curve[i] = (Math.tanh(x * drive + bias) - dcOffset) / norm;
+  }
+  return curve;
+}
+
+function createVintageBrassBus(ctx, settings) {
+  const input = ctx.createGain();
+  input.gain.value = 1.0;
+
+  const breathFilter = ctx.createBiquadFilter();
+  breathFilter.type = "lowpass";
+  breathFilter.frequency.value = 2800;
+  breathFilter.Q.value = 0.85;
+
+  const ribbonHPF = ctx.createBiquadFilter();
+  ribbonHPF.type = "highpass";
+  ribbonHPF.frequency.value = 135;
+  ribbonHPF.Q.value = 0.7;
+
+  const warmBodyEQ = ctx.createBiquadFilter();
+  warmBodyEQ.type = "peaking";
+  warmBodyEQ.frequency.value = 420;
+  warmBodyEQ.Q.value = 0.9;
+  warmBodyEQ.gain.value = 3.0 * settings.vintage;
+
+  const brassBellEQ = ctx.createBiquadFilter();
+  brassBellEQ.type = "peaking";
+  brassBellEQ.frequency.value = 1680;
+  brassBellEQ.Q.value = 1.6;
+  brassBellEQ.gain.value = 2.6;
+
+  const ribbonRollOff = ctx.createBiquadFilter();
+  ribbonRollOff.type = "lowpass";
+  ribbonRollOff.frequency.value = 6500 - settings.vintage * 3300;
+  ribbonRollOff.Q.value = 0.7;
+
+  const tubeShaper = ctx.createWaveShaper();
+  tubeShaper.curve = makeVintageTubeCurve(settings.vintage);
+  tubeShaper.oversample = "4x";
+
+  const dcBlockHPF = ctx.createBiquadFilter();
+  dcBlockHPF.type = "highpass";
+  dcBlockHPF.frequency.value = 35;
+
+  const masterGain = ctx.createGain();
+  masterGain.gain.value = settings.masterVol;
+
+  const dryGain = ctx.createGain();
+  dryGain.gain.value = 1.0 - settings.reverbWet * 0.35;
+
+  const reverbGain = ctx.createGain();
+  reverbGain.gain.value = settings.reverbWet;
+
+  const reverbNode = createWarmJazzClubIR(ctx, 1.6, 2.5);
+
+  const limiter = ctx.createDynamicsCompressor();
+  limiter.threshold.value = -4;
+  limiter.knee.value = 6;
+  limiter.ratio.value = 8;
+  limiter.attack.value = 0.003;
+  limiter.release.value = 0.12;
+
+  input.connect(breathFilter);
+  breathFilter.connect(ribbonHPF);
+  ribbonHPF.connect(warmBodyEQ);
+  warmBodyEQ.connect(brassBellEQ);
+  brassBellEQ.connect(ribbonRollOff);
+  ribbonRollOff.connect(tubeShaper);
+  tubeShaper.connect(dcBlockHPF);
+  dcBlockHPF.connect(masterGain);
+
+  masterGain.connect(dryGain);
+  masterGain.connect(reverbNode);
+  reverbNode.connect(reverbGain);
+
+  dryGain.connect(limiter);
+  reverbGain.connect(limiter);
+  limiter.connect(ctx.destination);
+
+  // Ultra-subtle 1930s 78rpm warm velvet vinyl air when playing & vintage >= 72%
+  let vinylGain = null;
+  let vinylSrc = null;
+  if (!(ctx instanceof OfflineAudioContext)) {
+    const vLen = ctx.sampleRate * 3;
+    const vBuf = ctx.createBuffer(1, vLen, ctx.sampleRate);
+    const ch0 = vBuf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < vLen; i++) {
+      const white = Math.random() * 2 - 1;
+      last = last * 0.92 + white * 0.08;
+      const tick = Math.random() < 0.00018 ? (Math.random() * 0.35 - 0.175) : 0;
+      ch0[i] = last + tick;
+    }
+    vinylSrc = ctx.createBufferSource();
+    vinylSrc.buffer = vBuf;
+    vinylSrc.loop = true;
+
+    const vinylBP = ctx.createBiquadFilter();
+    vinylBP.type = "bandpass";
+    vinylBP.frequency.value = 1750;
+    vinylBP.Q.value = 0.7;
+
+    vinylGain = ctx.createGain();
+    vinylGain.gain.value = 0.00001;
+
+    vinylSrc.connect(vinylBP);
+    vinylBP.connect(vinylGain);
+    vinylGain.connect(masterGain);
+    vinylSrc.start();
+  }
+
+  return {
+    input,
+    breathFilter,
+    warmBodyEQ,
+    ribbonRollOff,
+    tubeShaper,
+    masterGain,
+    dryGain,
+    reverbGain,
+    vinylGain,
+    setBreath(dynamics, atTime = null) {
+      const t = atTime !== null ? atTime : ctx.currentTime;
+      const cut = 1550 + Math.min(1, Math.max(0, dynamics)) * 3350;
+      breathFilter.frequency.setTargetAtTime(cut, t, 0.028);
+    },
+    setPlayingVinyl(isActive) {
+      if (!vinylGain) return;
+      const t = ctx.currentTime;
+      const target = isActive && vintageAmount >= 0.72
+        ? 0.0058 * ((vintageAmount - 0.70) / 0.30)
+        : 0.00001;
+      vinylGain.gain.setTargetAtTime(target, t, 0.08);
+    },
+    updateVintage(v) {
+      const t = ctx.currentTime;
+      warmBodyEQ.gain.setTargetAtTime(3.0 * v, t, 0.04);
+      ribbonRollOff.frequency.setTargetAtTime(6500 - v * 3300, t, 0.04);
+      tubeShaper.curve = makeVintageTubeCurve(v);
+    },
+    updateReverb(wet) {
+      const t = ctx.currentTime;
+      reverbGain.gain.setTargetAtTime(wet, t, 0.03);
+      dryGain.gain.setTargetAtTime(1.0 - wet * 0.35, t, 0.03);
+    },
+    updateMasterVol(vol) {
+      masterGain.gain.setTargetAtTime(vol, ctx.currentTime, 0.03);
+    }
+  };
+}
+
+// High-grade 1:1 FM + Bell Formant Fallback Voice (used if real samples still downloading)
+function createFallbackBrassVoice(ctx, bus, freq, dynamics, soul, isLegato, atTime = null, offlineEndTime = null) {
+  const now = atTime !== null ? atTime : ctx.currentTime;
+  const noteGain = ctx.createGain();
+  noteGain.gain.setValueAtTime(0.0001, now);
+  noteGain.connect(bus.input);
+
+  const carrier = ctx.createOscillator();
+  const modulator = ctx.createOscillator();
+  const harmonic2 = ctx.createOscillator();
+  const modGain = ctx.createGain();
+  const h2Gain = ctx.createGain();
+  const formant = ctx.createBiquadFilter();
+
+  carrier.type = "sine";
+  modulator.type = "sine";
+  harmonic2.type = "triangle";
+
+  carrier.frequency.setValueAtTime(freq, now);
+  modulator.frequency.setValueAtTime(freq, now);
+  harmonic2.frequency.setValueAtTime(freq * 2.0, now);
+
+  const modDepth = freq * (0.65 + dynamics * 1.35);
+  modGain.gain.setValueAtTime(modDepth * 1.4, now);
+  modGain.gain.exponentialRampToValueAtTime(Math.max(40, modDepth * 0.75), now + 0.11);
+
+  h2Gain.gain.value = 0.22;
+
+  formant.type = "peaking";
+  formant.frequency.value = 1850;
+  formant.Q.value = 2.2;
+  formant.gain.value = 5.5;
+
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.frequency.value = 5.4;
+  lfoGain.gain.setValueAtTime(0, now);
+  lfoGain.gain.setValueAtTime(0, now + 0.20);
+  lfoGain.gain.linearRampToValueAtTime(30 * soul, now + 0.72);
+
+  lfo.connect(lfoGain);
+  lfoGain.connect(carrier.detune);
+  lfoGain.connect(modulator.detune);
+  lfoGain.connect(harmonic2.detune);
+
+  if (!isLegato && soul > 0.08) {
+    carrier.detune.setValueAtTime(-42 * soul, now);
+    carrier.detune.setTargetAtTime(0, now, 0.016);
+    modulator.detune.setValueAtTime(-42 * soul, now);
+    modulator.detune.setTargetAtTime(0, now, 0.016);
+  }
+
+  modulator.connect(modGain);
+  modGain.connect(carrier.frequency);
+  carrier.connect(formant);
+  harmonic2.connect(h2Gain);
+  h2Gain.connect(formant);
+  formant.connect(noteGain);
+
+  const targetAmp = Math.min(0.75, 0.24 + dynamics * 0.50);
+  noteGain.gain.linearRampToValueAtTime(targetAmp, now + (isLegato ? 0.03 : 0.018));
+
+  carrier.start(now);
+  modulator.start(now);
+  harmonic2.start(now);
+  lfo.start(now);
+
+  if (offlineEndTime !== null) {
+    const relStart = Math.max(now + 0.04, offlineEndTime - 0.02);
+    noteGain.gain.setValueAtTime(targetAmp, relStart);
+    noteGain.gain.linearRampToValueAtTime(0.0001, relStart + 0.095);
+    const stopAt = relStart + 0.12;
+    carrier.stop(stopAt);
+    modulator.stop(stopAt);
+    harmonic2.stop(stopAt);
+    lfo.stop(stopAt);
+  }
+
+  return {
+    isFallback: true,
+    setPitchAndDynamics(newFreq, newDyn) {
+      const t = ctx.currentTime;
+      carrier.frequency.setTargetAtTime(newFreq, t, 0.018);
+      modulator.frequency.setTargetAtTime(newFreq, t, 0.018);
+      harmonic2.frequency.setTargetAtTime(newFreq * 2.0, t, 0.018);
+      noteGain.gain.setTargetAtTime(Math.min(0.75, 0.24 + newDyn * 0.50), t, 0.025);
+      bus.setBreath(newDyn, t);
+    },
+    release(fadeSec = 0.08) {
+      const t = ctx.currentTime;
+      noteGain.gain.cancelScheduledValues(t);
+      noteGain.gain.setTargetAtTime(0.0001, t, fadeSec / 3);
+      setTimeout(() => {
+        try {
+          carrier.stop();
+          modulator.stop();
+          harmonic2.stop();
+          lfo.stop();
+          noteGain.disconnect();
+        } catch (e) {}
+      }, Math.round(fadeSec * 1000) + 120);
+    }
+  };
+}
+
+function createSatchmoVoiceController(ctx, bus) {
+  let active = null;
+
+  function spawnSampleSegment(entry, playbackRate, startOffsetSec, startDelaySec, dynamics, soul, voicing, isLegato, withSustainLoop) {
+    const now = ctx.currentTime + startDelaySec;
+    const gainNode = ctx.createGain();
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.connect(bus.input);
+
+    const src = ctx.createBufferSource();
+    src.buffer = entry.decodedBuffer;
+    src.playbackRate.setValueAtTime(playbackRate, now);
+
+    // Delayed Satchmo terminal vibrato
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.frequency.value = 5.4;
+    const maxVibCents = (voicing === "ballad" ? 8 : 30) * soul;
+    lfoGain.gain.setValueAtTime(0, now);
+    lfoGain.gain.setValueAtTime(0, now + 0.20);
+    lfoGain.gain.linearRampToValueAtTime(maxVibCents, now + 0.72);
+    lfo.connect(lfoGain);
+    lfoGain.connect(src.detune);
+
+    // Authentic Satchmo upward lip-scoop on fresh attacks
+    if (!isLegato && soul > 0.08) {
+      src.detune.setValueAtTime(-42 * soul, now);
+      src.detune.setTargetAtTime(0, now, 0.016);
+    }
+
+    src.connect(gainNode);
+
+    const targetAmp = Math.min(0.95, 0.34 + dynamics * 0.62);
+    const fadeInTime = isLegato ? 0.030 : 0.012;
+    gainNode.gain.linearRampToValueAtTime(targetAmp, now + fadeInTime);
+
+    const safeOffset = Math.max(0, Math.min(entry.decodedBuffer.duration - 0.35, startOffsetSec));
+    src.start(now, safeOffset);
+    lfo.start(now);
+
+    const seg = {
+      src,
+      lfo,
+      lfoGain,
+      gainNode,
+      entry,
+      timerId: null,
+      stopped: false,
+      stopAfterFade(fadeSec = 0.095) {
+        if (this.stopped) return;
+        this.stopped = true;
+        if (this.timerId) {
+          clearTimeout(this.timerId);
+          this.timerId = null;
+        }
+        const t = ctx.currentTime;
+        this.gainNode.gain.cancelScheduledValues(t);
+        this.gainNode.gain.setTargetAtTime(0.0001, t, Math.max(0.01, fadeSec / 3));
+        setTimeout(() => {
+          try {
+            this.src.stop();
+            this.lfo.stop();
+            this.gainNode.disconnect();
+          } catch (e) {}
+        }, Math.round(fadeSec * 1000) + 140);
+      }
+    };
+
+    if (withSustainLoop) {
+      seg.timerId = setTimeout(() => {
+        if (seg.stopped || !active || active.currentSeg !== seg) return;
+        const sustainOff = Math.min(entry.decodedBuffer.duration - 1.2, entry.onsetSec + 0.55);
+        const nextRate = active.currentRate;
+        const nextSeg = spawnSampleSegment(
+          entry,
+          nextRate,
+          sustainOff,
+          0,
+          active.lastDynamics,
+          soulAmount,
+          currentVoicing,
+          true,
+          true
+        );
+        // Smooth 350ms equal-power overlap into twin sustain loop
+        nextSeg.gainNode.gain.cancelScheduledValues(ctx.currentTime);
+        nextSeg.gainNode.gain.setValueAtTime(0.0001, ctx.currentTime);
+        nextSeg.gainNode.gain.linearRampToValueAtTime(
+          Math.min(0.95, 0.34 + active.lastDynamics * 0.62),
+          ctx.currentTime + 0.35
+        );
+        seg.stopAfterFade(0.36);
+        active.currentSeg = nextSeg;
+      }, 1850);
+    }
+
+    return seg;
+  }
+
+  return {
+    play(targetMidi, dynamics, snapMode = "smart") {
+      const clampedMidi = clampToTrumpetRange(targetMidi);
+      bus.setBreath(dynamics);
+      bus.setPlayingVinyl(true);
+
+      // Smooth glide if holding same pitch or sliding in natural mode
+      if (active) {
+        const diff = Math.abs(clampedMidi - active.midi);
+        if (diff < 0.08 || (snapMode === "natural" && diff < 1.35)) {
+          active.lastDynamics = dynamics;
+          if (active.isFallback) {
+            active.fallback.setPitchAndDynamics(midiToFreq(clampedMidi), dynamics);
+          } else {
+            const rate = Math.pow(2, (clampedMidi - active.currentSeg.entry.measuredMidi) / 12);
+            active.currentRate = rate;
+            active.currentSeg.src.playbackRate.setTargetAtTime(rate, ctx.currentTime, 0.018);
+            const targetAmp = Math.min(0.95, 0.34 + dynamics * 0.62);
+            active.currentSeg.gainNode.gain.setTargetAtTime(targetAmp, ctx.currentTime, 0.025);
+          }
+          active.midi = clampedMidi;
+          return;
+        }
+      }
+
+      const isLegato = active !== null;
+      const prev = active;
+
+      const sample = findClosestSample(currentVoicing, clampedMidi);
+      if (sample && sample.decodedBuffer) {
+        if (prev) {
+          if (prev.isFallback) prev.fallback.release(0.035);
+          else prev.currentSeg.stopAfterFade(0.035);
+        }
+        const rate = Math.pow(2, (clampedMidi - sample.measuredMidi) / 12);
+        const startOff = isLegato
+          ? Math.min(sample.decodedBuffer.duration - 0.5, sample.onsetSec + 0.038)
+          : sample.onsetSec;
+        const seg = spawnSampleSegment(
+          sample,
+          rate,
+          startOff,
+          0,
+          dynamics,
+          soulAmount,
+          currentVoicing,
+          isLegato,
+          true
+        );
+        active = {
+          isFallback: false,
+          midi: clampedMidi,
+          currentRate: rate,
+          lastDynamics: dynamics,
+          currentSeg: seg
+        };
+      } else {
+        // Fallback FM brass if samples aren't ready yet
+        if (sample && sample.rawBuffer && !sample.decodedBuffer) {
+          decodeEntryForLiveCtx(sample);
+        }
+        if (prev) {
+          if (prev.isFallback) prev.fallback.release(0.035);
+          else prev.currentSeg.stopAfterFade(0.035);
+        }
+        const fb = createFallbackBrassVoice(ctx, bus, midiToFreq(clampedMidi), dynamics, soulAmount, isLegato);
+        active = {
+          isFallback: true,
+          midi: clampedMidi,
+          lastDynamics: dynamics,
+          fallback: fb
+        };
+      }
+    },
+
+    stop() {
+      bus.setPlayingVinyl(false);
+      if (!active) return;
+      if (active.isFallback) active.fallback.release(0.095);
+      else active.currentSeg.stopAfterFade(0.095);
+      active = null;
+    }
+  };
+}
+
+// ============================================================================
+// AUDIO CONTEXT & UI CONTROL HANDLERS
 // ============================================================================
 
 async function ensureAudioContext() {
@@ -1360,23 +2405,18 @@ async function ensureAudioContext() {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
-    synthMasterGain = audioCtx.createGain();
-    synthMasterGain.gain.value = masterVol;
-
-    dryGain = audioCtx.createGain();
-    dryGain.gain.value = 1.0 - reverbWet * 0.4;
-
-    reverbGain = audioCtx.createGain();
-    reverbGain.gain.value = reverbWet;
-
-    reverbNode = createConcertHallReverb(audioCtx, 2.4, 2.2);
-
-    synthMasterGain.connect(dryGain);
-    synthMasterGain.connect(reverbNode);
-    reverbNode.connect(reverbGain);
-
-    dryGain.connect(audioCtx.destination);
-    reverbGain.connect(audioCtx.destination);
+    liveBus = createVintageBrassBus(audioCtx, {
+      masterVol,
+      reverbWet,
+      vintage: vintageAmount
+    });
+    liveVoiceCtrl = createSatchmoVoiceController(audioCtx, liveBus);
+    // Decode any already-fetched sample buffers cleanly
+    ensureVoicingDecoded(currentVoicing, audioCtx).then(() => {
+      ensureVoicingDecoded("open", audioCtx);
+      ensureVoicingDecoded("ballad", audioCtx);
+      ensureVoicingDecoded("muted", audioCtx);
+    });
   }
   if (audioCtx.state === "suspended") {
     await audioCtx.resume();
@@ -1385,387 +2425,84 @@ async function ensureAudioContext() {
   document.getElementById("latencyVal").textContent = `~${Math.max(12, latMs)} ms`;
 }
 
-function createConcertHallReverb(ctx, duration, decay) {
-  const rate = ctx.sampleRate;
-  const length = rate * duration;
-  const impulse = ctx.createBuffer(2, length, rate);
-  for (let ch = 0; ch < 2; ch++) {
-    const data = impulse.getChannelData(ch);
-    for (let i = 0; i < length; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
-    }
+function selectVoicing(voicing) {
+  currentVoicing = voicing;
+  document.querySelectorAll(".voicing-card").forEach(c => {
+    c.classList.toggle("active", c.dataset.voicing === voicing);
+  });
+  if (audioCtx) {
+    ensureVoicingDecoded(voicing, audioCtx);
   }
-  const convolver = ctx.createConvolver();
-  convolver.buffer = impulse;
-  return convolver;
-}
-
-function makeDistortionCurve(drive = 6.0) {
-  const nSamples = 8192;
-  const curve = new Float32Array(nSamples);
-  const norm = Math.tanh(drive) || 1;
-  for (let i = 0; i < nSamples; i++) {
-    const x = (i * 2) / (nSamples - 1) - 1;
-    curve[i] = Math.tanh(x * drive) / norm;
+  if (liveVoiceCtrl) {
+    liveVoiceCtrl.stop();
   }
-  return curve;
-}
-
-// Create Expressive Continuous Voice (Live or OfflineAudioContext)
-function createContinuousVoice(instId, initialFreq, ctx = audioCtx, dest = synthMasterGain, startTime = null) {
-  const now = startTime !== null ? startTime : ctx.currentTime;
-  const voiceGain = ctx.createGain();
-  voiceGain.gain.setValueAtTime(0.0001, now);
-  voiceGain.connect(dest);
-
-  const osc1 = ctx.createOscillator();
-  const osc2 = ctx.createOscillator();
-  const subOsc = ctx.createOscillator();
-  const filter = ctx.createBiquadFilter();
-
-  // Natural gentle vibrato LFO
-  const lfo = ctx.createOscillator();
-  const lfoGain = ctx.createGain();
-  lfo.frequency.value = instId === "electric_lead" ? 5.8 : (instId === "harmonica" ? 6.5 : 5.5);
-  lfoGain.gain.value =
-    instId === "violin" || instId === "cello" ? 3.2 :
-    instId === "shakuhachi" ? 4.5 :
-    instId === "electric_lead" ? 4.0 :
-    instId === "harmonica" ? 3.6 :
-    instId === "bagpipes" ? 0.6 : 1.5;
-  lfo.connect(lfoGain);
-  lfoGain.connect(osc1.frequency);
-  lfoGain.connect(osc2.frequency);
-
-  // Breath noise generator (for Flute & Shakuhachi)
-  let noiseSource = null;
-  let noiseGain = null;
-  if (instId === "flute" || instId === "shakuhachi") {
-    const bufSize = ctx.sampleRate * 2;
-    const noiseBuf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-    const out = noiseBuf.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) out[i] = Math.random() * 2 - 1;
-    noiseSource = ctx.createBufferSource();
-    noiseSource.buffer = noiseBuf;
-    noiseSource.loop = true;
-
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = "bandpass";
-    noiseFilter.frequency.value = instId === "shakuhachi" ? 1400 : 2200;
-    noiseFilter.Q.value = 2.5;
-
-    noiseGain = ctx.createGain();
-    noiseGain.gain.value = instId === "shakuhachi" ? 0.14 : 0.06;
-
-    noiseSource.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(voiceGain);
-    noiseSource.start(now);
-  }
-
-  // Optional Highland Bagpipes Drones (A2 + A3 fifth/octave drone bed)
-  let droneOsc1 = null;
-  let droneOsc2 = null;
-  if (instId === "bagpipes") {
-    droneOsc1 = ctx.createOscillator();
-    droneOsc2 = ctx.createOscillator();
-    droneOsc1.type = "sawtooth";
-    droneOsc2.type = "sawtooth";
-    droneOsc1.frequency.setValueAtTime(110, now); // A2 bass drone
-    droneOsc2.frequency.setValueAtTime(220, now); // A3 tenor drone
-
-    const droneFilter = ctx.createBiquadFilter();
-    droneFilter.type = "lowpass";
-    droneFilter.frequency.value = 950;
-    droneFilter.Q.value = 1.4;
-
-    const droneGain = ctx.createGain();
-    droneGain.gain.value = 0.16;
-
-    droneOsc1.connect(droneFilter);
-    droneOsc2.connect(droneFilter);
-    droneFilter.connect(droneGain);
-    droneGain.connect(voiceGain);
-
-    droneOsc1.start(now);
-    droneOsc2.start(now);
-  }
-
-  // Configure Timbre per Instrument
-  if (instId === "electric_lead") {
-    osc1.type = "sawtooth";
-    osc2.type = "square";
-    subOsc.type = "triangle";
-    filter.type = "lowpass";
-    filter.frequency.value = 2400;
-    filter.Q.value = 2.4;
-  } else if (instId === "bagpipes") {
-    osc1.type = "sawtooth";
-    osc2.type = "square";
-    subOsc.type = "triangle";
-    filter.type = "bandpass";
-    filter.frequency.value = 2100;
-    filter.Q.value = 1.2;
-  } else if (instId === "harmonica") {
-    osc1.type = "sawtooth";
-    osc2.type = "triangle";
-    subOsc.type = "sine";
-    filter.type = "lowpass";
-    filter.frequency.value = 1950;
-    filter.Q.value = 2.5;
-  } else if (instId === "trumpet") {
-    osc1.type = "sawtooth";
-    osc2.type = "triangle";
-    subOsc.type = "sine";
-    filter.type = "lowpass";
-    filter.frequency.value = 1500;
-    filter.Q.value = 1.8;
-  } else if (instId === "cello") {
-    osc1.type = "sawtooth";
-    osc2.type = "triangle";
-    subOsc.type = "sine";
-    filter.type = "lowpass";
-    filter.frequency.value = 1100;
-    filter.Q.value = 2.2;
-  } else if (instId === "violin") {
-    osc1.type = "sawtooth";
-    osc2.type = "sawtooth";
-    subOsc.type = "triangle";
-    filter.type = "bandpass";
-    filter.frequency.value = 1850;
-    filter.Q.value = 0.9;
-  } else if (instId === "flute") {
-    osc1.type = "sine";
-    osc2.type = "triangle";
-    subOsc.type = "sine";
-    filter.type = "lowpass";
-    filter.frequency.value = 2600;
-    filter.Q.value = 0.7;
-  } else if (instId === "shakuhachi") {
-    osc1.type = "triangle";
-    osc2.type = "sine";
-    subOsc.type = "sine";
-    filter.type = "lowpass";
-    filter.frequency.value = 1900;
-    filter.Q.value = 1.8;
-  } else if (instId === "saxophone") {
-    osc1.type = "sawtooth";
-    osc2.type = "square";
-    subOsc.type = "sine";
-    filter.type = "lowpass";
-    filter.frequency.value = 1500;
-    filter.Q.value = 2.8;
-  } else if (instId === "organ") {
-    osc1.type = "sine";
-    osc2.type = "triangle";
-    subOsc.type = "sine";
-    filter.type = "lowpass";
-    filter.frequency.value = 3500;
-  } else if (instId === "vangelis") {
-    osc1.type = "sawtooth";
-    osc2.type = "sawtooth";
-    subOsc.type = "square";
-    filter.type = "lowpass";
-    filter.frequency.value = 2100;
-    filter.Q.value = 1.6;
-  }
-
-  const osc2Gain = ctx.createGain();
-  osc2Gain.gain.value =
-    instId === "vangelis" || instId === "violin" ? 0.55 :
-    instId === "electric_lead" ? 0.45 : 0.35;
-
-  const subGain = ctx.createGain();
-  subGain.gain.value = instId === "organ" || instId === "cello" ? 0.5 : (instId === "electric_lead" ? 0.25 : 0.2);
-
-  osc1.frequency.setValueAtTime(initialFreq, now);
-  osc2.frequency.setValueAtTime(initialFreq * (instId === "organ" ? 2.0 : 1.004), now);
-  subOsc.frequency.setValueAtTime(initialFreq * 0.5, now);
-
-  // Route through preamp waveshaper before cabinet filter for Electric Lead Guitar & Harmonica
-  if (instId === "electric_lead" || instId === "harmonica") {
-    const preDrive = ctx.createGain();
-    preDrive.gain.value = instId === "electric_lead" ? 0.85 : 0.55;
-    const shaper = ctx.createWaveShaper();
-    shaper.curve = makeDistortionCurve(instId === "electric_lead" ? 8.5 : 2.6);
-    shaper.oversample = "4x";
-
-    osc1.connect(preDrive);
-    osc2.connect(osc2Gain);
-    osc2Gain.connect(preDrive);
-    subOsc.connect(subGain);
-    subGain.connect(preDrive);
-
-    preDrive.connect(shaper);
-    shaper.connect(filter);
-  } else {
-    osc1.connect(filter);
-    osc2.connect(osc2Gain);
-    osc2Gain.connect(filter);
-    subOsc.connect(subGain);
-    subGain.connect(filter);
-  }
-  filter.connect(voiceGain);
-
-  osc1.start(now);
-  osc2.start(now);
-  subOsc.start(now);
-  lfo.start(now);
-
-  return {
-    instId,
-    osc1,
-    osc2,
-    subOsc,
-    lfo,
-    noiseSource,
-    droneOsc1,
-    droneOsc2,
-    filter,
-    voiceGain,
-    setPitchAndDynamics(freq, dynamics, atTime = null) {
-      const t = atTime !== null ? atTime : ctx.currentTime;
-      osc1.frequency.setTargetAtTime(freq, t, 0.018);
-      osc2.frequency.setTargetAtTime(freq * (instId === "organ" ? 2.0 : 1.004), t, 0.018);
-      subOsc.frequency.setTargetAtTime(freq * 0.5, t, 0.018);
-
-      // Expressive filter opening with louder breath
-      const baseCut =
-        instId === "cello" ? 800 :
-        instId === "trumpet" ? 900 :
-        instId === "saxophone" ? 1100 :
-        instId === "harmonica" ? 1300 :
-        instId === "electric_lead" ? 1500 :
-        instId === "bagpipes" ? 1900 : 1600;
-      const sweep = instId === "trumpet" ? 2500 : (instId === "electric_lead" ? 1400 : 1800);
-      filter.frequency.setTargetAtTime(baseCut + dynamics * sweep, t, 0.03);
-
-      const maxVoice = instId === "electric_lead" ? 0.65 : 0.85;
-      const targetGain = Math.min(maxVoice, Math.max(0.05, dynamics * 1.1));
-      voiceGain.gain.setTargetAtTime(targetGain, t, 0.025);
-    },
-    stop(atTime = null) {
-      if (atTime !== null) {
-        // Offline deterministic stop
-        voiceGain.gain.setTargetAtTime(0.0001, atTime, 0.03);
-        const stopAt = atTime + 0.12;
-        try {
-          osc1.stop(stopAt);
-          osc2.stop(stopAt);
-          subOsc.stop(stopAt);
-          lfo.stop(stopAt);
-          if (noiseSource) noiseSource.stop(stopAt);
-          if (droneOsc1) droneOsc1.stop(stopAt);
-          if (droneOsc2) droneOsc2.stop(stopAt);
-        } catch(e) {}
-        return;
-      }
-      const t = ctx.currentTime;
-      voiceGain.gain.setTargetAtTime(0.0001, t, 0.04);
-      setTimeout(() => {
-        try {
-          osc1.stop();
-          osc2.stop();
-          subOsc.stop();
-          lfo.stop();
-          if (noiseSource) noiseSource.stop();
-          if (droneOsc1) droneOsc1.stop();
-          if (droneOsc2) droneOsc2.stop();
-          voiceGain.disconnect();
-        } catch(e) {}
-      }, 180);
-    }
-  };
-}
-
-function stopContinuousVoice() {
-  if (activeContinuousVoice) {
-    activeContinuousVoice.stop();
-    activeContinuousVoice = null;
+  if (isPlayingRecorded) {
+    playRecordedMelody();
   }
 }
 
-// Trigger Percussive / Plucked Note (Clean Electric Guitar, Piano, Acoustic Guitar, Bass, Harp)
-function triggerPercussiveNote(instId, freq, velocity, ctx = audioCtx, dest = synthMasterGain, startTime = null) {
-  if (!ctx || !dest) return;
-  const now = startTime !== null ? startTime : ctx.currentTime;
-  const noteGain = ctx.createGain();
-  noteGain.connect(dest);
-
-  const osc1 = ctx.createOscillator();
-  const osc2 = ctx.createOscillator();
-  const filter = ctx.createBiquadFilter();
-  filter.type = "lowpass";
-
-  let decayTime = 1.6;
-  let osc2Mult = 2.0;
-  let overtoneStart = 0.15;
-  let overtoneEnd = 0.001;
-
-  if (instId === "electric_clean") {
-    osc1.type = "sawtooth";
-    osc2.type = "triangle";
-    osc2Mult = 1.003; // Warm chorus shimmer
-    filter.frequency.setValueAtTime(3600, now);
-    filter.frequency.exponentialRampToValueAtTime(650, now + 1.8);
-    overtoneStart = 0.45;
-    overtoneEnd = 0.05;
-    decayTime = 2.0;
-  } else if (instId === "bass") {
-    osc1.type = "triangle";
-    osc2.type = "sine";
-    osc2Mult = 0.5; // Rich sub-fundamental octave below
-    filter.frequency.setValueAtTime(1400, now);
-    filter.frequency.exponentialRampToValueAtTime(180, now + 1.1);
-    overtoneStart = 0.55;
-    overtoneEnd = 0.04;
-    decayTime = 1.4;
-  } else if (instId === "piano") {
-    osc1.type = "triangle";
-    osc2.type = "sawtooth";
-    filter.frequency.setValueAtTime(3200, now);
-    filter.frequency.exponentialRampToValueAtTime(450, now + 1.4);
-    overtoneStart = 0.22;
-    decayTime = 1.8;
-  } else if (instId === "guitar") {
-    osc1.type = "sawtooth";
-    osc2.type = "triangle";
-    filter.frequency.setValueAtTime(2400, now);
-    filter.frequency.exponentialRampToValueAtTime(380, now + 1.0);
-    decayTime = 1.3;
-  } else if (instId === "harp") {
-    osc1.type = "sine";
-    osc2.type = "triangle";
-    filter.frequency.setValueAtTime(4200, now);
-    filter.frequency.exponentialRampToValueAtTime(800, now + 2.2);
-    decayTime = 2.5;
+function setOctave(oct) {
+  octaveShift = oct;
+  document.querySelectorAll(".pill-btn").forEach(btn => {
+    btn.classList.toggle("active", parseInt(btn.dataset.oct, 10) === oct);
+  });
+  document.getElementById("octaveShiftInfo").textContent =
+    `Octave: ${oct > 0 ? "+" + oct : oct} (${oct === -2 ? "Best for Whistle" : (oct === -1 ? "High Brass" : "Humming")})`;
+  if (recordedFrames.length > 0) {
+    renderNoteEditor();
+    if (!isLive && !isRecording && !isPlayingRecorded) syncPianoRollFromRecorded();
   }
+}
 
-  osc1.frequency.setValueAtTime(freq, now);
-  osc2.frequency.setValueAtTime(freq * osc2Mult, now);
+function updateGate(val) {
+  document.getElementById("gateValLabel").textContent = val + "%";
+  gateThreshold = 0.003 + (val / 100) * 0.10;
+}
 
-  const overtoneGain = ctx.createGain();
-  overtoneGain.gain.setValueAtTime(overtoneStart, now);
-  overtoneGain.gain.exponentialRampToValueAtTime(overtoneEnd, now + decayTime * 0.65);
+function updateSoul(val) {
+  document.getElementById("soulValLabel").textContent = val + "%";
+  soulAmount = val / 100;
+}
 
-  const peakGain = Math.min(0.85, Math.max(0.18, velocity));
-  noteGain.gain.setValueAtTime(0.001, now);
-  noteGain.gain.linearRampToValueAtTime(peakGain, now + 0.012);
-  noteGain.gain.exponentialRampToValueAtTime(0.0008, now + decayTime);
+function updateVintage(val) {
+  document.getElementById("vintageValLabel").textContent = val + "%";
+  vintageAmount = val / 100;
+  if (liveBus) liveBus.updateVintage(vintageAmount);
+}
 
-  osc1.connect(filter);
-  osc2.connect(overtoneGain);
-  overtoneGain.connect(filter);
-  filter.connect(noteGain);
+function updateReverb(val) {
+  document.getElementById("reverbValLabel").textContent = val + "%";
+  reverbWet = val / 100;
+  if (liveBus) liveBus.updateReverb(reverbWet);
+}
 
-  osc1.start(now);
-  osc2.start(now);
-  osc1.stop(now + decayTime + 0.05);
-  osc2.stop(now + decayTime + 0.05);
+function updateMasterVolume(val) {
+  document.getElementById("masterVolLabel").textContent = val + "%";
+  masterVol = val / 100;
+  if (liveBus) liveBus.updateMasterVol(masterVol);
+}
+
+function updateSnapInfo() {
+  const snap = document.getElementById("snapMode").value;
+  const scaleSel = document.getElementById("scaleSelect");
+  const scaleLabel = scaleSel.selectedOptions[0].text;
+  document.getElementById("pitchSnapInfo").textContent =
+    snap === "smart" ? "Smart Satchmo Tune" : (snap === "strict" ? "Maximum Pitch Lock" : "Gentle Assist");
+  document.getElementById("scaleStatusLabel").textContent =
+    scaleSel.value === "auto_jazz" ? `Auto-Key: ${lastDetectedKeyLabel}` : `Key: ${scaleLabel}`;
+  if (recordedFrames.length > 0) {
+    renderNoteEditor();
+    if (!isLive && !isRecording && !isPlayingRecorded) syncPianoRollFromRecorded();
+  }
+}
+
+function updateVocalRange() {
+  smoothedFreq = 0;
+  liveTracker.reset();
 }
 
 // ============================================================================
-// MICROPHONE & YIN PITCH DETECTION
+// MICROPHONE & UPGRADED YIN PITCH DETECTION
 // ============================================================================
 
 async function enumerateMics() {
@@ -1795,7 +2532,6 @@ async function startMicStream() {
   const deviceId = document.getElementById("micSelect").value;
   const isSpeakers = document.getElementById("acousticMode").value === "speakers" || isMobile;
 
-  // On mobile/speakers, echoCancellation prevents speaker loop; autoGainControl ensures soft whistles are heard
   const constraints = {
     audio: {
       deviceId: deviceId && deviceId !== "default" ? { ideal: deviceId } : undefined,
@@ -1812,20 +2548,18 @@ async function startMicStream() {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
   }
 
-  // Ensure AudioContext is resumed in case Android OS suspended it during the permission prompt
   if (audioCtx.state === "suspended") {
     await audioCtx.resume();
   }
 
-  enumerateMics(); // Refresh labels after permission granted
+  enumerateMics();
 
   micSource = audioCtx.createMediaStreamSource(micStream);
   analyser = audioCtx.createAnalyser();
   analyser.fftSize = 2048;
   micSource.connect(analyser);
 
-  // FIX CHROMIUM MOBILE MIC PULL BUG:
-  // On Android Chrome, AnalyserNode does NOT pull microphone buffers unless connected to destination!
+  // CRITICAL CHROMIUM MOBILE MIC PULL FIX: keep silent sink connected so Android Chrome pumps buffers
   if (!audioSinkGain) {
     audioSinkGain = audioCtx.createGain();
     audioSinkGain.gain.value = 0.0;
@@ -1844,25 +2578,27 @@ async function toggleLive() {
   const btn = document.getElementById("btnLive");
   if (isLive) {
     isLive = false;
-    stopContinuousVoice();
+    if (liveVoiceCtrl) liveVoiceCtrl.stop();
     if (micStream && !isRecording) {
       micStream.getTracks().forEach(t => t.stop());
     }
     btn.classList.remove("active");
-    document.getElementById("liveIcon").textContent = "▶️";
-    document.getElementById("liveLabel").textContent = "Start Live Whistle Play";
-    updateStatusBadge("Mic Standby", "");
+    document.getElementById("liveIcon").textContent = "🎺";
+    document.getElementById("liveLabel").textContent = "Start Live Trumpet";
+    updateStatusBadge("🎺 Real 1930s Brass Ready", "ready");
     return;
   }
 
   try {
     if (isPlayingRecorded) stopRecordedPlayback();
     await startMicStream();
+    await ensureVoicingDecoded(currentVoicing, audioCtx);
+    liveTracker.reset();
     isLive = true;
     btn.classList.add("active");
     document.getElementById("liveIcon").textContent = "⏹️";
-    document.getElementById("liveLabel").textContent = "Stop Live Whistle Play";
-    updateStatusBadge("LIVE: Whistle Now!", "live");
+    document.getElementById("liveLabel").textContent = "Stop Live Trumpet";
+    updateStatusBadge("LIVE: Whistle Your Trumpet Solo!", "live");
   } catch (err) {
     alert("Could not access microphone: " + err.message);
   }
@@ -1871,22 +2607,23 @@ async function toggleLive() {
 async function toggleRecord() {
   const btn = document.getElementById("btnRecord");
   if (isRecording) {
-    // Finish recording
     isRecording = false;
     btn.classList.remove("recording");
     document.getElementById("recIcon").textContent = "🔴";
-    document.getElementById("recLabel").textContent = "Record Melody (No Delay)";
+    document.getElementById("recLabel").textContent = "Record 1930s Solo";
     if (!isLive && micStream) {
       micStream.getTracks().forEach(t => t.stop());
-      updateStatusBadge("Recording Saved", "");
+      updateStatusBadge("Solo Captured", "ready");
     }
-    finalizeRecording();
+    finalizeRecording(true);
     return;
   }
 
   try {
     if (isPlayingRecorded) stopRecordedPlayback();
     await startMicStream();
+    await ensureVoicingDecoded(currentVoicing, audioCtx);
+    liveTracker.reset();
     recordedFrames = [];
     recordStartTime = performance.now();
     isRecording = true;
@@ -1905,7 +2642,6 @@ function updateStatusBadge(text, dotClass) {
   dot.className = "dot" + (dotClass ? " " + dotClass : "");
 }
 
-// YIN / Normalized Autocorrelation Pitch Detector
 function detectPitchYIN(buf, sampleRate, minFreq, maxFreq) {
   let sumSq = 0;
   for (let i = 0; i < buf.length; i++) {
@@ -1914,7 +2650,7 @@ function detectPitchYIN(buf, sampleRate, minFreq, maxFreq) {
   const rms = Math.sqrt(sumSq / buf.length);
   updateLiveVuMeter(rms);
   if (rms < gateThreshold) {
-    return { freq: -1, rms };
+    return { freq: -1, rms, confidence: 0 };
   }
 
   const minTau = Math.max(2, Math.floor(sampleRate / maxFreq));
@@ -1935,7 +2671,7 @@ function detectPitchYIN(buf, sampleRate, minFreq, maxFreq) {
   }
 
   let bestTau = -1;
-  const threshold = 0.18;
+  const threshold = 0.16;
   for (let tau = minTau; tau < maxTau - 1; tau++) {
     if (yin[tau] < threshold && yin[tau] < yin[tau - 1] && yin[tau] <= yin[tau + 1]) {
       bestTau = tau;
@@ -1944,8 +2680,7 @@ function detectPitchYIN(buf, sampleRate, minFreq, maxFreq) {
   }
 
   if (bestTau === -1) {
-    // Fallback to global minimum if clear enough
-    let minVal = 0.32;
+    let minVal = 0.26;
     for (let tau = minTau; tau < maxTau - 1; tau++) {
       if (yin[tau] < minVal) {
         minVal = yin[tau];
@@ -1954,63 +2689,24 @@ function detectPitchYIN(buf, sampleRate, minFreq, maxFreq) {
     }
   }
 
-  if (bestTau === -1) return { freq: -1, rms };
+  if (bestTau === -1) return { freq: -1, rms, confidence: 0 };
 
-  // Parabolic interpolation for sub-sample precision
+  const confidence = 1.0 - yin[bestTau];
+  if (confidence < 0.74) {
+    return { freq: -1, rms, confidence };
+  }
+
   const s0 = yin[bestTau - 1];
   const s1 = yin[bestTau];
   const s2 = yin[bestTau + 1];
   const denom = 2 * (2 * s1 - s2 - s0);
   const betterTau = denom !== 0 ? bestTau + (s2 - s0) / denom : bestTau;
 
-  return { freq: sampleRate / betterTau, rms };
-}
-
-// Musical Note Math & Scale Quantizer
-function freqToMidi(freq) {
-  return 69 + 12 * Math.log2(freq / 440.0);
-}
-
-function midiToFreq(midi) {
-  return 440.0 * Math.pow(2, (midi - 69) / 12.0);
-}
-
-function midiToNoteName(midi) {
-  const rounded = Math.round(midi);
-  const name = NOTE_NAMES[((rounded % 12) + 12) % 12];
-  const oct = Math.floor(rounded / 12) - 1;
-  return `${name}${oct}`;
-}
-
-function snapMidiToScale(rawMidi, scaleKey, snapMode) {
-  const allowedDegrees = SCALES[scaleKey] || SCALES.chromatic;
-  const baseOctave = Math.floor(rawMidi / 12);
-  let bestMidi = Math.round(rawMidi);
-  let minDiff = 999;
-
-  for (let oct = baseOctave - 1; oct <= baseOctave + 1; oct++) {
-    for (const deg of allowedDegrees) {
-      const candidate = oct * 12 + deg;
-      const diff = Math.abs(rawMidi - candidate);
-      if (diff < minDiff) {
-        minDiff = diff;
-        bestMidi = candidate;
-      }
-    }
-  }
-
-  if (snapMode === "natural") {
-    return rawMidi;
-  } else if (snapMode === "strict") {
-    return bestMidi;
-  } else {
-    // Magnetic snap: pulls 75% toward scale center, preserving subtle vibrato
-    return bestMidi * 0.78 + rawMidi * 0.22;
-  }
+  return { freq: sampleRate / betterTau, rms, confidence };
 }
 
 // ============================================================================
-// MAIN REAL-TIME PROCESSING LOOP & PIANO ROLL VISUALIZER
+// REAL-TIME PROCESSING LOOP & PIANO ROLL VISUALIZER
 // ============================================================================
 
 function initCanvasLoop() {
@@ -2027,8 +2723,8 @@ function initCanvasLoop() {
     if ((isLive || isRecording) && analyser && audioCtx) {
       analyser.getFloatTimeDomainData(timeBuf);
       const vocalMode = document.getElementById("vocalMode").value;
-      const minF = vocalMode === "whistle" ? 280 : 80;
-      const maxF = vocalMode === "whistle" ? 3600 : 1200;
+      const minF = vocalMode === "whistle" ? 340 : 85;
+      const maxF = vocalMode === "whistle" ? 3500 : 1150;
 
       const res = detectPitchYIN(timeBuf, audioCtx.sampleRate, minF, maxF);
       detectedHz = res.freq;
@@ -2036,54 +2732,67 @@ function initCanvasLoop() {
     }
 
     if (detectedHz > 0) {
-      // Smooth frequency jitter
-      if (smoothedFreq === 0 || Math.abs(detectedHz - smoothedFreq) / smoothedFreq > 0.18) {
+      if (smoothedFreq === 0 || Math.abs(detectedHz - smoothedFreq) / smoothedFreq > 0.22) {
         smoothedFreq = detectedHz;
       } else {
-        smoothedFreq = smoothedFreq * 0.65 + detectedHz * 0.35;
+        smoothedFreq = smoothedFreq * 0.60 + detectedHz * 0.40;
       }
 
       const rawMidi = freqToMidi(smoothedFreq);
-      const shiftedRawMidi = rawMidi + octaveShift * 12;
-      const scaleKey = document.getElementById("scaleSelect").value;
+      const scaleSetting = document.getElementById("scaleSelect").value;
       const snapMode = document.getElementById("snapMode").value;
+      const normDynamics = Math.min(1.0, Math.max(0.18, (rms - gateThreshold) * 9.5));
 
-      const playedMidi = snapMidiToScale(shiftedRawMidi, scaleKey, snapMode);
-      const playedFreq = midiToFreq(playedMidi);
-      const normDynamics = Math.min(1.0, Math.max(0.15, (rms - gateThreshold) * 9.5));
+      const tracked = liveTracker.processFrame(rawMidi, scaleSetting, snapMode, octaveShift);
+      if (tracked) {
+        const centsLabel = Math.abs(tracked.centsOffset) <= 10
+          ? "In tune"
+          : (tracked.centsOffset > 0 ? `+${tracked.centsOffset}¢ sharp` : `${tracked.centsOffset}¢ flat`);
 
-      // Update Top Metrics
-      document.getElementById("detectedNoteDisplay").textContent = midiToNoteName(rawMidi);
-      document.getElementById("detectedHzDisplay").textContent = `${smoothedFreq.toFixed(1)} Hz`;
-      document.getElementById("playedNoteDisplay").textContent = midiToNoteName(playedMidi);
-      document.getElementById("volumeDisplay").textContent = `${Math.round(normDynamics * 100)}%`;
+        document.getElementById("detectedNoteDisplay").textContent = midiToNoteName(rawMidi);
+        document.getElementById("detectedHzDisplay").textContent = `${smoothedFreq.toFixed(0)} Hz • ${centsLabel}`;
+        document.getElementById("playedNoteDisplay").textContent = midiToNoteName(tracked.midi);
 
-      // Record frame if recording
-      if (isRecording) {
-        recordedFrames.push({
-          timeOffsetMs: performance.now() - recordStartTime,
-          rawMidi,
-          snappedMidi: Math.round(playedMidi),
-          playedMidi,
-          rms: normDynamics
-        });
-        const sec = ((performance.now() - recordStartTime) / 1000).toFixed(1);
-        document.getElementById("recDuration").textContent = `${sec}s (Recording...)`;
+        if (Math.abs(tracked.correctionCents) >= 12) {
+          const sign = tracked.correctionCents > 0 ? "+" : "";
+          document.getElementById("octaveShiftInfo").textContent = `↗ Improved ${sign}${tracked.correctionCents}¢`;
+        } else {
+          document.getElementById("octaveShiftInfo").textContent = "✓ Tuned & Locked";
+        }
+
+        document.getElementById("volumeDisplay").textContent = `${Math.round(normDynamics * 100)}%`;
+        document.getElementById("pitchSnapInfo").textContent = `Auto-Key: ${tracked.keyLabel}`;
+        if (scaleSetting === "auto_jazz") {
+          document.getElementById("scaleStatusLabel").textContent = `Auto-Key: ${tracked.keyLabel}`;
+          lastDetectedKeyLabel = tracked.keyLabel;
+        }
+
+        if (isRecording) {
+          recordedFrames.push({
+            timeOffsetMs: performance.now() - recordStartTime,
+            rawMidi,
+            snappedMidi: Math.round(tracked.midi),
+            playedMidi: tracked.midi,
+            rms: normDynamics
+          });
+          const sec = ((performance.now() - recordStartTime) / 1000).toFixed(1);
+          document.getElementById("recDuration").textContent = `${sec}s (Recording...)`;
+        }
+
+        if (isLive && liveVoiceCtrl) {
+          liveVoiceCtrl.play(tracked.midi, normDynamics, snapMode);
+        }
+
+        pitchHistory.push({ rawMidi: clampToTrumpetRange(rawMidi + octaveShift * 12), playedMidi: tracked.midi, active: true });
       }
-
-      // Play Live Audio if in Live Mode
-      if (isLive) {
-        driveInstrumentVoice(playedFreq, playedMidi, normDynamics);
-      }
-
-      pitchHistory.push({ rawMidi: shiftedRawMidi, playedMidi, active: true });
     } else {
       smoothedFreq = 0;
+      liveTracker.onSilence();
       if (!isPlayingRecorded) {
-        stopContinuousVoice();
+        if (liveVoiceCtrl) liveVoiceCtrl.stop();
         lastTriggeredMidi = -1;
         document.getElementById("detectedNoteDisplay").textContent = "--";
-        document.getElementById("detectedHzDisplay").textContent = "Listening...";
+        document.getElementById("detectedHzDisplay").textContent = isLive || isRecording ? "Listening..." : "Standby";
         document.getElementById("playedNoteDisplay").textContent = "--";
         document.getElementById("volumeDisplay").textContent = "0%";
       }
@@ -2115,25 +2824,6 @@ function initCanvasLoop() {
   requestAnimationFrame(frame);
 }
 
-function driveInstrumentVoice(playedFreq, playedMidi, normDynamics) {
-  if (currentInstrument.type === "continuous") {
-    if (!activeContinuousVoice || activeContinuousVoice.instId !== currentInstrument.id) {
-      stopContinuousVoice();
-      activeContinuousVoice = createContinuousVoice(currentInstrument.id, playedFreq);
-    }
-    activeContinuousVoice.setPitchAndDynamics(playedFreq, normDynamics);
-  } else {
-    // Percussive / Plucked (Piano, Guitar, Harp): trigger when note changes or re-articulated
-    const roundedMidi = Math.round(playedMidi);
-    const nowMs = performance.now();
-    if (roundedMidi !== lastTriggeredMidi || (nowMs - lastNoteTriggerTime > 480 && lastTriggeredMidi === -1)) {
-      triggerPercussiveNote(currentInstrument.id, midiToFreq(roundedMidi), normDynamics);
-      lastTriggeredMidi = roundedMidi;
-      lastNoteTriggerTime = nowMs;
-    }
-  }
-}
-
 function drawPianoRoll(canvas, ctx) {
   if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
     canvas.width = canvas.clientWidth;
@@ -2143,23 +2833,21 @@ function drawPianoRoll(canvas, ctx) {
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  // Determine vertical MIDI range based on recent active notes
-  let centerMidi = 64;
+  let centerMidi = 65;
   for (let i = pitchHistory.length - 1; i >= 0; i--) {
     if (pitchHistory[i].active && pitchHistory[i].playedMidi > 0) {
       centerMidi = pitchHistory[i].playedMidi;
       break;
     }
   }
-  const minMidi = Math.floor(centerMidi) - 12;
-  const maxMidi = Math.floor(centerMidi) + 12;
+  const minMidi = Math.max(48, Math.floor(centerMidi) - 11);
+  const maxMidi = minMidi + 22;
   const midiSpan = maxMidi - minMidi;
 
-  // Draw horizontal note lanes
   for (let m = minMidi; m <= maxMidi; m++) {
     const y = h - ((m - minMidi) / midiSpan) * h;
     const isC = (m % 12 === 0);
-    ctx.strokeStyle = isC ? "rgba(56, 189, 248, 0.22)" : "rgba(255, 255, 255, 0.05)";
+    ctx.strokeStyle = isC ? "rgba(232, 179, 74, 0.25)" : "rgba(255, 245, 225, 0.05)";
     ctx.lineWidth = isC ? 1.5 : 1;
     ctx.beginPath();
     ctx.moveTo(0, y);
@@ -2167,20 +2855,20 @@ function drawPianoRoll(canvas, ctx) {
     ctx.stroke();
 
     if (m % 2 === 0) {
-      ctx.fillStyle = isC ? "#38bdf8" : "rgba(148, 163, 184, 0.45)";
+      ctx.fillStyle = isC ? "#f5c451" : "rgba(184, 170, 150, 0.5)";
       ctx.font = "11px Segoe UI";
-      ctx.fillText(midiToNoteName(m), w - 36, y - 3);
+      ctx.fillText(midiToNoteName(m), w - 38, y - 3);
     }
   }
 
-  // Draw Raw Whistle Curve (Cyan)
-  ctx.strokeStyle = "#38bdf8";
+  // Raw Whistle Curve (Ice Blue)
+  ctx.strokeStyle = "rgba(125, 211, 252, 0.85)";
   ctx.lineWidth = 2;
   ctx.beginPath();
   let started = false;
   for (let i = 0; i < pitchHistory.length; i++) {
     const pt = pitchHistory[i];
-    const x = (i / MAX_HISTORY) * (w - 48);
+    const x = (i / MAX_HISTORY) * (w - 50);
     if (pt.active && pt.rawMidi > 0) {
       const y = h - ((pt.rawMidi - minMidi) / midiSpan) * h;
       if (!started) { ctx.moveTo(x, y); started = true; }
@@ -2191,14 +2879,17 @@ function drawPianoRoll(canvas, ctx) {
   }
   ctx.stroke();
 
-  // Draw Played Instrument Note Curve (Glowing Emerald)
-  ctx.strokeStyle = "#10b981";
-  ctx.lineWidth = 4;
+  // Tuned 1930s Solo Trumpet Curve (Golden Brass)
+  ctx.save();
+  ctx.shadowColor = "rgba(245, 196, 81, 0.55)";
+  ctx.shadowBlur = 8;
+  ctx.strokeStyle = "#f5c451";
+  ctx.lineWidth = 4.5;
   ctx.beginPath();
   started = false;
   for (let i = 0; i < pitchHistory.length; i++) {
     const pt = pitchHistory[i];
-    const x = (i / MAX_HISTORY) * (w - 48);
+    const x = (i / MAX_HISTORY) * (w - 50);
     if (pt.active && pt.playedMidi > 0) {
       const y = h - ((pt.playedMidi - minMidi) / midiSpan) * h;
       if (!started) { ctx.moveTo(x, y); started = true; }
@@ -2208,10 +2899,11 @@ function drawPianoRoll(canvas, ctx) {
     }
   }
   ctx.stroke();
+  ctx.restore();
 }
 
 // ============================================================================
-// RECORDED MELODY PLAYBACK, TIDY UP, NOTE EDITOR, DEMO & EXPORT (WAV / MIDI)
+// RECORDED SOLO PLAYBACK, AUTO-POLISH, NOTE EDITOR, DEMO & EXPORT (WAV / MIDI)
 // ============================================================================
 
 function pushUndoState() {
@@ -2238,8 +2930,14 @@ function finalizeRecording(isNewCapture = true) {
     undoStack = [];
     document.getElementById("btnUndoTidy").disabled = true;
   }
+
+  const autoPolishEl = document.getElementById("autoPolishToggle");
+  if (isNewCapture && autoPolishEl && autoPolishEl.checked) {
+    autoTidyMelody(false);
+    return;
+  }
+
   refreshRecordedUI();
-  // Automatically play back the recorded whistle on the chosen instrument!
   playRecordedMelody();
 }
 
@@ -2263,17 +2961,35 @@ function refreshRecordedUI(statusNote = "") {
   }
 }
 
+function getEffectivePlaybackMidi(frame) {
+  if (!(frame.rawMidi > 0)) return -1;
+  const scaleSetting = document.getElementById("scaleSelect").value;
+  const snapMode = document.getElementById("snapMode").value;
+  if (frame.playedMidi > 0 && frame.snappedMidi > 0 && Math.abs(frame.playedMidi - frame.snappedMidi) < 0.05) {
+    const octDelta = (frame.polishedOctave !== undefined) ? (octaveShift - frame.polishedOctave) * 12 : 0;
+    return clampToTrumpetRange(frame.playedMidi + octDelta);
+  }
+  const shifted = frame.rawMidi + octaveShift * 12;
+  if (scaleSetting === "chromatic") {
+    const c = Math.round(shifted);
+    return clampToTrumpetRange(snapMode === "natural" ? c * 0.75 + shifted * 0.25 : c);
+  }
+  const scaleObj = scaleSetting === "auto_jazz"
+    ? (FIXED_SCALES.major_f)
+    : (FIXED_SCALES[scaleSetting] || FIXED_SCALES.major_f);
+  const locked = nearestMidiInPitchClasses(shifted, scaleObj.pcs);
+  return clampToTrumpetRange(snapMode === "natural" ? locked * 0.78 + shifted * 0.22 : locked);
+}
+
 function syncPianoRollFromRecorded() {
   pitchHistory.length = 0;
   if (recordedFrames.length === 0) return;
-  const scaleKey = document.getElementById("scaleSelect").value;
-  const snapMode = document.getElementById("snapMode").value;
   const step = Math.max(1, Math.ceil(recordedFrames.length / MAX_HISTORY));
   for (let i = 0; i < recordedFrames.length; i += step) {
     const f = recordedFrames[i];
     if (f.rawMidi > 0) {
-      const shiftedRaw = f.rawMidi + octaveShift * 12;
-      const playedMidi = snapMidiToScale(shiftedRaw, scaleKey, snapMode);
+      const shiftedRaw = clampToTrumpetRange(f.rawMidi + octaveShift * 12);
+      const playedMidi = getEffectivePlaybackMidi(f);
       pitchHistory.push({ rawMidi: shiftedRaw, playedMidi, active: true });
     } else {
       pitchHistory.push({ rawMidi: -1, playedMidi: -1, active: false });
@@ -2282,14 +2998,13 @@ function syncPianoRollFromRecorded() {
 }
 
 function extractNoteSegments() {
-  const scaleKey = document.getElementById("scaleSelect").value;
   const segs = [];
   let cur = null;
 
   for (let i = 0; i < recordedFrames.length; i++) {
     const f = recordedFrames[i];
     if (f.rawMidi > 0) {
-      const qMidi = Math.round(snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, "strict"));
+      const qMidi = Math.round(getEffectivePlaybackMidi(f));
       if (!cur || cur.qMidi !== qMidi) {
         if (cur) segs.push(cur);
         cur = {
@@ -2331,7 +3046,7 @@ function renderNoteEditor() {
   const segs = extractNoteSegments();
   if (segs.length === 0) {
     countEl.textContent = "0 Notes";
-    listEl.innerHTML = `<div class="note-strip-empty">Record a whistle melody (or click Load Demo) to preview, tune (▼/▲), or delete (🗑️) individual bad notes.</div>`;
+    listEl.innerHTML = `<div class="note-strip-empty">Record a whistle solo (or click 1930s Satchmo Demo) to hear, nudge (▼/▲), or remove (🗑️) any note.</div>`;
     return;
   }
 
@@ -2348,7 +3063,7 @@ function renderNoteEditor() {
     const warnBadge = seg.isSuspect ? " ⚠️" : "";
 
     chip.innerHTML = `
-      <button class="note-play-btn" onclick="previewSegment(${idx})" title="Click to hear this note">
+      <button class="note-play-btn" onclick="previewSegment(${idx})" title="Click to hear this trumpet note">
         <span class="note-num-txt">#${idx + 1}${warnBadge}</span>
         <span class="note-name-txt">${midiToNoteName(seg.qMidi)}</span>
         <span class="note-dur-txt">${durLabel}</span>
@@ -2368,15 +3083,10 @@ async function previewSegment(segIdx) {
   const seg = segs[segIdx];
   if (!seg) return;
   await ensureAudioContext();
-  const freq = midiToFreq(seg.qMidi);
-  const durMs = Math.min(850, Math.max(240, seg.durationMs));
-  if (currentInstrument.type === "continuous") {
-    const v = createContinuousVoice(currentInstrument.id, freq);
-    v.setPitchAndDynamics(freq, 0.8);
-    setTimeout(() => v.stop(), durMs);
-  } else {
-    triggerPercussiveNote(currentInstrument.id, freq, 0.85);
-  }
+  await ensureVoicingDecoded(currentVoicing, audioCtx);
+  const durMs = Math.min(850, Math.max(280, seg.durationMs));
+  liveVoiceCtrl.play(seg.qMidi, 0.82, "strict");
+  setTimeout(() => liveVoiceCtrl.stop(), durMs);
 }
 
 function nudgeSegment(segIdx, semitones) {
@@ -2387,8 +3097,8 @@ function nudgeSegment(segIdx, semitones) {
   pushUndoState();
   for (let i = seg.startIdx; i <= seg.endIdx; i++) {
     recordedFrames[i].rawMidi += semitones;
-    recordedFrames[i].snappedMidi += semitones;
-    recordedFrames[i].playedMidi += semitones;
+    if (recordedFrames[i].snappedMidi > 0) recordedFrames[i].snappedMidi += semitones;
+    if (recordedFrames[i].playedMidi > 0) recordedFrames[i].playedMidi += semitones;
   }
   refreshRecordedUI(`Tuned note #${segIdx + 1}`);
   previewSegment(segIdx);
@@ -2421,197 +3131,77 @@ function restoreOriginalMelody() {
     if (undoStack.length === 0) {
       document.getElementById("btnUndoTidy").disabled = true;
     }
-    refreshRecordedUI(undoStack.length === 0 ? "Original Restored" : "Undid Last Edit");
+    refreshRecordedUI(undoStack.length === 0 ? "Raw Whistle Restored" : "Undid Last Tune");
   } else if (originalRecordedFrames.length > 0) {
     recordedFrames = originalRecordedFrames.map(f => ({ ...f }));
     document.getElementById("btnUndoTidy").disabled = true;
-    refreshRecordedUI("Original Restored");
+    refreshRecordedUI("Raw Whistle Restored");
   }
 }
 
-function autoTidyMelody() {
+function autoTidyMelody(shouldAlert = true) {
   if (recordedFrames.length === 0) return;
   stopRecordedPlayback();
   pushUndoState();
 
-  const scaleKey = document.getElementById("scaleSelect").value;
+  const scaleSetting = document.getElementById("scaleSelect").value;
   const snapMode = document.getElementById("snapMode").value;
-  let frames = recordedFrames.map(f => ({ ...f }));
+  const result = polishRecordedSolo(recordedFrames, {
+    scaleSetting,
+    snapMode,
+    octaveShift,
+    glitchThresholdMs
+  });
 
-  // 1. Estimate typical frame interval
-  const diffs = [];
-  for (let i = 1; i < frames.length; i++) {
-    const d = frames[i].timeOffsetMs - frames[i - 1].timeOffsetMs;
-    if (d > 2 && d < 120) diffs.push(d);
-  }
-  const avgStepMs = diffs.length > 0 ? diffs.reduce((a, b) => a + b, 0) / diffs.length : 20;
-
-  // 2. Heal brief breath dropouts (< 65 ms silence between similar notes)
-  let i = 0;
-  while (i < frames.length) {
-    if (frames[i].rawMidi <= 0) {
-      let gapEnd = i;
-      while (gapEnd + 1 < frames.length && frames[gapEnd + 1].rawMidi <= 0) gapEnd++;
-      const prevIdx = i - 1;
-      const nextIdx = gapEnd + 1;
-      if (prevIdx >= 0 && nextIdx < frames.length) {
-        const gapMs = frames[nextIdx].timeOffsetMs - frames[prevIdx].timeOffsetMs;
-        const prevMidi = snapMidiToScale(frames[prevIdx].rawMidi + octaveShift * 12, scaleKey, "strict");
-        const nextMidi = snapMidiToScale(frames[nextIdx].rawMidi + octaveShift * 12, scaleKey, "strict");
-        if (gapMs < 65 && Math.abs(prevMidi - nextMidi) <= 1) {
-          const fillMidi = (frames[prevIdx].rawMidi + frames[nextIdx].rawMidi) / 2;
-          const fillRms = (frames[prevIdx].rms + frames[nextIdx].rms) / 2;
-          for (let k = i; k <= gapEnd; k++) {
-            frames[k].rawMidi = fillMidi;
-            frames[k].rms = Math.max(0.25, fillRms);
-          }
-        }
-      }
-      i = gapEnd + 1;
-    } else {
-      i++;
+  if (!result) {
+    if (shouldAlert) {
+      alert(`All notes were shorter than the ${glitchThresholdMs} ms filter. Lower the Squeak Filter slider and try again.`);
     }
-  }
-
-  // 3. Group into contiguous pitch / silence blocks
-  const blocks = [];
-  let curBlock = null;
-  for (let idx = 0; idx < frames.length; idx++) {
-    const f = frames[idx];
-    const qMidi = f.rawMidi > 0 ? Math.round(snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, "strict")) : -1;
-    if (!curBlock || curBlock.qMidi !== qMidi) {
-      if (curBlock) blocks.push(curBlock);
-      curBlock = { qMidi, frames: [f] };
-    } else {
-      curBlock.frames.push(f);
-    }
-  }
-  if (curBlock) blocks.push(curBlock);
-
-  for (let b = 0; b < blocks.length; b++) {
-    const blk = blocks[b];
-    const startMs = blk.frames[0].timeOffsetMs;
-    const endMs = b + 1 < blocks.length
-      ? blocks[b + 1].frames[0].timeOffsetMs
-      : blk.frames[blk.frames.length - 1].timeOffsetMs + avgStepMs;
-    blk.durationMs = Math.max(avgStepMs, endMs - startMs);
-  }
-
-  // 4. Filter out short squeaks/glitches (< glitchThresholdMs)
-  let removedGlitches = 0;
-  const keptBlocks = [];
-  for (let b = 0; b < blocks.length; b++) {
-    const blk = blocks[b];
-    if (blk.qMidi > 0 && blk.durationMs < glitchThresholdMs) {
-      removedGlitches++;
-      continue;
-    }
-    keptBlocks.push(blk);
-  }
-
-  // Trim leading and trailing silence
-  while (keptBlocks.length > 0 && keptBlocks[0].qMidi <= 0) keptBlocks.shift();
-  while (keptBlocks.length > 0 && keptBlocks[keptBlocks.length - 1].qMidi <= 0) keptBlocks.pop();
-
-  if (keptBlocks.length === 0) {
-    alert(`All notes were shorter than the ${glitchThresholdMs} ms filter. Lower the Glitch Filter slider and try again.`);
     restoreOriginalMelody();
     return;
   }
 
-  // 5. Merge identical adjacent blocks and stabilize pitch inside each kept note
-  const mergedBlocks = [];
-  for (const blk of keptBlocks) {
-    const last = mergedBlocks[mergedBlocks.length - 1];
-    if (last && last.qMidi === blk.qMidi) {
-      last.frames.push(...blk.frames);
-    } else {
-      mergedBlocks.push({ qMidi: blk.qMidi, frames: [...blk.frames] });
-    }
-  }
+  recordedFrames = result.frames;
+  lastDetectedKeyLabel = result.keyInfo.label;
+  document.getElementById("scaleStatusLabel").textContent = `Auto-Key: ${result.keyInfo.label}`;
+  document.getElementById("pitchSnapInfo").textContent = `Auto-Key: ${result.keyInfo.label}`;
 
-  const cleanedFrames = [];
-  let tunedNotes = 0;
-  let cursorMs = 40;
-
-  for (const blk of mergedBlocks) {
-    if (blk.qMidi > 0) {
-      tunedNotes++;
-      const sortedRaw = blk.frames.map(f => f.rawMidi).sort((a, b) => a - b);
-      const medianRaw = sortedRaw[Math.floor(sortedRaw.length / 2)];
-      const lockedPlayedMidi = snapMidiToScale(medianRaw + octaveShift * 12, scaleKey, "strict");
-      const targetRaw = lockedPlayedMidi - octaveShift * 12;
-      const pull = snapMode === "strict" ? 1.0 : 0.9;
-
-      for (let k = 0; k < blk.frames.length; k++) {
-        const src = blk.frames[k];
-        const dt = k > 0 ? Math.max(8, Math.min(50, src.timeOffsetMs - blk.frames[k - 1].timeOffsetMs)) : avgStepMs;
-        if (k > 0) cursorMs += dt;
-        const smoothedRaw = src.rawMidi * (1 - pull) + targetRaw * pull;
-        cleanedFrames.push({
-          timeOffsetMs: Math.round(cursorMs),
-          rawMidi: smoothedRaw,
-          snappedMidi: Math.round(lockedPlayedMidi),
-          playedMidi: lockedPlayedMidi,
-          rms: Math.max(0.28, src.rms)
-        });
-      }
-      cursorMs += avgStepMs;
-    } else {
-      const rawGapMs = Math.min(450, blk.frames.length * avgStepMs);
-      const gapSteps = Math.max(1, Math.round(rawGapMs / avgStepMs));
-      for (let s = 0; s < gapSteps; s++) {
-        cleanedFrames.push({
-          timeOffsetMs: Math.round(cursorMs),
-          rawMidi: -1,
-          snappedMidi: -1,
-          playedMidi: -1,
-          rms: 0
-        });
-        cursorMs += avgStepMs;
-      }
-    }
-  }
-
-  recordedFrames = cleanedFrames;
-  refreshRecordedUI(`Cleaned ${removedGlitches} glitch${removedGlitches === 1 ? "" : "es"}, tuned ${tunedNotes} notes!`);
+  refreshRecordedUI(`Auto-Polished in ${result.keyInfo.label}`);
   playRecordedMelody();
 }
 
 async function playRecordedMelody() {
   if (recordedFrames.length === 0) return;
   await ensureAudioContext();
+  await ensureVoicingDecoded(currentVoicing, audioCtx);
   stopRecordedPlayback();
 
   isPlayingRecorded = true;
   pitchHistory.length = 0;
-  updateStatusBadge(`Playing: ${currentInstrument.name}`, "live");
-  lastTriggeredMidi = -1;
+  const voicingNames = { open: "Open Bell", ballad: "Velvet Ballad", muted: "Smoky Mute" };
+  updateStatusBadge(`Playing: 1930s Trumpet (${voicingNames[currentVoicing]})`, "live");
 
-  const scaleKey = document.getElementById("scaleSelect").value;
   const snapMode = document.getElementById("snapMode").value;
 
   recordedFrames.forEach((frame, idx) => {
     const tid = setTimeout(() => {
       if (!isPlayingRecorded) return;
       if (frame.rawMidi > 0) {
-        const shiftedRaw = frame.rawMidi + octaveShift * 12;
-        const playedMidi = snapMidiToScale(shiftedRaw, scaleKey, snapMode);
-        const playedFreq = midiToFreq(playedMidi);
+        const shiftedRaw = clampToTrumpetRange(frame.rawMidi + octaveShift * 12);
+        const playedMidi = getEffectivePlaybackMidi(frame);
 
         document.getElementById("detectedNoteDisplay").textContent = midiToNoteName(frame.rawMidi);
         document.getElementById("playedNoteDisplay").textContent = midiToNoteName(playedMidi);
         document.getElementById("volumeDisplay").textContent = `${Math.round(frame.rms * 100)}%`;
 
-        driveInstrumentVoice(playedFreq, playedMidi, frame.rms);
+        liveVoiceCtrl.play(playedMidi, frame.rms, snapMode);
         pitchHistory.push({ rawMidi: shiftedRaw, playedMidi, active: true });
       } else {
-        stopContinuousVoice();
-        lastTriggeredMidi = -1;
+        liveVoiceCtrl.stop();
         pitchHistory.push({ rawMidi: -1, playedMidi: -1, active: false });
       }
       if (idx === recordedFrames.length - 1) {
-        stopRecordedPlayback();
+        setTimeout(() => stopRecordedPlayback(), 140);
       }
     }, frame.timeOffsetMs);
     playbackTimerIds.push(tid);
@@ -2622,42 +3212,58 @@ function stopRecordedPlayback() {
   isPlayingRecorded = false;
   playbackTimerIds.forEach(id => clearTimeout(id));
   playbackTimerIds = [];
-  stopContinuousVoice();
+  if (liveVoiceCtrl) liveVoiceCtrl.stop();
   lastTriggeredMidi = -1;
   if (!isLive && !isRecording) {
-    updateStatusBadge("Mic Standby", "");
+    updateStatusBadge(
+      samplePackReadyCount > 0 ? "🎺 Real 1930s Brass Ready" : "1930s Brass Synth Ready",
+      "ready"
+    );
   }
 }
 
-// Built-in Demo Melody ("Skye Boat Song / Highland Whistle Air") so Eric can test all 16 instruments immediately!
+// Built-in 1930s New Orleans Jazz / Blues Demo Phrase (with deliberate flat whistle drift & tiny squeak so Eric hears the rescue!)
 function loadDemoMelody() {
   const melodyNotes = [
-    // Note MIDI (Whistle register ~G5-E6), durationMs
-    { midi: 79, dur: 450 }, { midi: 81, dur: 250 }, { midi: 79, dur: 450 }, { midi: 74, dur: 650 },
-    { midi: 0,  dur: 120 },
-    { midi: 76, dur: 450 }, { midi: 79, dur: 250 }, { midi: 76, dur: 450 }, { midi: 72, dur: 700 },
-    { midi: 0,  dur: 150 },
-    { midi: 79, dur: 450 }, { midi: 81, dur: 250 }, { midi: 79, dur: 450 }, { midi: 84, dur: 650 },
-    { midi: 83, dur: 450 }, { midi: 81, dur: 450 }, { midi: 79, dur: 900 }
+    // Classic warm New Orleans jazz solo in F Major/Blues (~whistle register F5..D6 -> F3..D4 on trumpet)
+    { midi: 77, dur: 280, drift: -0.34, dyn: 0.72 }, // F5
+    { midi: 81, dur: 260, drift: -0.31, dyn: 0.76 }, // A5
+    { midi: 82, dur: 260, drift: -0.35, dyn: 0.79 }, // Bb5
+    { midi: 84, dur: 760, drift: -0.28, dyn: 0.86 }, // C6 held
+    { midi: 0,  dur: 140, drift: 0, dyn: 0 },
+    { midi: 83, dur: 50,  drift: 0.0,   dyn: 0.45 }, // Tiny 50ms accidental whistle squeak!
+    { midi: 77, dur: 260, drift: -0.36, dyn: 0.72 }, // F5
+    { midi: 81, dur: 260, drift: -0.30, dyn: 0.78 }, // A5
+    { midi: 82, dur: 260, drift: -0.33, dyn: 0.82 }, // Bb5
+    { midi: 84, dur: 720, drift: -0.29, dyn: 0.88 }, // C6 held
+    { midi: 0,  dur: 130, drift: 0, dyn: 0 },
+    { midi: 84, dur: 250, drift: -0.32, dyn: 0.84 }, // C6
+    { midi: 82, dur: 250, drift: -0.30, dyn: 0.80 }, // Bb5
+    { midi: 81, dur: 300, drift: -0.35, dyn: 0.76 }, // A5
+    { midi: 79, dur: 260, drift: -0.31, dyn: 0.72 }, // G5
+    { midi: 77, dur: 820, drift: -0.27, dyn: 0.85 }, // F5 long Satchmo vibrato finish
+    { midi: 0,  dur: 140, drift: 0, dyn: 0 },
+    { midi: 80, dur: 340, drift: -0.22, dyn: 0.80 }, // Ab5 blue-note color
+    { midi: 79, dur: 280, drift: -0.32, dyn: 0.75 }, // G5
+    { midi: 77, dur: 980, drift: -0.28, dyn: 0.88 }  // F5 warm cadence
   ];
 
   recordedFrames = [];
   let t = 0;
   const stepMs = 20;
   melodyNotes.forEach(n => {
-    const steps = Math.floor(n.dur / stepMs);
+    const steps = Math.max(1, Math.floor(n.dur / stepMs));
     for (let s = 0; s < steps; s++) {
       if (n.midi === 0) {
         recordedFrames.push({ timeOffsetMs: t, rawMidi: -1, snappedMidi: -1, playedMidi: -1, rms: 0 });
       } else {
-        // Add subtle realistic human whistle vibrato
-        const vib = Math.sin(t * 0.035) * 0.12;
+        const vib = Math.sin(t * 0.032) * 0.14;
         recordedFrames.push({
           timeOffsetMs: t,
-          rawMidi: n.midi + vib,
-          snappedMidi: n.midi,
-          playedMidi: n.midi + vib,
-          rms: 0.72
+          rawMidi: n.midi + n.drift + vib,
+          snappedMidi: -1,
+          playedMidi: -1,
+          rms: n.dyn
         });
       }
       t += stepMs;
@@ -2667,66 +3273,121 @@ function loadDemoMelody() {
   finalizeRecording(true);
 }
 
-// Offline WAV Renderer & Exporter (Uses full instrument synth + reverb)
+// Offline WAV Renderer & Exporter (Uses full Real-Brass Sample Engine + 1930s Vintage Club Bus)
 async function exportRecordingWAV() {
   if (recordedFrames.length === 0) return;
-  const durationSec = (recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000) + 2.2;
-  const sampleRate = 44100;
-  const offlineCtx = new OfflineAudioContext(2, Math.ceil(durationSec * sampleRate), sampleRate);
 
-  const offMaster = offlineCtx.createGain();
-  offMaster.gain.value = masterVol;
-  const offDry = offlineCtx.createGain();
-  offDry.gain.value = 1.0 - reverbWet * 0.4;
-  const offWet = offlineCtx.createGain();
-  offWet.gain.value = reverbWet;
-  const offReverb = createConcertHallReverb(offlineCtx, 2.4, 2.2);
-
-  offMaster.connect(offDry);
-  offMaster.connect(offReverb);
-  offReverb.connect(offWet);
-  offDry.connect(offlineCtx.destination);
-  offWet.connect(offlineCtx.destination);
-
-  const scaleKey = document.getElementById("scaleSelect").value;
-  const snapMode = document.getElementById("snapMode").value;
-
-  if (currentInstrument.type === "percussive") {
-    let lastMidi = -1;
-    let lastTrigMs = -1000;
-    for (let i = 0; i < recordedFrames.length; i++) {
-      const f = recordedFrames[i];
-      if (f.rawMidi > 0) {
-        const playedMidi = snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, snapMode);
-        const rounded = Math.round(playedMidi);
-        if (rounded !== lastMidi || (f.timeOffsetMs - lastTrigMs > 480 && lastMidi === -1)) {
-          triggerPercussiveNote(currentInstrument.id, midiToFreq(rounded), f.rms, offlineCtx, offMaster, f.timeOffsetMs / 1000);
-          lastMidi = rounded;
-          lastTrigMs = f.timeOffsetMs;
-        }
+  // Segment frames into discrete notes with continuous pitch/dynamics
+  const notes = [];
+  let cur = null;
+  for (let i = 0; i < recordedFrames.length; i++) {
+    const f = recordedFrames[i];
+    const tSec = f.timeOffsetMs / 1000;
+    if (f.rawMidi > 0) {
+      const m = getEffectivePlaybackMidi(f);
+      const q = Math.round(m);
+      if (!cur || Math.abs(cur.qMidi - q) >= 1) {
+        const isLegato = cur !== null && (tSec - cur.endSec) < 0.05;
+        if (cur) notes.push(cur);
+        cur = {
+          startSec: tSec,
+          endSec: tSec + 0.04,
+          midi: m,
+          qMidi: q,
+          isLegato,
+          rmsList: [f.rms]
+        };
       } else {
-        lastMidi = -1;
+        cur.endSec = tSec + 0.04;
+        cur.rmsList.push(f.rms);
       }
+    } else if (cur) {
+      notes.push(cur);
+      cur = null;
     }
-  } else {
-    let curVoice = null;
-    for (let i = 0; i < recordedFrames.length; i++) {
-      const f = recordedFrames[i];
-      const tSec = f.timeOffsetMs / 1000;
-      if (f.rawMidi > 0) {
-        const playedMidi = snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, snapMode);
-        const freq = midiToFreq(playedMidi);
-        if (!curVoice) {
-          curVoice = createContinuousVoice(currentInstrument.id, freq, offlineCtx, offMaster, tSec);
+  }
+  if (cur) notes.push(cur);
+  if (notes.length === 0) return;
+
+  const totalSec = notes[notes.length - 1].endSec + 1.8;
+  const sampleRate = 44100;
+  const offlineCtx = new OfflineAudioContext(2, Math.ceil(totalSec * sampleRate), sampleRate);
+
+  const offBus = createVintageBrassBus(offlineCtx, {
+    masterVol,
+    reverbWet,
+    vintage: vintageAmount
+  });
+
+  const decodedMap = await ensureVoicingDecoded(currentVoicing, offlineCtx);
+
+  for (const n of notes) {
+    const avgDyn = n.rmsList.reduce((a, b) => a + b, 0) / n.rmsList.length;
+    offBus.setBreath(avgDyn, n.startSec);
+
+    const sample = findClosestSample(currentVoicing, n.midi);
+    const decodedObj = sample && decodedMap ? decodedMap.get(sample) : null;
+
+    if (decodedObj && decodedObj.buffer) {
+      const buf = decodedObj.buffer;
+      const onsetSec = decodedObj.onsetSec;
+      const rate = Math.pow(2, (n.midi - sample.measuredMidi) / 12);
+      const dur = Math.max(0.08, n.endSec - n.startSec);
+
+      // Schedule main sample + 1.85s sustain overlaps if held long
+      let cursor = 0;
+      while (cursor < dur) {
+        const segStart = n.startSec + cursor;
+        const isFirst = cursor === 0;
+        const segLen = Math.min(2.15, dur - cursor + (cursor + 2.15 < dur ? 0.35 : 0.095));
+        const offset = isFirst
+          ? (n.isLegato ? Math.min(buf.duration - 0.5, onsetSec + 0.038) : onsetSec)
+          : Math.min(buf.duration - 1.2, onsetSec + 0.55);
+
+        const g = offlineCtx.createGain();
+        g.connect(offBus.input);
+        const amp = Math.min(0.95, 0.34 + avgDyn * 0.62);
+        const fadeIn = isFirst ? (n.isLegato ? 0.030 : 0.012) : 0.35;
+
+        g.gain.setValueAtTime(0.0001, segStart);
+        g.gain.linearRampToValueAtTime(amp, segStart + fadeIn);
+
+        const fadeOutStart = Math.max(segStart + fadeIn + 0.01, segStart + segLen - (cursor + 1.85 < dur ? 0.35 : 0.095));
+        g.gain.setValueAtTime(amp, fadeOutStart);
+        g.gain.linearRampToValueAtTime(0.0001, segStart + segLen);
+
+        const src = offlineCtx.createBufferSource();
+        src.buffer = buf;
+        src.playbackRate.setValueAtTime(rate, segStart);
+
+        const lfo = offlineCtx.createOscillator();
+        const lfoGain = offlineCtx.createGain();
+        lfo.frequency.value = 5.4;
+        const maxVib = (currentVoicing === "ballad" ? 8 : 30) * soulAmount;
+        const vibStart = isFirst ? segStart + 0.20 : segStart;
+        lfoGain.gain.setValueAtTime(isFirst ? 0 : maxVib, segStart);
+        if (isFirst) {
+          lfoGain.gain.setValueAtTime(0, vibStart);
+          lfoGain.gain.linearRampToValueAtTime(maxVib, segStart + 0.72);
         }
-        curVoice.setPitchAndDynamics(freq, f.rms, tSec);
-      } else if (curVoice) {
-        curVoice.stop(tSec);
-        curVoice = null;
+        lfo.connect(lfoGain);
+        lfoGain.connect(src.detune);
+
+        if (isFirst && !n.isLegato && soulAmount > 0.08) {
+          src.detune.setValueAtTime(-42 * soulAmount, segStart);
+          src.detune.setTargetAtTime(0, segStart, 0.016);
+        }
+
+        src.connect(g);
+        src.start(segStart, Math.max(0, offset));
+        lfo.start(segStart);
+        src.stop(segStart + segLen + 0.03);
+        lfo.stop(segStart + segLen + 0.03);
+
+        cursor += 1.85;
       }
-    }
-    if (curVoice) {
-      curVoice.stop((recordedFrames[recordedFrames.length - 1].timeOffsetMs / 1000) + 0.08);
+    } else {
+      createFallbackBrassVoice(offlineCtx, offBus, midiToFreq(n.midi), avgDyn, soulAmount, n.isLegato, n.startSec, n.endSec);
     }
   }
 
@@ -2735,7 +3396,7 @@ async function exportRecordingWAV() {
   const url = URL.createObjectURL(wavBlob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `Jarvis_WhistleSynth_${currentInstrument.id}.wav`;
+  a.download = `Satchmo_1930s_Trumpet_${currentVoicing}.wav`;
   a.click();
 }
 
@@ -2750,10 +3411,10 @@ function audioBufferToWavBlob(buffer) {
   function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
   function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
 
-  setUint32(0x46464952); // "RIFF"
+  setUint32(0x46464952);
   setUint32(length - 8);
-  setUint32(0x45564157); // "WAVE"
-  setUint32(0x20746d66); // "fmt "
+  setUint32(0x45564157);
+  setUint32(0x20746d66);
   setUint32(16);
   setUint16(1);
   setUint16(numOfChan);
@@ -2761,7 +3422,7 @@ function audioBufferToWavBlob(buffer) {
   setUint32(buffer.sampleRate * 2 * numOfChan);
   setUint16(numOfChan * 2);
   setUint16(16);
-  setUint32(0x61746164); // "data"
+  setUint32(0x61746164);
   setUint32(length - pos - 4);
 
   for (let i = 0; i < numOfChan; i++) channels.push(buffer.getChannelData(i));
@@ -2778,27 +3439,24 @@ function audioBufferToWavBlob(buffer) {
   return new Blob([out], { type: "audio/wav" });
 }
 
-// Standard MIDI File (.mid) Exporter
 function exportRecordingMIDI() {
   if (recordedFrames.length === 0) return;
-  const scaleKey = document.getElementById("scaleSelect").value;
 
-  // Group frames into discrete MIDI note events
   const events = [];
   let activeNote = -1;
   let lastTick = 0;
-  const msPerTick = 2; // 500 ticks per second
+  const msPerTick = 2;
 
   recordedFrames.forEach(f => {
     const tick = Math.round(f.timeOffsetMs / msPerTick);
-    const note = f.rawMidi > 0 ? Math.round(snapMidiToScale(f.rawMidi + octaveShift * 12, scaleKey, "strict")) : -1;
+    const note = f.rawMidi > 0 ? Math.round(getEffectivePlaybackMidi(f)) : -1;
     if (note !== activeNote) {
       if (activeNote > 0) {
         events.push({ delta: Math.max(0, tick - lastTick), type: 0x80, note: activeNote, vel: 0 });
         lastTick = tick;
       }
       if (note > 0) {
-        events.push({ delta: Math.max(0, tick - lastTick), type: 0x90, note: note, vel: 96 });
+        events.push({ delta: Math.max(0, tick - lastTick), type: 0x90, note: note, vel: 100 });
         lastTick = tick;
       }
       activeNote = note;
@@ -2818,7 +3476,7 @@ function exportRecordingMIDI() {
   events.forEach(ev => {
     track.push(...varLen(ev.delta), ev.type, ev.note & 0x7f, ev.vel & 0x7f);
   });
-  track.push(0x00, 0xff, 0x2f, 0x00); // End of Track
+  track.push(0x00, 0xff, 0x2f, 0x00);
 
   const header = [
     0x4d,0x54,0x68,0x64, 0x00,0x00,0x00,0x06,
@@ -2833,7 +3491,7 @@ function exportRecordingMIDI() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `Jarvis_Whistle_Melody.mid`;
+  a.download = `Satchmo_Trumpet_Solo.mid`;
   a.click();
 }
 
@@ -2845,7 +3503,7 @@ function updateLiveVuMeter(rms) {
     bar.style.width = "0%";
     bar.className = "vu-bar-fill";
     val.textContent = "0% (Standby)";
-    val.style.color = "#94a3b8";
+    val.style.color = "#b8aa96";
     return;
   }
   const pct = Math.min(100, Math.max(1, Math.round((rms / 0.05) * 100)));
@@ -2853,37 +3511,39 @@ function updateLiveVuMeter(rms) {
   if (rms >= gateThreshold) {
     bar.className = "vu-bar-fill active";
     val.textContent = `${pct}% (Sound Detected)`;
-    val.style.color = "#34d399";
+    val.style.color = "#f5c451";
   } else {
     bar.className = "vu-bar-fill";
     val.textContent = `${pct}% (Below Gate)`;
-    val.style.color = "#94a3b8";
+    val.style.color = "#b8aa96";
   }
 }
 
 async function testPhoneSpeaker() {
   try {
     await ensureAudioContext();
-    if (audioCtx.state === "suspended") {
-      await audioCtx.resume();
-    }
-    updateStatusBadge(`🔊 Testing ${currentInstrument.name}...`, "live");
+    await ensureVoicingDecoded(currentVoicing, audioCtx);
+    updateStatusBadge("🎺 Testing 1930s Trumpet...", "live");
 
-    if (currentInstrument.type === "continuous") {
-      const v = createContinuousVoice(currentInstrument.id, 220);
-      v.setPitchAndDynamics(220, 0.85);
+    const phrase = [
+      { midi: 67, delay: 0,   dyn: 0.72 }, // G4
+      { midi: 71, delay: 320, dyn: 0.78 }, // B4
+      { midi: 74, delay: 640, dyn: 0.88 }  // D5 warm held finish
+    ];
+    phrase.forEach(p => {
       setTimeout(() => {
-        v.stop();
-        if (!isLive && !isRecording) updateStatusBadge("Mic Standby", "");
-      }, 1000);
-    } else {
-      triggerPercussiveNote(currentInstrument.id, 261.63, 0.85);
-      setTimeout(() => triggerPercussiveNote(currentInstrument.id, 329.63, 0.85), 250);
-      setTimeout(() => {
-        triggerPercussiveNote(currentInstrument.id, 392.00, 0.85);
-        if (!isLive && !isRecording) updateStatusBadge("Mic Standby", "");
-      }, 500);
-    }
+        liveVoiceCtrl.play(p.midi, p.dyn, "strict");
+      }, p.delay);
+    });
+    setTimeout(() => {
+      liveVoiceCtrl.stop();
+      if (!isLive && !isRecording && !isPlayingRecorded) {
+        updateStatusBadge(
+          samplePackReadyCount > 0 ? "🎺 Real 1930s Brass Ready" : "1930s Brass Synth Ready",
+          "ready"
+        );
+      }
+    }, 1500);
   } catch (err) {
     alert("Audio context error: " + err.message);
   }
@@ -2891,13 +3551,13 @@ async function testPhoneSpeaker() {
 
 async function forceCleanReload() {
   try {
-    if ('caches' in window) {
+    if ("caches" in window) {
       const keys = await caches.keys();
       for (const key of keys) {
         await caches.delete(key);
       }
     }
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       const registrations = await navigator.serviceWorker.getRegistrations();
       for (const reg of registrations) {
         await reg.unregister();
@@ -2907,13 +3567,12 @@ async function forceCleanReload() {
   window.location.reload(true);
 }
 
-// Global Touch / Click Audio Unlock for Mobile Browsers
 const unlockAudio = async () => {
   if (audioCtx && audioCtx.state === "suspended") {
-    try { await audioCtx.resume(); } catch(e){}
+    try { await audioCtx.resume(); } catch (e) {}
   }
 };
-['touchstart', 'touchend', 'click'].forEach(evt => {
+["touchstart", "touchend", "click"].forEach(evt => {
   window.addEventListener(evt, unlockAudio, { passive: true });
 });
 
@@ -2925,6 +3584,13 @@ function closeQrModal() {
   document.getElementById("qrModal").style.display = "none";
 }
 
+window.addEventListener("DOMContentLoaded", () => {
+  setOctave(-2);
+  enumerateMics();
+  initCanvasLoop();
+  loadSamplePackManifest();
+});
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js").then(reg => {
@@ -2934,7 +3600,6 @@ if ("serviceWorker" in navigator) {
         if (installingWorker) {
           installingWorker.onstatechange = () => {
             if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
-              console.log("New version of WhistleSynth installed. Reloading...");
               window.location.reload();
             }
           };

@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "license": "CC0 1.0 Universal (VSCO-2-CE)",
+  "voicings": {
+    "open": [
+      {
+        "midi": 53,
+        "measuredMidi": 52.969,
+        "durationSec": 4.2,
+        "file": "samples/open_53.mp3"
+      },
+      {
+        "midi": 57,
+        "measuredMidi": 56.954,
+        "durationSec": 4.2,
+        "file": "samples/open_57.mp3"
+      },
+      {
+        "midi": 60,
+        "measuredMidi": 59.989,
+        "durationSec": 4.2,
+        "file": "samples/open_60.mp3"
+      },
+      {
+        "midi": 63,
+        "measuredMidi": 62.989,
+        "durationSec": 4.2,
+        "file": "samples/open_63.mp3"
+      },
+      {
+        "midi": 67,
+        "measuredMidi": 67.019,
+        "durationSec": 4.2,
+        "file": "samples/open_67.mp3"
+      },
+      {
+        "midi": 70,
+        "measuredMidi": 70.021,
+        "durationSec": 4.2,
+        "file": "samples/open_70.mp3"
+      },
+      {
+        "midi": 74,
+        "measuredMidi": 74.039,
+        "durationSec": 4.2,
+        "file": "samples/open_74.mp3"
+      },
+      {
+        "midi": 77,
+        "measuredMidi": 76.975,
+        "durationSec": 4.2,
+        "file": "samples/open_77.mp3"
+      },
+      {
+        "midi": 81,
+        "measuredMidi": 81.048,
+        "durationSec": 4.2,
+        "file": "samples/open_81.mp3"
+      },
+      {
+        "midi": 84,
+        "measuredMidi": 83.988,
+        "durationSec": 4.2,
+        "file": "samples/open_84.mp3"
+      }
+    ],
+    "ballad": [
+      {
+        "midi": 53,
+        "measuredMidi": 52.991,
+        "durationSec": 4.2,
+        "file": "samples/ballad_53.mp3"
+      },
+      {
+        "midi": 57,
+        "measuredMidi": 57.12,
+        "durationSec": 4.2,
+        "file": "samples/ballad_57.mp3"
+      },
+      {
+        "midi": 60,
+        "measuredMidi": 60.034,
+        "durationSec": 4.2,
+        "file": "samples/ballad_60.mp3"
+      },
+      {
+        "midi": 63,
+        "measuredMidi": 63.026,
+        "durationSec": 4.2,
+        "file": "samples/ballad_63.mp3"
+      },
+      {
+        "midi": 65,
+        "measuredMidi": 65.024,
+        "durationSec": 4.2,
+        "file": "samples/ballad_65.mp3"
+      },
+      {
+        "midi": 67,
+        "measuredMidi": 66.941,
+        "durationSec": 4.2,
+        "file": "samples/ballad_67.mp3"
+      },
+      {
+        "midi": 70,
+        "measuredMidi": 69.968,
+        "durationSec": 4.2,
+        "file": "samples/ballad_70.mp3"
+      },
+      {
+        "midi": 74,
+        "measuredMidi": 74.007,
+        "durationSec": 4.2,
+        "file": "samples/ballad_74.mp3"
+      },
+      {
+        "midi": 77,
+        "measuredMidi": 77.036,
+        "durationSec": 4.2,
+        "file": "samples/ballad_77.mp3"
+      },
+      {
+        "midi": 81,
+        "measuredMidi": 80.999,
+        "durationSec": 4.2,
+        "file": "samples/ballad_81.mp3"
+      },
+      {
+        "midi": 84,
+        "measuredMidi": 84.013,
+        "durationSec": 4.2,
+        "file": "samples/ballad_84.mp3"
+      }
+    ],
+    "muted": [
+      {
+        "midi": 58,
+        "measuredMidi": 57.984,
+        "durationSec": 4.2,
+        "file": "samples/muted_58.mp3"
+      },
+      {
+        "midi": 60,
+        "measuredMidi": 60.059,
+        "durationSec": 4.2,
+        "file": "samples/muted_60.mp3"
+      },
+      {
+        "midi": 63,
+        "measuredMidi": 62.999,
+        "durationSec": 4.2,
+        "file": "samples/muted_63.mp3"
+      },
+      {
+        "midi": 68,
+        "measuredMidi": 67.977,
+        "durationSec": 4.2,
+        "file": "samples/muted_68.mp3"
+      },
+      {
+        "midi": 70,
+        "measuredMidi": 70.014,
+        "durationSec": 4.2,
+        "file": "samples/muted_70.mp3"
+      },
+      {
+        "midi": 74,
+        "measuredMidi": 74.033,
+        "durationSec": 4.2,
+        "file": "samples/muted_74.mp3"
+      },
+      {
+        "midi": 77,
+        "measuredMidi": 77.018,
+        "durationSec": 4.2,
+        "file": "samples/muted_77.mp3"
+      },
+      {
+        "midi": 81,
+        "measuredMidi": 81.031,
+        "durationSec": 4.2,
+        "file": "samples/muted_81.mp3"
+      }
+    ]
+  }
+}
